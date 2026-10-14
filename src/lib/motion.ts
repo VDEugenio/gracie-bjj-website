@@ -14,7 +14,7 @@
  *   schedule filter, whose rows have to collapse (height) for the list to close up.
  *
  * Hooks:
- *   hero-photo   clip-path wipe on load          hero-title  SplitText lines rise from a mask
+ *   hero-photo   settles from a slight zoom      hero-title  SplitText lines rise from a mask
  *   hero-cta     fades up after the headline     title       page titles: same line reveal
  *   photo-wipe   clip-path wipe on scroll        reveal      fade + rise, staggered, once
  *   marquee      infinite program-name loop      magnetic    primary buttons follow the pointer
@@ -115,15 +115,11 @@ function splitLines(el: HTMLElement, { delay = 0, onScroll = false } = {}): void
 
 function hero(): void {
   const photo = document.querySelector<HTMLElement>('[data-motion="hero-photo"]');
-  if (photo) {
-    gsap.fromTo(
-      photo,
-      { clipPath: 'inset(0% 0% 0% 100%)' },
-      { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.out', clearProps: 'clipPath' },
-    );
-    const img = photo.querySelector('img');
-    if (img) gsap.from(img, { scale: 1.12, duration: 1.1, ease: 'expo.out', clearProps: 'transform' });
-  }
+  // The hero photo is the page's largest paint (LCP), so it is never clipped or
+  // faded: it paints at once and settles from a slight zoom. The clip-path wipe
+  // is for photos further down.
+  const img = photo?.querySelector('img');
+  if (img) gsap.from(img, { scale: 1.12, duration: 1.1, ease: 'expo.out', clearProps: 'transform' });
 
   for (const title of all('[data-motion="hero-title"]')) splitLines(title, { delay: 0.15 });
 

@@ -1,0 +1,38 @@
+---
+/**
+ * Not found. Old-site URLs are redirected in public/_redirects; anything else
+ * lands here with a way back to the pages people are usually after.
+ */
+import Base from '@/layouts/Base.astro';
+import Button from '@/components/Button.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import { getSettings } from '@/lib/content';
+import { gymdeskUrl } from '@/lib/gymdesk';
+
+const campaign = 'not-found';
+const settings = await getSettings();
+---
+
+<Base
+  title="Page not found"
+  description={`That page isn't here. See the class schedule, our programs, or start your free week at ${settings.name}.`}
+  campaign={campaign}
+  currentPath="/404"
+  noindex
+>
+  <section class="wrap flex flex-col gap-8 pb-24 pt-12 md:gap-12 md:py-24" aria-labelledby="nf-h">
+    <SectionHeading eyebrow="404" level={1} size="page" id="nf-h">
+      Page<br />not found
+      <p slot="intro" class="max-w-82 text-body text-ink-muted md:max-w-130 md:text-body-l">
+        That page isn't here. It may have moved when we updated the site.
+      </p>
+    </SectionHeading>
+    <div class="flex flex-col gap-2 md:flex-row md:gap-3">
+      <Button href={gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'section-cta')} variant="primary" arrow class="w-full justify-center md:w-auto">
+        Start your free week
+      </Button>
+      <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
+      <Button href="/" class="w-full justify-center md:w-auto">Home</Button>
+    </div>
+  </section>
+</Base>

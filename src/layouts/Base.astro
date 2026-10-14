@@ -2,14 +2,26 @@
 /**
  * Base layout: <head>, SEO basics, promo banner, header, the page, footer,
  * and the one-time motion start (src/lib/motion.ts).
- * JSON-LD and the shared OG image land in phase 6 (SEO and launch).
+ *
+ * SEO: every page passes a unique title and description. Open Graph and
+ * Twitter tags share one photo (the team shot, cropped to 1200×630 at build
+ * time), and the LocalBusiness JSON-LD comes from settings plus the schedule
+ * (src/lib/seo.ts). Canonical and OG URLs use SITE_URL (astro.config.mjs).
  */
 import '@/styles/global.css';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
 import PromoBanner from '@/components/PromoBanner.astro';
 import { getPromo, getSchedule, getSettings } from '@/lib/content';
+import { getImage } from 'astro:assets';
 import { gymdeskUrl } from '@/lib/gymdesk';
+import { localBusiness } from '@/lib/seo';
+import ogPhoto from '@/assets/sections/team-group-photo.jpg';
+import logo from '@/assets/logo-placeholder.webp';
+// The two fonts every page paints first (headlines and body text). Preloading
+// them saves a round trip and keeps the font swap from shifting the layout.
+import archivoFont from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import geistFont from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 
 export interface Props {
   /** Unique page title. The gym name is appended automatically. */
@@ -32,6 +44,13 @@ const siteName = settings.name;
 const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
 const canonical = new URL(currentPath, Astro.site ?? Astro.url).href;
 const promoHref = promo?.linkUrl ? gymdeskUrl(promo.linkUrl, campaign, 'promo') : undefined;
+
+const site = Astro.site ?? Astro.url;
+const OG = { width: 1200, height: 630 };
+const og = await getImage({ src: ogPhoto, ...OG, fit: 'cover', position: 'center', format: 'jpg', quality: 80 });
+const ogImage = new URL(og.src, site).href;
+const ogAlt = `The team at ${siteName} on the mats after class`;
+const jsonLd = localBusiness({ settings, schedule, site, image: ogImage, logo: new URL(logo.src, site).href });
 ---
 
 <!doctype html>
@@ -44,6 +63,8 @@ const promoHref = promo?.linkUrl ? gymdeskUrl(promo.linkUrl, campaign, 'promo') 
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={archivoFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistFont} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#121212" />
     <meta name="color-scheme" content="dark" />
     <meta property="og:type" content="website" />
@@ -51,9 +72,17 @@ const promoHref = promo?.linkUrl ? gymdeskUrl(promo.linkUrl, campaign, 'promo') 
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content={String(OG.width)} />
+    <meta property="og:image:height" content={String(OG.height)} />
+    <meta property="og:image:alt" content={ogAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogAlt} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
     <meta name="generator" content={Astro.generator} />
     <slot name="head" />
   </head>

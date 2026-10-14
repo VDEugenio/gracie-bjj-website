@@ -51,7 +51,7 @@ const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
     <div class="flex items-center gap-2 md:gap-5">
       {
         settings.gymdesk.loginUrl && (
-          <a href={settings.gymdesk.loginUrl} class="hidden text-caption text-ink-muted no-underline hover:text-ink md:inline">
+          <a href={gymdeskUrl(settings.gymdesk.loginUrl, campaign, 'login')} class="hidden text-caption text-ink-muted no-underline hover:text-ink md:inline">
             Member login
           </a>
         )

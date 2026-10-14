@@ -82,7 +82,7 @@ const { address } = settings;
     </div>
     {
       settings.gymdesk.loginUrl && (
-        <a href={settings.gymdesk.loginUrl} class="self-start text-caption text-ink-muted no-underline hover:text-ink">
+        <a href={gymdeskUrl(settings.gymdesk.loginUrl, campaign, 'login')} class="self-start text-caption text-ink-muted no-underline hover:text-ink">
           Member login
         </a>
       )

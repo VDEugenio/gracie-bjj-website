@@ -120,7 +120,7 @@ All GSAP code is in `src/lib/motion.ts`, started once from `Base.astro`. Compone
 
 | Hook | What happens |
 |---|---|
-| `hero-photo`, `hero-title`, `hero-cta` | On load: the photo wipes in (clip-path), the headline lines rise from a mask (SplitText, 0.08 stagger, `expo.out`), then the buttons fade up |
+| `hero-photo`, `hero-title`, `hero-cta` | On load: the photo settles from a slight zoom (never clipped, so it stays the fast LCP paint), the headline lines rise from a mask (SplitText, 0.08 stagger, `expo.out`), then the buttons fade up |
 | `title` | Page and program titles: the same line reveal (on load in a hero, on scroll elsewhere) |
 | `photo-wipe` | Photos wipe in left to right as they scroll in |
 | `reveal` | Cards, rows and steps fade and rise with a stagger at 80% of the viewport, once |

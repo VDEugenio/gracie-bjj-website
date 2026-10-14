@@ -24,12 +24,22 @@ export default defineConfig({
   site: env.SITE_URL || 'https://example.com',
   output: 'static',
   trailingSlash: 'never',
+  // Emit coaches.html rather than coaches/index.html. Cloudflare serves /coaches
+  // straight from coaches.html; a directory index would 307 to /coaches/ and
+  // disagree with the canonical URLs and the sitemap.
+  build: { format: 'file' },
   // The Cloudflare adapter runs the dev server inside workerd, which breaks
   // Keystatic's local file writes. Only attach it for builds.
   adapter: isDev ? undefined : cloudflare({ imageService: 'compile' }),
   // React and Markdoc exist for the Keystatic admin and the .mdoc program descriptions.
   // No React ships on site pages.
-  integrations: [react(), markdoc(), sitemap(), ...(keystaticEnabled ? [keystatic()] : [])],
+  integrations: [
+    react(),
+    markdoc(),
+    // The sitemap lists the public pages only: no admin, API or 404.
+    sitemap({ filter: (page) => !/^\/(keystatic|api|404)(\/|$)/.test(new URL(page).pathname) }),
+    ...(keystaticEnabled ? [keystatic()] : []),
+  ],
   // The toolbar overlay shows up in Playwright screenshots; re-enable locally if you want its audits.
   devToolbar: { enabled: false },
   vite: {

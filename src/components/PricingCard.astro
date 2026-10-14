@@ -7,6 +7,7 @@
 import Button from './Button.astro';
 import Tag from './Tag.astro';
 import type { Plan } from '@/lib/content';
+import { withUtmFrom } from '@/lib/gymdesk';
 
 interface Props {
   plan: Plan;
@@ -25,7 +26,8 @@ const PERIOD: Record<Plan['data']['period'], { label: string; suffix?: string }>
   '10-pass': { label: '10 days' },
 };
 const period = PERIOD[data.period];
-const cta = data.ctaUrl ?? href;
+// A plan's own Gymdesk link keeps the page's UTM parameters.
+const cta = data.ctaUrl ? withUtmFrom(data.ctaUrl, href) : href;
 ---
 
 <article

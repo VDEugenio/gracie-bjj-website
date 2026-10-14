@@ -5,6 +5,7 @@
  */
 import Button from './Button.astro';
 import type { Plan } from '@/lib/content';
+import { withUtmFrom } from '@/lib/gymdesk';
 
 interface Props {
   plans: Plan[];
@@ -13,6 +14,8 @@ interface Props {
 }
 
 const { plans, href, class: className } = Astro.props;
+const ctaUrl = plans[0]?.data.ctaUrl;
+const cta = ctaUrl ? withUtmFrom(ctaUrl, href) : href;
 ---
 
 {
@@ -31,7 +34,7 @@ const { plans, href, class: className } = Astro.props;
           <span class="font-mono text-time text-ink md:text-time-l">{plan.data.price}</span>
         </div>
       ))}
-      <Button href={plans[0]?.data.ctaUrl ?? href} size="sm" class="mt-1 w-full justify-center md:mt-0 md:w-auto">
+      <Button href={cta} size="sm" class="mt-1 w-full justify-center md:mt-0 md:w-auto">
         Sign up
       </Button>
     </article>

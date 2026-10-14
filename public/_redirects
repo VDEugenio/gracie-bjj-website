@@ -1,0 +1,16 @@
+# Old site URLs -> new pages, so old Google results and bookmarks never 404.
+# Cloudflare reads this file at the edge. Format: <from> <to> <status>
+# The /login target is the Gymdesk member portal (settings.gymdesk.loginUrl);
+# update it here too if that URL ever changes.
+
+/classes                /programs   301
+/classes/               /programs   301
+/instructors            /coaches    301
+/instructors/           /coaches    301
+/relson-gracie          /coaches    301
+/relson-gracie/         /coaches    301
+/login                  https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/login?utm_source=website&utm_medium=redirect&utm_campaign=old-site-login   301
+/login/                 https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/login?utm_source=website&utm_medium=redirect&utm_campaign=old-site-login   301
+
+# Splat rules last.
+/classes/*              /programs   301

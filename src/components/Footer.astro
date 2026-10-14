@@ -28,7 +28,7 @@ const lastDay = activeDays[activeDays.length - 1];
 const classDays = firstDay && lastDay ? `${firstDay.label}–${lastDay.label}` : null;
 const classDaysShort = firstDay && lastDay ? `${firstDay.short}–${lastDay.short}` : null;
 
-const links = [...NAV, { label: 'Sign up', href: gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav') }];
+const links = [...NAV, { label: 'Sign up', href: gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'footer') }];
 ---
 
 <footer class="border-t border-line bg-surface">
