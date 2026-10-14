@@ -1,6 +1,6 @@
 // Full-page screenshots at the two design widths, for comparing against design/mockups/*.png.
 //
-//   npm run screenshots -- home dev/components schedule
+//   npm run screenshots -- home schedule programs/fundamentals
 //   npm run screenshots -- --base http://localhost:4321 --out .screenshots home
 //
 // Pages are given as bare names ("home" is the root). Leading slashes are optional,

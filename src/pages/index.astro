@@ -21,6 +21,7 @@ import SectionHeading from '@/components/SectionHeading.astro';
 import Steps from '@/components/Steps.astro';
 import { getHomeCoaches, getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
 import { todaySentence } from '@/lib/copy';
+import { fitStyle } from '@/lib/fit';
 import { telHref } from '@/lib/format';
 import { gymdeskUrl } from '@/lib/gymdesk';
 import { directionsUrl } from '@/lib/maps';
@@ -144,12 +145,14 @@ const newHere = [
       {
         panels.map((panel, i) => (
           <div class="contents" data-today-panel={panel.key} hidden={i !== 0}>
-            <div class="flex flex-col gap-6 md:col-span-5 md:pr-8">
+            <div class="@container flex flex-col gap-6 md:col-span-5 md:pr-8">
               <div class="flex flex-col gap-2 md:gap-3">
                 <span class="text-label uppercase text-ink-muted" data-today-eyebrow>
                   This week at the gym
                 </span>
-                <h2 class="display text-display-l text-ink">{panel.label}</h2>
+                <h2 class="display text-display-l text-ink" style={fitStyle(panel.label, 'container')}>
+                  {panel.label}
+                </h2>
               </div>
               <p class="hidden max-w-95 text-body text-ink-muted md:block">{panel.sentence}</p>
               <a href="/schedule" class="link hidden self-start md:inline">

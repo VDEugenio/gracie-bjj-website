@@ -5,11 +5,12 @@
  *
  *   <SectionHeading eyebrow="Programs" size="l" id="programs-h">Find your class</SectionHeading>
  */
-import { fitStyle } from '@/lib/fit';
+import { fitStyle, type FitBasis } from '@/lib/fit';
 
 type Size = 'page' | 'xl' | 'detail' | 'l' | 'm';
 
 interface Props {
+  /** Small label above the heading. Pass an `eyebrow` slot instead for responsive copy. */
   eyebrow?: string;
   /** Eyebrows are muted except the one signal highlight on the "New here?" strip. */
   eyebrowTone?: 'muted' | 'signal';
@@ -18,13 +19,20 @@ interface Props {
   id?: string;
   /** Gap between eyebrow and heading. Page titles use the larger gap. */
   gap?: 'tight' | 'loose';
+  /**
+   * What the longest word must fit: the page width (default) or this
+   * component's own box (`container`), for headings that share a grid row
+   * with a photo or a paragraph and must not run into it.
+   */
+  fit?: FitBasis;
   class?: string;
 }
 
-const { eyebrow, eyebrowTone = 'muted', level = 2, size = 'l', id, gap, class: className } = Astro.props;
+const { eyebrow, eyebrowTone = 'muted', level = 2, size = 'l', id, gap, fit: basis = 'viewport', class: className } = Astro.props;
 
-// Cap the size so the longest word fits the viewport on phones (see src/lib/fit.ts).
-const fit = fitStyle(await Astro.slots.render('default'));
+// Cap the size so the longest word fits its space (see src/lib/fit.ts).
+const fit = fitStyle(await Astro.slots.render('default'), basis);
+const hasEyebrow = !!eyebrow || Astro.slots.has('eyebrow');
 
 const sizeClass: Record<Size, string> = {
   page: 'text-display-page',
@@ -38,11 +46,11 @@ const gapClass = (gap ?? (size === 'page' ? 'loose' : 'tight')) === 'loose' ? 'g
 const Heading = `h${level}` as 'h1' | 'h2' | 'h3';
 ---
 
-<div class:list={['flex flex-col', gapClass, className]}>
+<div class:list={['flex flex-col', gapClass, basis === 'container' && '@container', className]}>
   {
-    eyebrow && (
+    hasEyebrow && (
       <span class:list={['text-label uppercase', eyebrowTone === 'signal' ? 'text-signal-text' : 'text-ink-muted']}>
-        {eyebrow}
+        <slot name="eyebrow">{eyebrow}</slot>
       </span>
     )
   }

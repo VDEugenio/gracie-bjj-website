@@ -16,7 +16,7 @@ interface Props {
   variant?: 'photo' | 'band';
   /** Band background: raised (coaches, schedule) or the page surface (program pages, contact). */
   tone?: 'raised' | 'surface';
-  /** Headline size: xl (display-cta, 180/88) for "Your first class is on us.", l for the smaller bands. */
+  /** Headline size: xl for "Your first class is on us." (180px over a photo, 150px on a plain band, 86px on phones), l for the smaller bands. */
   size?: 'xl' | 'l';
   image?: ImageMetadata;
   alt?: string;
@@ -46,7 +46,7 @@ const {
 } = Astro.props;
 const secondaryClass = secondaryPhoneOnly ? 'w-full justify-center md:hidden' : 'w-full justify-center md:w-auto';
 
-const headingSize = size === 'xl' ? 'text-display-cta' : 'text-display-l';
+const headingSize = size === 'l' ? 'text-display-l' : variant === 'band' ? 'text-display-band' : 'text-display-cta';
 const fit = fitStyle(await Astro.slots.render('default'));
 ---
 

@@ -42,9 +42,20 @@ export function widestWord(text: string): { word: string; em: number } {
   return best;
 }
 
+/**
+ * What the headline has to fit inside:
+ * - viewport: the page width minus the gutters (--fit-available), for titles
+ *   that span the whole page.
+ * - container: the nearest `@container` ancestor (100cqw), for titles that
+ *   share a row with other content, e.g. a page title on seven of twelve
+ *   columns next to a photo, or the day name beside the "Today at the gym" card.
+ */
+export type FitBasis = 'viewport' | 'container';
+
 /** Inline style value for a display heading, or undefined when there is nothing to fit. */
-export function fitStyle(text: string): string | undefined {
+export function fitStyle(text: string, basis: FitBasis = 'viewport'): string | undefined {
   const { em } = widestWord(text);
   if (em < 2.5) return undefined;
-  return `--fit-size: calc(var(--fit-available) / ${(em * MARGIN).toFixed(3)})`;
+  const available = basis === 'container' ? '100cqw' : 'var(--fit-available)';
+  return `--fit-size: calc(${available} / ${(em * MARGIN).toFixed(3)})`;
 }

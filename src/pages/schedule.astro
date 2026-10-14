@@ -24,6 +24,8 @@ const activeDays = DAYS.filter((d) => schedule.some((c) => c.data.day === d.key)
 const first = activeDays[0]?.label ?? 'Monday';
 const last = activeDays[activeDays.length - 1]?.label ?? 'Saturday';
 const lastKey = activeDays[activeDays.length - 1]?.key;
+const firstShort = activeDays[0]?.short ?? 'Mon';
+const lastShort = activeDays[activeDays.length - 1]?.short ?? 'Sat';
 
 // "Start with Fundamentals or Mixed Level": the Start-here programs, beginner-tagged first.
 const starters = programs
@@ -44,7 +46,10 @@ const photoAlt = 'Members talking on the mats after class';
     class="wrap flex flex-col gap-4 pb-6 pt-12 md:grid md:grid-cols-12 md:items-end md:gap-x-8 md:pb-16 md:pt-24"
     aria-labelledby="sched-h"
   >
-    <SectionHeading eyebrow={`Schedule · ${first} to ${last}`} level={1} size="page" id="sched-h" class="md:col-span-7">
+    <SectionHeading level={1} size="page" id="sched-h" fit="container" class="md:col-span-7">
+      <Fragment slot="eyebrow">
+        Schedule · <span class="md:hidden">{firstShort}–{lastShort}</span><span class="hidden md:inline">{first} to {last}</span>
+      </Fragment>
       Class<br />schedule
       <p slot="intro" class="max-w-82 text-body text-ink-muted md:max-w-130 md:text-body-l">
         No classes on Sunday.
