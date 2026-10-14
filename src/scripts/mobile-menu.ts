@@ -1,9 +1,16 @@
 /**
  * Mobile menu toggle. Plain TypeScript, no framework.
  * Opens on the header button, closes on the X, Escape, any link, or when the
- * viewport grows past the phone breakpoint. Dispatches "menu:open" and
- * "menu:close" on document so motion.ts (phase 5) can animate it.
+ * viewport grows past the phone breakpoint.
+ *
+ * Dispatches "menu:open" after the menu is shown, and a cancelable
+ * "menu:close" before it is hidden: motion.ts cancels the close, slides the
+ * menu away and then calls `detail.done()`. Without motion it hides at once.
  */
+export interface MenuCloseDetail {
+  done: () => void;
+}
+
 const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
 const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
 
@@ -21,12 +28,17 @@ if (menu && toggle) {
   };
 
   const close = (returnFocus = true) => {
-    if (menu.hidden) return;
-    menu.hidden = true;
+    if (menu.hidden || toggle.getAttribute('aria-expanded') === 'false') return;
     toggle.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('overflow-hidden');
     if (returnFocus) toggle.focus();
-    document.dispatchEvent(new CustomEvent('menu:close'));
+    const detail: MenuCloseDetail = {
+      done: () => {
+        if (toggle.getAttribute('aria-expanded') === 'false') menu.hidden = true;
+      },
+    };
+    const event = new CustomEvent<MenuCloseDetail>('menu:close', { detail, cancelable: true });
+    if (document.dispatchEvent(event)) detail.done();
   };
 
   toggle.addEventListener('click', open);

@@ -30,6 +30,7 @@
     "@keystatic/core": "^0.6.9",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.8",
+    "gsap": "^3.15.0",
     "lucide-astro": "^0.556.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

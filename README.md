@@ -41,7 +41,7 @@ src/lib/content.ts      Typed access to every collection
 src/lib/schedule.ts     Time formatting, day grouping, derived "Mon–Thu · 5:00 PM" rows
 src/lib/belts.ts        Belt labels and stripe colors
 src/lib/gymdesk.ts      Gymdesk links with UTM parameters
-src/lib/motion.ts       All GSAP code (phase 5)
+src/lib/motion.ts       All GSAP code, initialised once from Base.astro
 src/assets/             Photos. programs/<slug>/image.jpg and coaches/<slug>/photo.jpg are managed by Keystatic
 src/pages/              Routes
 public/                 Static files copied as is
@@ -66,7 +66,7 @@ Keystatic storage is `local` until Mike's Keystatic Cloud project exists. Then s
 
 ## Components
 
-Every component takes content as props and uses tokens only. `data-motion="…"` attributes mark where phase 5 attaches GSAP; nothing animates yet.
+Every component takes content as props and uses tokens only. `data-motion="…"` attributes mark where `src/lib/motion.ts` attaches GSAP (see Motion below).
 
 | Component | Props |
 |---|---|
@@ -113,6 +113,23 @@ Page copy (hero lines, section intros, the "New here?" steps) lives in the page 
 Compare any route against its mockup with `npm run screenshots -- home schedule programs programs/fundamentals coaches contact`.
 
 **After changing a content schema**, stop the dev server, delete `.astro/data-store.json` and start it again; the content cache keeps old entries otherwise.
+
+## Motion
+
+All GSAP code is in `src/lib/motion.ts`, started once from `Base.astro`. Components only carry `data-motion` hooks:
+
+| Hook | What happens |
+|---|---|
+| `hero-photo`, `hero-title`, `hero-cta` | On load: the photo wipes in (clip-path), the headline lines rise from a mask (SplitText, 0.08 stagger, `expo.out`), then the buttons fade up |
+| `title` | Page and program titles: the same line reveal (on load in a hero, on scroll elsewhere) |
+| `photo-wipe` | Photos wipe in left to right as they scroll in |
+| `reveal` | Cards, rows and steps fade and rise with a stagger at 80% of the viewport, once |
+| `coach-card`, `belt` | Coach cards rise in one by one and the belt stripe ties on (scaleX). Desktop pointers also get the 3D tilt and the photo drift |
+| `marquee` | The program-name strip loops while it is on screen |
+| `magnetic` | Primary buttons lean toward the pointer (desktop pointers only) |
+| `menu`, `menu-link` | The phone menu slides down from the top, links rise in with a 0.05 stagger |
+
+The schedule filter and the mobile menu dispatch cancelable `schedule:filter` and `menu:close` events; motion.ts cancels them, animates, then commits the change. With `prefers-reduced-motion: reduce` nothing is registered, so they switch instantly. All starting states are set from JavaScript, so the page is complete with JavaScript off. Screenshots (`npm run screenshots`) run with reduced motion.
 
 ## Design tokens
 

@@ -5,7 +5,7 @@
  *   set vertically top-right, role and stacked name over the bottom, belt
  *   stripe, specialties, bio and a "Teaches" line.
  * - compact (home): photo, name, belt stripe and rank, linking to /coaches.
- * Phase 5 adds the desktop tilt; the markup only carries data-motion hooks.
+ * The desktop tilt and the belt tie-on live in src/lib/motion.ts.
  */
 import BeltStripe from './BeltStripe.astro';
 import Photo from './Photo.astro';
@@ -34,7 +34,7 @@ const alt = `Portrait of ${data.name}`;
 {
   variant === 'full' ? (
     <article
-      class:list={['group relative flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors', className]}
+      class:list={['group relative flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors hover:border-ink', className]}
       aria-labelledby={headingId}
       data-motion="coach-card"
     >

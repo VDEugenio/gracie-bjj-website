@@ -3,7 +3,7 @@
  * The belt stripe across a coach card: rank color with a bar near the right
  * end (red on black, black on blue/purple/brown, none on red or unknown).
  * 1px line-strong edges so a black belt still reads on the dark card.
- * data-motion="belt" lets phase 5 "tie it on" (scaleX 0 to 1).
+ * data-motion="belt": src/lib/motion.ts "ties it on" (scaleX 0 to 1) as the card scrolls in.
  */
 import { beltStripe, type BeltKey } from '@/lib/belts';
 

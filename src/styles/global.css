@@ -191,7 +191,7 @@
   background: linear-gradient(to top, var(--color-surface) 8%, transparent 70%);
 }
 
-/* Parent of the coach cards: gives the phase 5 tilt its 3D space. */
+/* Parent of the coach cards: gives the tilt in src/lib/motion.ts its 3D space. */
 @utility tilt-stage {
   perspective: 900px;
 }
@@ -213,4 +213,14 @@
   @media (width >= theme(--breakpoint-md)) {
     padding-inline: calc(var(--spacing) * 20);
   }
+}
+
+/*
+  SplitText line masks (src/lib/motion.ts). Lines rise from below, so only the
+  vertical axis clips; long single words like "Fundamentals" may run past the
+  heading box horizontally, as they do without JavaScript.
+*/
+.split-line-mask {
+  overflow-x: visible !important;
+  overflow-y: clip !important;
 }

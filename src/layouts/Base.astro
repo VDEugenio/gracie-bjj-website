@@ -1,8 +1,8 @@
 ---
 /**
- * Base layout: <head>, SEO basics, promo banner, header, the page, footer.
- * JSON-LD and the shared OG image land in phase 6 (SEO and launch);
- * motion initialisation lands in phase 5.
+ * Base layout: <head>, SEO basics, promo banner, header, the page, footer,
+ * and the one-time motion start (src/lib/motion.ts).
+ * JSON-LD and the shared OG image land in phase 6 (SEO and launch).
  */
 import '@/styles/global.css';
 import Footer from '@/components/Footer.astro';
@@ -72,6 +72,9 @@ const promoHref = promo?.linkUrl ? gymdeskUrl(promo.linkUrl, campaign, 'promo') 
     <Footer settings={settings} schedule={schedule} currentPath={currentPath} campaign={campaign} />
     <script>
       import '@/scripts/today';
+      import { initMotion } from '@/lib/motion';
+
+      initMotion();
     </script>
   </body>
 </html>
