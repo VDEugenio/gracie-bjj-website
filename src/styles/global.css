@@ -191,6 +191,11 @@
   background: linear-gradient(to top, var(--color-surface) 8%, transparent 70%);
 }
 
+/* Parent of the coach cards: gives the phase 5 tilt its 3D space. */
+@utility tilt-stage {
+  perspective: 900px;
+}
+
 /* Hide scrollbars on horizontally scrolling chip rows. */
 @utility no-scrollbar {
   scrollbar-width: none;

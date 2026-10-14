@@ -44,6 +44,17 @@ for (const path of paths) {
     const page = await context.newPage();
     await page.goto(base + path, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
+    // Scroll through the page so lazy images and iframes load, then return to the top.
+    await page.evaluate(async () => {
+      const step = window.innerHeight;
+      for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
+        window.scrollTo(0, y);
+        await new Promise((r) => setTimeout(r, 120));
+      }
+      window.scrollTo(0, 0);
+    });
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(300);
     const file = resolve(outDir, `${slug}-${vp.width}.png`);
     await page.screenshot({ path: file, fullPage: true });
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);

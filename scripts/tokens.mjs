@@ -43,6 +43,7 @@ const TYPE = {
   // Archivo condensed, 900, uppercase (pair with the `display` utility)
   'display-page': { size: ['108px', '190px'], lh: 0.8, tracking: '-0.01em', weight: 900 },
   'display-xl': { size: ['92px', '180px'], lh: 0.8, tracking: '-0.01em', weight: 900 },
+  'display-cta': { size: ['86px', '180px'], lh: 0.8, tracking: '-0.01em', weight: 900 },
   'display-detail': { size: ['100px', '160px'], lh: 0.8, tracking: '-0.01em', weight: 900 },
   'display-l': { size: ['72px', '120px'], lh: 0.8, tracking: '-0.01em', weight: 900 },
   'display-m': { size: ['60px', '96px'], lh: 0.8, tracking: '-0.01em', weight: 900 },

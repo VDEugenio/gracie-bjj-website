@@ -1,0 +1,41 @@
+---
+/**
+ * Coaches page, built from design/mockups/html/coaches-{phone,desktop}.html.
+ * Fighter-style cards, three across on desktop, stacked on phones.
+ */
+import Base from '@/layouts/Base.astro';
+import CoachCard from '@/components/CoachCard.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import { getCoaches, getSettings } from '@/lib/content';
+import { gymdeskUrl } from '@/lib/gymdesk';
+
+const campaign = 'coaches';
+const [settings, coaches] = await Promise.all([getSettings(), getCoaches()]);
+const signup = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'final-cta');
+---
+
+<Base
+  title="Our instructors"
+  description={`Meet the coaches at ${settings.name}: Relson Gracie lineage, black belts, and a dedicated youth coach. No-Gi jiu jitsu and MMA for adults and kids.`}
+  campaign={campaign}
+  currentPath="/coaches"
+>
+  <section
+    class="wrap flex flex-col gap-4 pb-8 pt-12 md:grid md:grid-cols-12 md:items-end md:gap-x-8 md:pb-16 md:pt-24"
+    aria-labelledby="coaches-h"
+  >
+    <SectionHeading eyebrow="Coaches" level={1} size="page" id="coaches-h" class="md:col-span-8">Our<br />instructors</SectionHeading>
+    <p class="max-w-82 text-body text-ink-muted md:col-span-4 md:max-w-none md:text-body-l">
+      Relson Gracie lineage. No-Gi jiu jitsu and MMA, for adults and kids.
+    </p>
+  </section>
+
+  <section aria-label="Instructors" class="tilt-stage wrap grid gap-4 pb-16 pt-4 md:grid-cols-3 md:items-stretch md:pb-24 md:pt-6">
+    {coaches.map((coach, i) => <CoachCard coach={coach} index={i + 1} />)}
+  </section>
+
+  <FinalCta variant="band" href={signup} secondary={{ href: '/schedule', label: 'View schedule' }} secondaryPhoneOnly>
+    Your first<br />class is<br />on us.
+  </FinalCta>
+</Base>

@@ -93,7 +93,24 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 
 `/dev/components` renders all of them with real content. Compare it against `design/mockups/*.png` with `npm run screenshots -- dev/components`.
 
-**Long headlines on phones.** The phone mockups clip single long words ("Fundamentals", "Instructors") at the viewport edge. Display sizes are therefore `min(token, --fit-size)`: `src/lib/fit.ts` works out the longest word of a heading and sets `--fit-size` inline so the word fits the viewport minus the gutters. When the word fits at the token size, nothing changes.
+**Long headlines on phones.** The phone mockups clip single long words ("Fundamentals", "Instructors") at the viewport edge. Display sizes are therefore `min(token, --fit-size)`: `src/lib/fit.ts` measures a heading's widest word with a table of Archivo glyph widths and sets `--fit-size` inline so that word fits the viewport minus the gutters. When the word fits at the token size, nothing changes.
+
+## Pages
+
+| Route | Source | Campaign (utm_campaign) |
+|---|---|---|
+| `/` | `src/pages/index.astro` | `home` |
+| `/schedule` | `src/pages/schedule.astro` | `schedule` |
+| `/programs` | `src/pages/programs/index.astro` | `programs` |
+| `/programs/<slug>` | `src/pages/programs/[slug].astro` | `program-<slug>` |
+| `/coaches` | `src/pages/coaches.astro` | `coaches` |
+| `/contact` | `src/pages/contact.astro` | `contact` |
+
+Page copy (hero lines, section intros, the "New here?" steps) lives in the page templates. Everything with a time, a price, a name or a link comes from the content collections, and the "First time? Come to Fundamentals at 6 PM" and "Your first class" sentences are derived from the schedule (`src/lib/copy.ts`).
+
+**Today.** The site is static, so `src/scripts/today.ts` marks today in the browser using the gym's time zone: the signal edge and "Today" label on the schedule card (which also moves first on phones), the "Today · Tuesday, Oct 13" line, and the home page's day panel. Without JavaScript the home page shows Monday under "This week at the gym" and no card is marked.
+
+Compare any route against its mockup with `npm run screenshots -- home schedule programs programs/fundamentals coaches contact`.
 
 **After changing a content schema**, stop the dev server, delete `.astro/data-store.json` and start it again; the content cache keeps old entries otherwise.
 

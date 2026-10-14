@@ -1,0 +1,81 @@
+---
+/**
+ * Contact page, built from design/mockups/html/contact-{phone,desktop}.html.
+ * Address, phone and hours, the map, and the message form. The form is the
+ * Gymdesk lead form once its embed code is in settings; until then it is the
+ * mockup form with no submit handler.
+ */
+import Base from '@/layouts/Base.astro';
+import Button from '@/components/Button.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import ContactInfo from '@/components/ContactInfo.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import GymdeskForm from '@/components/GymdeskForm.astro';
+import MapEmbed from '@/components/MapEmbed.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import { getSchedule, getSettings } from '@/lib/content';
+import { telHref } from '@/lib/format';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { directionsUrl } from '@/lib/maps';
+
+const campaign = 'contact';
+const [settings, schedule] = await Promise.all([getSettings(), getSchedule()]);
+const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(settings.gymdesk.signupUrl, campaign, placement);
+const { address } = settings;
+const embed = settings.gymdesk.leadFormEmbed;
+---
+
+<Base
+  title="Visit us"
+  description={`${settings.name} is at ${address.street}, ${address.neighborhood ?? address.city}. Call ${settings.phone} or send us a message.`}
+  campaign={campaign}
+  currentPath="/contact"
+>
+  <section
+    class="wrap flex flex-col gap-6 pb-8 pt-12 md:grid md:grid-cols-12 md:grid-rows-[auto_1fr] md:items-start md:gap-x-8 md:gap-y-6 md:py-24"
+    aria-labelledby="contact-h"
+  >
+    <SectionHeading eyebrow="Contact" level={1} size="page" id="contact-h" class="md:col-span-5">
+      Visit us
+      <p slot="intro" class="max-w-82 text-body text-ink-muted md:max-w-none md:text-body-l">
+        {address.neighborhood ?? address.city}, on Savannah Highway. Call, message, or just come to a class.
+      </p>
+    </SectionHeading>
+    <MapEmbed settings={settings} class="order-1 h-65 md:order-none md:col-span-6 md:col-start-7 md:row-span-2 md:row-start-1 md:h-190" />
+    <div class="order-2 flex flex-col gap-4 md:order-none md:col-span-5 md:row-start-2 md:gap-6">
+      <ContactInfo settings={settings} schedule={schedule} />
+      {
+        settings.parkingNote ? (
+          <p class="text-body-sm leading-normal text-ink-muted">{settings.parkingNote}</p>
+        ) : (
+          <p class="border border-dashed border-line-strong p-4 text-body-sm leading-normal text-ink-muted">
+            [Parking and entrance note for Suite 130 — where to park, which door to use.]
+          </p>
+        )
+      }
+      <div class="grid grid-cols-2 gap-2 md:flex md:gap-3">
+        <Button href={directionsUrl(settings)} class="justify-center px-3 md:px-6">Get directions</Button>
+        <Button href={telHref(settings.phone)} class="justify-center px-3 md:px-6">Call</Button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="form-h" class="border-t border-line bg-surface-raised md:border-b">
+    <div class="wrap flex flex-col gap-6 py-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
+      <div class="flex flex-col gap-6 md:col-span-5">
+        <SectionHeading eyebrow="Questions" size="l" id="form-h">Send us<br />a message</SectionHeading>
+        <div class="hidden flex-col items-start gap-4 border-t border-line pt-6 md:mt-6 md:flex">
+          <span class="text-body-l text-ink">Or skip the message and come train. Your first week is free.</span>
+          <Button href={signup('contact')} variant="primary" arrow>Start your free week</Button>
+        </div>
+      </div>
+      <div class="md:col-span-6 md:col-start-7">{embed ? <GymdeskForm embed={embed} /> : <ContactForm />}</div>
+    </div>
+  </section>
+
+  <div class="md:hidden">
+    <FinalCta variant="band" tone="surface" size="l" body="Your first week is free. Any class." href={signup('final-cta')}>
+      Or just<br />come train
+    </FinalCta>
+  </div>
+</Base>

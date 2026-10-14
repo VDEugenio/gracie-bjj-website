@@ -70,5 +70,8 @@ const promoHref = promo?.linkUrl ? gymdeskUrl(promo.linkUrl, campaign, 'promo') 
       <slot />
     </main>
     <Footer settings={settings} schedule={schedule} currentPath={currentPath} campaign={campaign} />
+    <script>
+      import '@/scripts/today';
+    </script>
   </body>
 </html>

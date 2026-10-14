@@ -1,0 +1,102 @@
+---
+/**
+ * Class schedule, built from design/mockups/html/schedule-{phone,desktop}.html.
+ * Six day cards from the schedule collection, filter chips, and a free-week
+ * CTA (a photo on phones, a plain band on desktop).
+ */
+import Base from '@/layouts/Base.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import PhotoBlock from '@/components/PhotoBlock.astro';
+import ScheduleDay from '@/components/ScheduleDay.astro';
+import ScheduleFilter from '@/components/ScheduleFilter.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import { getPrograms, getSchedule, getSettings } from '@/lib/content';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { DAYS, groupByDay, summaryFor } from '@/lib/schedule';
+import communityPhoto from '@/assets/sections/community-landscape.jpg';
+
+const campaign = 'schedule';
+const [settings, programs, schedule] = await Promise.all([getSettings(), getPrograms(), getSchedule()]);
+const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(settings.gymdesk.signupUrl, campaign, placement);
+
+const days = groupByDay(schedule, programs);
+const activeDays = DAYS.filter((d) => schedule.some((c) => c.data.day === d.key));
+const first = activeDays[0]?.label ?? 'Monday';
+const last = activeDays[activeDays.length - 1]?.label ?? 'Saturday';
+const lastKey = activeDays[activeDays.length - 1]?.key;
+
+// "Start with Fundamentals or Mixed Level": the Start-here programs, beginner-tagged first.
+const starters = programs
+  .filter((p) => p.data.startHere)
+  .sort((a, b) => Number(b.data.tags.some((t) => /beginner/i.test(t))) - Number(a.data.tags.some((t) => /beginner/i.test(t))));
+const openMat = programs.find((p) => p.id === 'open-mat');
+const caption = openMat ? `${openMat.data.name} · ${summaryFor(openMat, schedule)}` : undefined;
+const photoAlt = 'Members talking on the mats after class';
+---
+
+<Base
+  title="Class schedule"
+  description={`Weekly No-Gi jiu jitsu, MMA and kids class times at ${settings.name} in ${settings.address.neighborhood ?? settings.address.city}. Classes ${first} to ${last}.`}
+  campaign={campaign}
+  currentPath="/schedule"
+>
+  <section
+    class="wrap flex flex-col gap-4 pb-6 pt-12 md:grid md:grid-cols-12 md:items-end md:gap-x-8 md:pb-16 md:pt-24"
+    aria-labelledby="sched-h"
+  >
+    <SectionHeading eyebrow={`Schedule · ${first} to ${last}`} level={1} size="page" id="sched-h" class="md:col-span-7">
+      Class<br />schedule
+      <p slot="intro" class="max-w-82 text-body text-ink-muted md:max-w-130 md:text-body-l">
+        No classes on Sunday.
+        {
+          starters.length > 0 && (
+            <>
+              {' '}New? Start with{' '}
+              {starters.map((p, i) => (
+                <>
+                  {i > 0 && ' or '}
+                  <strong class="font-semibold text-ink">{p.data.shortName ?? p.data.name}</strong>
+                </>
+              ))}
+              .
+            </>
+          )
+        }
+      </p>
+    </SectionHeading>
+    <PhotoBlock
+      image={communityPhoto}
+      alt={photoAlt}
+      position="50% 30%"
+      scrim="up"
+      class="hidden h-100 md:col-span-5 md:col-start-8 md:block"
+      sizes="42vw"
+    >
+      {caption && <span class="absolute bottom-4 left-4 font-mono text-time-sm text-ink-muted">{caption}</span>}
+    </PhotoBlock>
+  </section>
+
+  <div class="wrap md:pb-8">
+    <ScheduleFilter programIds={programs.map((p) => p.id)} />
+  </div>
+
+  <section aria-label="Weekly schedule" class="wrap flex flex-col gap-4 pb-16 pt-6 md:grid md:grid-cols-3 md:pb-24 md:pt-0" data-today-first>
+    {
+      days.map((day) => (
+        <ScheduleDay day={day} note={day.key === lastKey ? settings.scheduleNote : undefined} noteClass="hidden md:block" />
+      ))
+    }
+    {settings.scheduleNote && <p class="mt-2 text-caption text-ink-muted md:hidden">{settings.scheduleNote}</p>}
+  </section>
+
+  <div class="md:hidden">
+    <FinalCta variant="photo" image={communityPhoto} alt={photoAlt} position="50% 30%" href={signup('final-cta')} id="cta-phone">
+      Your first week<br />is free.
+    </FinalCta>
+  </div>
+  <div class="hidden md:block">
+    <FinalCta variant="band" size="l" body={`Any class, ${first} to ${last}.`} href={signup('final-cta')} id="cta-desktop">
+      Your first week<br />is free.
+    </FinalCta>
+  </div>
+</Base>

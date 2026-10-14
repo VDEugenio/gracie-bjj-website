@@ -21,6 +21,8 @@ interface Props {
   priority?: boolean;
   /** Size and position classes for the frame. */
   class?: string;
+  /** Extra classes for the scrim layer, e.g. "md:hidden" when only phones need it. */
+  scrimClass?: string;
   /** Skip the photo-wipe motion hook (e.g. inside a card that already animates). */
   still?: boolean;
 }
@@ -36,10 +38,11 @@ const {
   loading,
   priority,
   class: className,
+  scrimClass,
   still = false,
 } = Astro.props;
 
-const scrimClass = scrim === 'none' ? null : `scrim-${scrim}`;
+const scrimUtility = scrim === 'none' ? null : `scrim-${scrim}`;
 ---
 
 <div
@@ -47,6 +50,6 @@ const scrimClass = scrim === 'none' ? null : `scrim-${scrim}`;
   data-motion={still ? undefined : 'photo-wipe'}
 >
   <Photo image={image} alt={alt} position={position} widths={widths} sizes={sizes} loading={loading} priority={priority} />
-  {scrimClass && <div class:list={['pointer-events-none absolute inset-0', scrimClass]} aria-hidden="true"></div>}
+  {scrimUtility && <div class:list={['pointer-events-none absolute inset-0', scrimUtility, scrimClass]} aria-hidden="true"></div>}
   <slot />
 </div>

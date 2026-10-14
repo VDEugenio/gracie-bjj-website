@@ -90,6 +90,10 @@
   --text-display-xl--line-height: 0.8;
   --text-display-xl--font-weight: 900;
   --text-display-xl--letter-spacing: -0.01em;
+  --text-display-cta: min(var(--fs-display-cta), var(--fit-size, 9999px));
+  --text-display-cta--line-height: 0.8;
+  --text-display-cta--font-weight: 900;
+  --text-display-cta--letter-spacing: -0.01em;
   --text-display-detail: min(var(--fs-display-detail), var(--fit-size, 9999px));
   --text-display-detail--line-height: 0.8;
   --text-display-detail--font-weight: 900;
@@ -200,6 +204,7 @@
   --fit-available: calc(100vw - 2 * var(--space-4));
   --fs-display-page: 108px;
   --fs-display-xl: 92px;
+  --fs-display-cta: 86px;
   --fs-display-detail: 100px;
   --fs-display-l: 72px;
   --fs-display-m: 60px;
@@ -218,6 +223,7 @@
     --fit-available: calc(min(100vw, var(--container-site)) - 2 * var(--space-20));
     --fs-display-page: 190px;
     --fs-display-xl: 180px;
+    --fs-display-cta: 180px;
     --fs-display-detail: 160px;
     --fs-display-l: 120px;
     --fs-display-m: 96px;

@@ -1,0 +1,82 @@
+---
+/**
+ * Programs index, built from design/mockups/html/programs-{phone,desktop}.html.
+ * One row per program with times derived from the schedule, then the
+ * membership price band.
+ */
+import Base from '@/layouts/Base.astro';
+import Button from '@/components/Button.astro';
+import PriceList from '@/components/PriceList.astro';
+import ProgramRow from '@/components/ProgramRow.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import Tag from '@/components/Tag.astro';
+import { getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { timeRows } from '@/lib/schedule';
+
+const campaign = 'programs';
+const [settings, programs, schedule, pricing] = await Promise.all([getSettings(), getPrograms(), getSchedule(), getPricing()]);
+const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(settings.gymdesk.signupUrl, campaign, placement);
+
+const starters = programs
+  .filter((p) => p.data.startHere)
+  .sort((a, b) => Number(b.data.tags.some((t) => /beginner/i.test(t))) - Number(a.data.tags.some((t) => /beginner/i.test(t))));
+
+const priceRows = [
+  ...pricing.filter((p) => p.data.period === 'month').map((p) => ({ label: p.data.name, price: `${p.data.price}/mo` })),
+  ...pricing.filter((p) => p.data.period === 'free').map(() => ({ label: 'First week', price: 'Free' })),
+];
+---
+
+<Base
+  title="Programs"
+  description={`${programs.length} No-Gi programs for adults and kids: ${programs.map((p) => p.data.name).join(', ')}. First week free.`}
+  campaign={campaign}
+  currentPath="/programs"
+>
+  <section
+    class="wrap flex flex-col gap-4 pb-10 pt-12 md:grid md:grid-cols-12 md:items-end md:gap-x-8 md:pb-16 md:pt-24"
+    aria-labelledby="progs-h"
+  >
+    <SectionHeading eyebrow={`Programs · ${programs.length}`} level={1} size="page" id="progs-h" class="md:col-span-7">Programs</SectionHeading>
+    <div class="flex flex-col gap-4 md:col-span-4 md:col-start-9 md:gap-5">
+      <p class="max-w-82 text-body text-ink-muted md:max-w-none md:text-body-l">
+        Adults and kids, all levels.
+        {
+          starters.length > 0 && (
+            <>
+              {' '}Not sure where to start?{' '}
+              {starters.map((p, i) => (
+                <>
+                  {i > 0 && ' or '}
+                  <strong class="font-semibold text-ink">{p.data.shortName ?? p.data.name}</strong>
+                </>
+              ))}
+              .
+            </>
+          )
+        }
+      </p>
+      <nav aria-label="Jump to a program" class="flex flex-wrap gap-2">
+        {programs.map((p) => <Tag href={`#p-${p.id}`}>{p.data.shortName ?? p.data.name}</Tag>)}
+      </nav>
+    </div>
+  </section>
+
+  <section aria-label="All programs" class="md:wrap md:pb-24">
+    {programs.map((p, i) => <ProgramRow program={p} index={i + 1} rows={timeRows(schedule, p.id)} last={i === programs.length - 1} />)}
+  </section>
+
+  <section aria-labelledby="price-h" class="border-t border-line bg-surface-raised md:border-b">
+    <div class="wrap flex flex-col gap-4 py-12 md:grid md:grid-cols-12 md:items-end md:gap-x-8 md:py-24">
+      <SectionHeading eyebrow="Membership" size="l" id="price-h" class="md:col-span-6">One price,<br />every class</SectionHeading>
+      <div class="flex flex-col gap-4 md:col-span-5 md:col-start-8 md:gap-6">
+        <PriceList rows={priceRows} />
+        <div class="flex flex-col gap-2 md:flex-row md:gap-3">
+          <Button href={signup('pricing')} variant="primary" arrow class="w-full justify-center md:w-auto">Start your free week</Button>
+          <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

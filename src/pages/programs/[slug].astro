@@ -1,0 +1,144 @@
+---
+/**
+ * Program detail page, built from design/mockups/html/program-detail-{phone,desktop}.html.
+ * One template serves every program: hero, facts, a light-theme long read
+ * (what you'll learn, your first class, this week, other programs), final CTA.
+ */
+import { render } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import Button from '@/components/Button.astro';
+import FactList from '@/components/FactList.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import Photo from '@/components/Photo.astro';
+import ProgramLinkList from '@/components/ProgramLinkList.astro';
+import ScheduleDay from '@/components/ScheduleDay.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import Steps from '@/components/Steps.astro';
+import Tag from '@/components/Tag.astro';
+import { getPrograms, getSchedule, getSettings, type Program } from '@/lib/content';
+import { AUDIENCE_LABEL, firstClassSteps, lengthFact } from '@/lib/copy';
+import { fitStyle } from '@/lib/fit';
+import { padIndex } from '@/lib/format';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { groupByDay, summaryFor, whenFact } from '@/lib/schedule';
+
+export async function getStaticPaths() {
+  const programs = await getPrograms();
+  return programs.map((program) => ({ params: { slug: program.id }, props: { program } }));
+}
+
+interface Props {
+  program: Program;
+}
+
+const { program } = Astro.props;
+const { data } = program;
+const { Content } = await render(program);
+
+const campaign = `program-${program.id}`;
+const [settings, programs, schedule] = await Promise.all([getSettings(), getPrograms(), getSchedule()]);
+const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(settings.gymdesk.signupUrl, campaign, placement);
+
+const index = programs.findIndex((p) => p.id === program.id) + 1;
+const facts = [
+  { label: 'When', value: whenFact(schedule, program.id), mono: true },
+  { label: 'Length', value: lengthFact(program, schedule), mono: true },
+  { label: 'Who', value: data.who ?? AUDIENCE_LABEL[data.audience] },
+  { label: 'Cost', value: data.cost },
+];
+const steps = firstClassSteps(program, schedule, settings);
+const programDays = groupByDay(schedule, programs)
+  .map((day) => ({ ...day, classes: day.classes.filter((c) => c.program.id === program.id) }))
+  .filter((day) => day.classes.length > 0);
+const others = programs
+  .filter((p) => p.id !== program.id)
+  .slice(0, 3)
+  .map((p) => ({ name: p.data.shortName ?? p.data.name, href: `/programs/${p.id}`, summary: summaryFor(p, schedule) }));
+---
+
+<Base title={data.name} description={`${data.summary} ${data.cost}.`} campaign={campaign} currentPath={`/programs/${program.id}`}>
+  <!-- Hero -->
+  <section class="relative h-130 overflow-hidden bg-surface-raised md:h-160 md:bg-surface" aria-labelledby="prog-h">
+    <div class="absolute inset-0 md:left-[58%]" data-motion="hero-photo">
+      <Photo image={data.image} alt={data.imageAlt} priority sizes="(min-width: 768px) 42vw, 100vw" class="object-[50%_25%] md:object-[50%_30%]" />
+      <div class="absolute inset-0 scrim-bottom md:hidden" aria-hidden="true"></div>
+      <div class="absolute inset-0 hidden scrim-left-soft md:block" aria-hidden="true"></div>
+    </div>
+    <div class="absolute inset-x-0 bottom-0 flex flex-col gap-3 px-4 pb-6 md:bottom-20 md:left-20 md:right-auto md:w-190 md:gap-6 md:px-0 md:pb-0">
+      <nav aria-label="Breadcrumb" class="text-label uppercase text-ink-muted">
+        <a href="/programs" class="text-ink-muted no-underline hover:text-ink">Programs</a> / <span class="text-ink">{padIndex(index)}</span>
+      </nav>
+      <h1 id="prog-h" class="display text-display-detail text-ink" style={fitStyle(data.name)} data-motion="title">{data.name}</h1>
+      <div class="flex flex-wrap gap-2">
+        {data.startHere && <Tag variant="signal">Start here</Tag>}
+        {data.tags.map((tag) => <Tag>{tag}</Tag>)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Facts -->
+  <section aria-label="Class details" class="wrap flex flex-col gap-6 pb-8 pt-2 md:gap-10 md:pb-18 md:pt-12">
+    <FactList facts={facts} />
+    <div class="flex flex-col gap-2 md:flex-row md:gap-3">
+      <Button href={signup('facts')} variant="primary" arrow class="w-full justify-center md:w-auto">Start your free week</Button>
+      <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
+    </div>
+  </section>
+
+  <!-- Long read: light theme -->
+  <div data-theme="light" class="bg-surface text-ink">
+    <section aria-labelledby="learn-h" class="wrap flex flex-col gap-5 pb-12 pt-14 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
+      <SectionHeading eyebrow="About the class" size="l" id="learn-h" class="md:col-span-5">What you'll<br />learn</SectionHeading>
+      <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7 md:pt-8">
+        <div class="text-body-l text-ink [&_p+p]:mt-4">
+          <Content />
+        </div>
+        {
+          data.learn.length > 0 && (
+            <ul class="border-t border-line">
+              {data.learn.map((item, i) => (
+                <li class="grid grid-cols-[auto_minmax(0,1fr)] gap-2 border-b border-line py-3.5 md:py-4">
+                  <span class="w-7 font-mono text-time text-ink-muted md:w-10">{padIndex(i + 1)}</span>
+                  <span class="text-body font-medium text-ink md:text-body-l">{item}</span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </section>
+
+    <section aria-labelledby="first-h" class="bg-surface-muted">
+      <div class="wrap flex flex-col gap-5 py-12 md:gap-12 md:py-24">
+        <SectionHeading eyebrow="New here?" size="l" id="first-h">Your first class</SectionHeading>
+        <Steps steps={steps} variant="cards" />
+      </div>
+    </section>
+
+    <section aria-label="This week and other programs" class="wrap flex flex-col gap-12 py-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
+      <div class="flex flex-col gap-5 md:col-span-6">
+        <SectionHeading eyebrow="This week" size="m" id="week-h">{data.name}<br />classes</SectionHeading>
+        {
+          programDays.length > 0 ? (
+            <div class="flex flex-col gap-4 md:mt-2 md:grid md:grid-cols-2">
+              {programDays.map((day) => (
+                <ScheduleDay day={day} headingLevel={3} showTags="phone" />
+              ))}
+            </div>
+          ) : (
+            <p class="text-body text-ink-muted">Times to be announced.</p>
+          )
+        }
+        <a href="/schedule" class="link self-start">See the full schedule →</a>
+      </div>
+      <div class="flex flex-col gap-5 border-t border-line pt-12 md:col-span-5 md:col-start-8 md:border-0 md:pt-0">
+        <span class="text-label uppercase text-ink-muted">Other programs</span>
+        <h2 class="display text-display-m text-ink md:hidden">Keep going</h2>
+        <ProgramLinkList items={others} />
+        <a href="/programs" class="link self-start">All programs →</a>
+      </div>
+    </section>
+  </div>
+
+  <FinalCta variant="band" tone="surface" href={signup('final-cta')}>Your first<br />class is<br />on us.</FinalCta>
+</Base>

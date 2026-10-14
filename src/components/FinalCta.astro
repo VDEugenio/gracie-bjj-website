@@ -16,7 +16,7 @@ interface Props {
   variant?: 'photo' | 'band';
   /** Band background: raised (coaches, schedule) or the page surface (program pages, contact). */
   tone?: 'raised' | 'surface';
-  /** Headline size: xl for "Your first class is on us.", l for the smaller bands. */
+  /** Headline size: xl (display-cta, 180/88) for "Your first class is on us.", l for the smaller bands. */
   size?: 'xl' | 'l';
   image?: ImageMetadata;
   alt?: string;
@@ -26,6 +26,8 @@ interface Props {
   /** Primary button link (Gymdesk signup with UTM parameters). */
   href: string;
   secondary?: { href: string; label: string };
+  /** Some mockups show the secondary button on phones only (coaches page). */
+  secondaryPhoneOnly?: boolean;
   id?: string;
 }
 
@@ -39,10 +41,12 @@ const {
   body,
   href,
   secondary,
+  secondaryPhoneOnly = false,
   id = 'cta-h',
 } = Astro.props;
+const secondaryClass = secondaryPhoneOnly ? 'w-full justify-center md:hidden' : 'w-full justify-center md:w-auto';
 
-const headingSize = size === 'xl' ? 'text-display-xl' : 'text-display-l';
+const headingSize = size === 'xl' ? 'text-display-cta' : 'text-display-l';
 const fit = fitStyle(await Astro.slots.render('default'));
 ---
 
@@ -63,7 +67,7 @@ const fit = fitStyle(await Astro.slots.render('default'));
             Start your free week
           </Button>
           {secondary && (
-            <Button href={secondary.href} class="w-full justify-center md:w-auto">
+            <Button href={secondary.href} class={secondaryClass}>
               {secondary.label}
             </Button>
           )}
@@ -82,7 +86,7 @@ const fit = fitStyle(await Astro.slots.render('default'));
             Start your free week
           </Button>
           {secondary && (
-            <Button href={secondary.href} class="w-full justify-center md:w-auto">
+            <Button href={secondary.href} class={secondaryClass}>
               {secondary.label}
             </Button>
           )}
