@@ -161,3 +161,18 @@ Gymdesk is the gym's member system. It owns signups, billing, and leads, and **t
 - Vector logo (`design/` has a 60px placeholder)
 - High-resolution originals of the selected photos
 - Gymdesk lead-form and booking embed codes
+
+## Project status and where to read (added October 14, 2026)
+
+All six phases are built and on `main`. Before digging through the code, read:
+- `README.md`: status, commands, file map, content model, component props, pages, tokens, motion hooks, SEO.
+- `docs/ARCHITECTURE.md`: how the pieces fit together, the decisions that deviate from this file and why, gotchas, recipes for common changes, and the project timeline.
+- `LAUNCH.md`: the go-live checklist and the facts Mike still owes.
+
+Decisions made during the build that differ from the text above:
+- **Hosting is Cloudflare Workers with static assets, not Pages.** `@astrojs/cloudflare` dropped Pages support in v13. It is the same Git-connected, build-on-push setup, under Workers & Pages in the dashboard. See LAUNCH.md.
+- **The Cloudflare adapter is attached only for `astro build`.** In dev it runs the server inside workerd, which breaks Keystatic's local file writes.
+- **The `/keystatic` admin is built into production only when `KEYSTATIC_STORAGE=cloud`.** Local storage mode is dev-only.
+- **`design/mockups/*.png` were renamed** to the names listed above, because the exports arrived under other names. Nothing else in `design/` was touched.
+- **Phone page titles shrink to fit** the viewport instead of clipping as the mockups do (`src/lib/fit.ts`). Desktop overlaps from the mockups were kept.
+- **Pages build as `coaches.html`, not `coaches/index.html`** (`build.format: 'file'`), so Cloudflare serves `/coaches` without a trailing-slash redirect and the URLs match the canonicals and the sitemap.

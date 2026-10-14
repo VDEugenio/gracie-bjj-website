@@ -2,6 +2,22 @@
 
 Marketing site for a No-Gi jiu jitsu and MMA gym in West Ashley, Charleston, SC. Its one job is to get beginners and parents to start a free week. Project rules, content rules and the design brief live in [CLAUDE.md](./CLAUDE.md) and `design/`.
 
+## Status (October 14, 2026)
+
+All six build phases are done and on `main`: foundation and tokens, content model, components, pages, motion, and SEO and launch prep. The build passes, `astro check` is at zero errors, and every route matches its mockup at 390px and 1440px. The site runs with placeholders for the facts Mike still owes (listed at the end of [LAUNCH.md](./LAUNCH.md)).
+
+Not done yet, in this order: Cloudflare project, Keystatic Cloud project, the domain and `SITE_URL`, Google Business Profile. Keystatic runs in local mode until the Cloud project exists. The repo is at https://github.com/VDEugenio/gracie-bjj-website.
+
+## Where to read
+
+| File | What it answers |
+|---|---|
+| [CLAUDE.md](./CLAUDE.md) | The brief and the rules: design, content, Gymdesk, motion, quality bar. Read first |
+| README.md (this file) | Commands, file map, content model, component props, pages, tokens, motion hooks, SEO |
+| [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | How the pieces fit together, decisions and their reasons, gotchas, recipes for common changes, project timeline |
+| [LAUNCH.md](./LAUNCH.md) | Go-live checklist (GitHub, Keystatic Cloud, Cloudflare, domain, Google) and what Mike still needs to provide |
+| `design/` | Mockups, design tokens, content brief. Read-only |
+
 ## Stack
 
 Astro 7, Tailwind CSS v4, Keystatic (content), GSAP (motion), Fontsource (self-hosted Archivo, Geist, Geist Mono), Lucide icons. Deployed to Cloudflare Workers with static assets.
@@ -48,6 +64,7 @@ src/assets/             Photos. programs/<slug>/image.jpg and coaches/<slug>/pho
 src/pages/              Routes (plus 404.astro and robots.txt.ts)
 public/                 Static files copied as is, including _redirects for the old site's URLs
 LAUNCH.md               Go-live steps: GitHub, Cloudflare, Keystatic Cloud, domain, Google
+docs/ARCHITECTURE.md    How it works, decisions, gotchas, recipes, timeline
 ```
 
 ## Content

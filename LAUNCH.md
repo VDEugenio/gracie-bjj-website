@@ -8,10 +8,9 @@ The site is an Astro build deployed to **Cloudflare Workers with static assets**
 
 ## 0. Before you start
 
-- [ ] **You:** merge the finished work into `main` and confirm it builds:
+- [ ] **You:** confirm `main` builds (all six phases are already merged there):
   ```sh
   git checkout main
-  git merge --ff-only worktree-bridge-cse_013dqHtr6UQU5ouCGkRcgnHM
   npm ci
   npm run build
   ```
