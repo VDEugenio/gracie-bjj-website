@@ -1,0 +1,15 @@
+name: Jerry Brewer
+role: Instructor
+order: 3
+belt: black
+beltNote: ''
+lineage: Relson Gracie
+specialties:
+  - Competition
+  - Combatives
+bio: >-
+  Jerry Brewer is a certified Gracie Jiu-Jitsu black belt under Grandmaster Relson Gracie. He has trained since 1998 and is credited with bringing Gracie Jiu-Jitsu to Charleston. He won gold in the advanced heavyweight division of the 2004 SC State Grappling Championship, took silver in the heavyweight division of the 2003 Arnold Gracie World Championships, and led his team to six consecutive state championships. A shoulder injury ended his competition career in 2006. His proudest accomplishment is teaching, and he is certified as a Level 3 Modern Army Combatives Instructor, a level few civilians reach.
+teaches: '[Classes]'
+photo: /src/assets/coaches/jerry-brewer/photo.jpg
+photoPosition: 50% 30%
+showOnHome: true

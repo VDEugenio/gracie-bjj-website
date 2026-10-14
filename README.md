@@ -32,11 +32,35 @@ src/styles/global.css   Tailwind import, fonts, base styles, type utilities
 src/styles/tokens.css   Generated. Do not edit.
 src/layouts/Base.astro  <head>, SEO, page shell
 src/components/         UI components (phase 3)
-src/content/            Keystatic-managed content (phase 2)
-src/lib/                Content and schedule helpers, motion.ts (phase 5)
+src/content/            Keystatic-managed content: settings.yaml, promo.yaml, programs/*.mdoc, schedule/, coaches/, pricing/
+src/content.config.ts   Astro content collections over those files (zod schemas mirror keystatic.config.ts)
+keystatic.config.ts     The Keystatic admin schema
+src/lib/content.ts      Typed access to every collection
+src/lib/schedule.ts     Time formatting, day grouping, derived "Mon–Thu · 5:00 PM" rows
+src/lib/belts.ts        Belt labels and stripe colors
+src/lib/gymdesk.ts      Gymdesk links with UTM parameters
+src/lib/motion.ts       All GSAP code (phase 5)
+src/assets/             Photos. programs/<slug>/image.jpg and coaches/<slug>/photo.jpg are managed by Keystatic
 src/pages/              Routes
 public/                 Static files copied as is
 ```
+
+## Content
+
+Mike edits content at `/keystatic` (dev server, or production once Keystatic Cloud is set up). Keystatic writes YAML and Markdoc files into `src/content/`; Astro reads them through content collections, so a build fails loudly if a required field is missing or a schedule entry points at a program that doesn't exist.
+
+| What | Where | Notes |
+|---|---|---|
+| Gym settings | `src/content/settings.yaml` | Name, address, phone, social links, Gymdesk URLs and embeds, parking note, map |
+| Promo banner | `src/content/promo.yaml` | Hides itself after `expiresOn` |
+| Programs | `src/content/programs/<slug>.mdoc` | Frontmatter plus the rich-text description. Photo at `src/assets/programs/<slug>/image.jpg` |
+| Weekly schedule | `src/content/schedule/<day>-<HHMM>-<program>.yaml` | One file per class. Everything with a time derives from this |
+| Coaches | `src/content/coaches/<slug>.yaml` | Portrait at `src/assets/coaches/<slug>/photo.jpg`. Bracketed values like `[Belt rank]` are placeholders Mike still has to fill in |
+| Pricing | `src/content/pricing/<slug>.yaml` | The highlighted plan is the free week |
+
+Keystatic storage is `local` until Mike's Keystatic Cloud project exists. Then set `KEYSTATIC_STORAGE=cloud` and `PUBLIC_KEYSTATIC_CLOUD_PROJECT` in `.env` (and in the Cloudflare build environment). In local mode the admin is only built into `astro dev`; production builds leave it out.
+
+`/dev/content.json` dumps every collection with the derived schedule strings. It is a dev aid and goes away before launch.
 
 ## Design tokens
 

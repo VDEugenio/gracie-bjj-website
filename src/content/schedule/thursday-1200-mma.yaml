@@ -1,0 +1,5 @@
+label: Thursday 12:00 PM MMA
+day: thursday
+start: '12:00'
+durationMin: 60
+program: mma

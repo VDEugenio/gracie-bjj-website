@@ -1,0 +1,13 @@
+name: Michael Key
+role: Owner · Instructor
+order: 2
+belt: unknown
+beltNote: ''
+lineage: Relson Gracie
+specialties:
+  - '[Specialty]'
+bio: '[Bio from Mike: how long he''s trained, who promoted him, what he teaches.]'
+teaches: '[Classes]'
+photo: /src/assets/coaches/michael-key/photo.jpg
+photoPosition: 50% 30%
+showOnHome: true

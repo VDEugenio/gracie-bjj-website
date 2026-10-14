@@ -1,0 +1,15 @@
+name: James Foy
+role: Instructor
+order: 4
+belt: black
+beltNote: ''
+lineage: Relson Gracie
+specialties:
+  - Adult BJJ
+  - Striking
+bio: >-
+  James is our resident Adult BJJ and Striking Fundamentals coach. He has trained Brazilian Jiu-Jitsu and mixed martial arts since 2007, received his black belt from Master Relson Gracie in 2022, and has helped many students reach their own promotions since. He holds a 5-2 amateur MMA record, with three wins by submission. Students love how he teaches advanced techniques in a beginner-friendly way and puts the striking-shy at ease. His eldest started jiu jitsu here and joins his dad's striking classes every week.
+teaches: Adult BJJ · Striking
+photo: /src/assets/coaches/james-foy/photo.jpg
+photoPosition: 50% 30%
+showOnHome: true

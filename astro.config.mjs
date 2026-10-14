@@ -4,12 +4,15 @@ import { loadEnv } from 'vite';
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
+import markdoc from '@astrojs/markdoc';
+import keystatic from '@keystatic/astro';
 
 const env = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '');
 const isDev = process.argv.includes('dev');
 
 /**
- * Keystatic (added in phase 2) only works in production when it talks to
+ * Keystatic only works in production when it talks to
  * Keystatic Cloud. Local storage mode needs the file system, so the admin
  * is included in `astro dev` always and in `astro build` only when
  * KEYSTATIC_STORAGE=cloud. See .env.example.
@@ -24,7 +27,9 @@ export default defineConfig({
   // The Cloudflare adapter runs the dev server inside workerd, which breaks
   // Keystatic's local file writes. Only attach it for builds.
   adapter: isDev ? undefined : cloudflare({ imageService: 'compile' }),
-  integrations: [sitemap()],
+  // React and Markdoc exist for the Keystatic admin and the .mdoc program descriptions.
+  // No React ships on site pages.
+  integrations: [react(), markdoc(), sitemap(), ...(keystaticEnabled ? [keystatic()] : [])],
   // The toolbar overlay shows up in Playwright screenshots; re-enable locally if you want its audits.
   devToolbar: { enabled: false },
   vite: {
