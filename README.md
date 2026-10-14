@@ -22,6 +22,8 @@ Astro 7, Tailwind CSS v4, Keystatic (content), GSAP (motion), Fontsource (self-h
 
 Copy `.env.example` to `.env`. Variables are documented there. Never commit `.env`.
 
+Going live (GitHub, Cloudflare, Keystatic Cloud, the domain, Google Business Profile) is a step-by-step list in [LAUNCH.md](./LAUNCH.md).
+
 ## Project structure
 
 ```
