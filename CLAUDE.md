@@ -170,6 +170,8 @@ All six phases are built and on `main`. Before digging through the code, read:
 - `docs/ARCHITECTURE.md`: how the pieces fit together, the decisions that deviate from this file and why, gotchas, recipes for common changes, and the project timeline.
 - `LAUNCH.md`: the go-live checklist and the facts Mike still owes.
 
+**Every push to `main` deploys to production automatically** (confirmed October 14, 2026). Cloudflare Workers Builds is connected to `VDEugenio/gracie-bjj-website`, builds each push to `main` and deploys it to the `gracie-bjj-website` Worker within a couple of minutes. The result appears as a "Workers Builds: gracie-bjj-website" check on the commit in GitHub. The site is live at https://gracie-bjj-website.vaughndde.workers.dev until the custom domain is attached. So run `npm run build` and `npx astro check` before pushing, and treat a push as a release.
+
 Decisions made during the build that differ from the text above:
 - **Hosting is Cloudflare Workers with static assets, not Pages.** `@astrojs/cloudflare` dropped Pages support in v13. It is the same Git-connected, build-on-push setup, under Workers & Pages in the dashboard. See LAUNCH.md.
 - **The Cloudflare adapter is attached only for `astro build`.** In dev it runs the server inside workerd, which breaks Keystatic's local file writes.
