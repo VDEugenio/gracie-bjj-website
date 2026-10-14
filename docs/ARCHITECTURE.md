@@ -92,6 +92,7 @@ All GSAP code is in `src/lib/motion.ts`, started once by `initMotion()` from `Ba
 
 - `(prefers-reduced-motion: no-preference)`: hero, titles, photo wipes, reveals, coach cards, marquee, menu and filter transitions.
 - the same plus `(hover: hover) and (pointer: fine) and (min-width: 768px)`: magnetic buttons and the card tilt (`[data-tilt]`: coach cards and homepage program cards).
+- `(prefers-reduced-motion: no-preference) and (hover: none) and (pointer: coarse)`: the phone tilt, the same cards driven by `deviceorientation`.
 
 Under reduced motion nothing registers, so nothing animates. Starting states are set from JavaScript (`gsap.set` / `from`), never in CSS, so the page is complete with JavaScript off.
 
@@ -104,7 +105,7 @@ Under reduced motion nothing registers, so nothing animates. Starting states are
 | `photo-wipe` | `PhotoBlock`, `ProgramRow`, `FinalCta` | `clip-path` wipe left to right plus a slight settle, once, when the frame reaches 80% of the viewport |
 | `reveal` | `ProgramCard`, `ProgramRow`, `ScheduleDay`, `PricingCard`, `PricingDropIns`, `Steps`, `MapEmbed` | Fade and rise with a 0.08 stagger via `ScrollTrigger.batch`, once |
 | `coach-card`, `belt` | `CoachCard`, `BeltStripe` | Cards rise in one by one; the belt stripe ties on (`scaleX` 0→1 from the left) 0.3s into each card. Desktop pointers also get the tilt via `data-tilt` (below) |
-| `data-tilt`, `data-tilt-photo` | `CoachCard`, `ProgramCard` | Desktop tilt: ±8° via `quickTo`, the `data-tilt-photo` image drifts up to 12px the other way, springs back over 0.6s. Put `tilt-stage` on the parent grid |
+| `data-tilt`, `data-tilt-photo` | `CoachCard`, `ProgramCard` | Desktop tilt: ±8° via `quickTo`, the `data-tilt-photo` image drifts up to 12px the other way, springs back over 0.6s. Put `tilt-stage` on the parent grid. On touch screens the cards on screen lean with the phone instead (±6°, 10px drift, measured from a slowly re-centering resting angle, per-card `transformPerspective` because stacked grids are tall). Orientation events only fire on HTTPS. iOS asks for permission on the first tap, and `localStorage` key `rg-motion-permission` remembers a denial |
 | `marquee` | `Marquee` | The track (rendered twice) slides by 50% on an infinite tween at 60px/s, paused while off screen |
 | `magnetic` | `Button` (primary variant) | The button leans up to 10px toward the pointer |
 | `menu`, `menu-link` | `MobileMenu` | Slides down from the top in 0.3s, links rise with a 0.05 stagger; slides back up on close |

@@ -118,7 +118,8 @@ Gymdesk is the gym's member system. It owns signups, billing, and leads, and **t
   - Schedule filter rows fade and collapse over 0.3s.
   - Mobile menu opens from the top in 0.3s; its links rise in with a 0.05 stagger.
   - **Coach card tilt**, also used on the homepage program cards (desktop, `(hover: hover) and (pointer: fine)` only): the card tilts toward the cursor in 3D (max ±8° on X and Y, `perspective: 900px` on the parent, `gsap.quickTo` 0.4s `power3.out`), the photo drifts the opposite way up to 12px inside its frame, and the border goes `ink`; on mouse leave everything springs back over 0.6s. Animate `transform` only, and keep text crisp (no scaling).
-  - Coach belt stripes "tie on" as each card scrolls in: `scaleX` 0→1 from the left, 0.6s. On phones, no tilt; cards just rise in one by one.
+  - Coach belt stripes "tie on" as each card scrolls in: `scaleX` 0→1 from the left, 0.6s. On phones, cards rise in one by one.
+  - **Phone tilt** (touch screens, `(hover: none) and (pointer: coarse)`): the same cards lean with the phone itself (`deviceorientation`, max ±6°, photo drift up to 10px), measured from the angle the phone is held at, which slowly re-centers. Only cards on screen move. It needs HTTPS. iOS needs motion permission, requested on the visitor's first tap on a page with tilt cards; a denial is remembered in `localStorage` and never asked again.
 - Animate only `transform`, `opacity`, and `clip-path`. Clean up ScrollTriggers on Astro view transitions if those get enabled.
 
 ## Quality bar

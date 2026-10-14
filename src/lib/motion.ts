@@ -19,7 +19,8 @@
  *   photo-wipe   clip-path wipe on scroll        reveal      fade + rise, staggered, once
  *   marquee      infinite program-name loop      magnetic    primary buttons follow the pointer
  *   coach-card   rise in one by one              belt        belt stripe "ties on" (scaleX)
- *   tilt         desktop 3D tilt toward the pointer; the [data-tilt-photo] image drifts the other way
+ *   tilt         3D tilt toward the pointer on desktop, or with the phone's own tilt on touch
+ *                screens; the [data-tilt-photo] image drifts the other way
  *   menu / menu-link   mobile menu from the top, links staggered
  *   schedule rows      fade and collapse on filter (via the schedule:filter event)
  */
@@ -31,6 +32,7 @@ import type { ScheduleFilterDetail } from '@/scripts/schedule-filter';
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)';
 const FINE_POINTER = '(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) and (min-width: 768px)';
+const TOUCH = '(prefers-reduced-motion: no-preference) and (hover: none) and (pointer: coarse)';
 
 const UI = 0.3;
 const REVEAL = 0.6;
@@ -73,6 +75,8 @@ export function initMotion(): void {
     const cleanups = [magnetic(), cardTilt()];
     return () => cleanups.forEach((fn) => fn());
   });
+
+  mm.add(TOUCH, () => phoneTilt());
 }
 
 /* ---------- Line reveals (SplitText) ---------- */
@@ -257,6 +261,140 @@ function cardTilt(): () => void {
   }
 
   return () => removers.forEach((fn) => fn());
+}
+
+/**
+ * Touch screens: the cards on screen lean with the phone (deviceorientation).
+ * Browsers only send orientation on HTTPS. iOS also needs permission, which it
+ * only lets a page ask for during a tap, so the prompt waits for the visitor's
+ * first tap on a page with tilt cards. A "denied" answer is remembered and
+ * never asked again.
+ */
+function phoneTilt(): () => void {
+  const cards = all('[data-tilt]');
+  if (!cards.length || !('DeviceOrientationEvent' in window)) return () => {};
+
+  const MAX_TILT = 6;
+  const MAX_DRIFT = 10;
+  /** Degrees of phone tilt away from the resting angle that give the full card tilt. */
+  const RANGE = 20;
+  /** How quickly the resting angle follows the way the phone is held (per event). */
+  const RECENTER = 0.02;
+  const ASKED_KEY = 'rg-motion-permission';
+
+  const quick = { duration: 0.4, ease: 'power3.out' };
+  const springs = cards.map((card) => {
+    const photo = card.querySelector<HTMLElement>('[data-tilt-photo] img');
+    return {
+      card,
+      photo,
+      rotX: gsap.quickTo(card, 'rotationX', quick),
+      rotY: gsap.quickTo(card, 'rotationY', quick),
+      driftX: photo ? gsap.quickTo(photo, 'x', quick) : null,
+      driftY: photo ? gsap.quickTo(photo, 'y', quick) : null,
+    };
+  });
+
+  // Only cards on screen follow the phone.
+  const visible = new Set<Element>();
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target);
+  });
+  cards.forEach((card) => observer.observe(card));
+
+  let rest: { x: number; y: number } | null = null;
+  let running = false;
+
+  const onOrientation = (event: DeviceOrientationEvent) => {
+    if (event.beta === null || event.gamma === null) return;
+    // Map the phone's axes onto the screen's, so landscape tilts the right way.
+    const angle = screen.orientation?.angle ?? 0;
+    const [x, y] =
+      angle === 90 ? [event.beta, -event.gamma]
+      : angle === 270 || angle === -90 ? [-event.beta, event.gamma]
+      : angle === 180 ? [-event.gamma, -event.beta]
+      : [event.gamma, event.beta];
+
+    if (!rest) {
+      rest = { x, y };
+      // Scale each photo just enough that the drift never shows its edge. The text is never scaled.
+      for (const { card, photo } of springs) {
+        const { width, height } = card.getBoundingClientRect();
+        if (photo) gsap.to(photo, { scale: 1 + (MAX_DRIFT * 2 + 4) / Math.min(width, height), duration: REVEAL, ease: 'power3.out' });
+      }
+    }
+    rest.x += (x - rest.x) * RECENTER;
+    rest.y += (y - rest.y) * RECENTER;
+
+    const nx = gsap.utils.clamp(-1, 1, (x - rest.x) / RANGE);
+    const ny = gsap.utils.clamp(-1, 1, (y - rest.y) / RANGE);
+    for (const s of springs) {
+      if (!visible.has(s.card)) continue;
+      // Each card gets its own vanishing point (a tall stacked grid would skew cards far from its centre).
+      // Set here rather than once, because the reveal's clearProps wipes it.
+      if (!gsap.getProperty(s.card, 'transformPerspective')) gsap.set(s.card, { transformPerspective: 900 });
+      s.rotY(nx * MAX_TILT);
+      s.rotX(-ny * MAX_TILT);
+      s.driftX?.(-nx * MAX_DRIFT);
+      s.driftY?.(-ny * MAX_DRIFT);
+    }
+  };
+
+  const start = () => {
+    if (running) return;
+    running = true;
+    window.addEventListener('deviceorientation', onOrientation);
+  };
+
+  const remember = (state: string) => {
+    try {
+      localStorage.setItem(ASKED_KEY, state);
+    } catch {
+      /* storage blocked: we may ask again next visit */
+    }
+  };
+  const recalled = (): string | null => {
+    try {
+      return localStorage.getItem(ASKED_KEY);
+    } catch {
+      return null;
+    }
+  };
+
+  type IOSOrientation = typeof DeviceOrientationEvent & { requestPermission?: () => Promise<PermissionState> };
+  const requestPermission = (DeviceOrientationEvent as IOSOrientation).requestPermission;
+
+  const onTap = () => {
+    requestPermission!.call(DeviceOrientationEvent).then(
+      (state) => {
+        stopAsking();
+        remember(state);
+        if (state === 'granted') start();
+      },
+      // Not counted as a tap (e.g. the end of a scroll): wait for the next one.
+      () => {},
+    );
+  };
+  const stopAsking = () => {
+    document.removeEventListener('click', onTap);
+    document.removeEventListener('touchend', onTap);
+  };
+
+  // Listen straight away: Android sends orientation without asking, and on iOS an earlier "granted"
+  // may still hold. Where a permission API exists, the first tap confirms it (or shows the prompt).
+  start();
+  if (requestPermission && recalled() !== 'denied') {
+    document.addEventListener('click', onTap);
+    document.addEventListener('touchend', onTap);
+  }
+
+  return () => {
+    stopAsking();
+    window.removeEventListener('deviceorientation', onOrientation);
+    observer.disconnect();
+    gsap.set(cards, { clearProps: 'transform' });
+    for (const { photo } of springs) if (photo) gsap.set(photo, { clearProps: 'transform' });
+  };
 }
 
 /* ---------- Program-name marquee ---------- */
