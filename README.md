@@ -32,10 +32,9 @@ scripts/tokens.mjs      tokens.json -> src/styles/tokens.css
 scripts/screenshots.mjs Playwright screenshots for mockup comparison
 src/styles/global.css   Tailwind import, fonts, base styles, type utilities
 src/styles/tokens.css   Generated. Do not edit.
-src/layouts/Base.astro  <head>, SEO, page shell
+src/layouts/Base.astro  <head>, SEO tags, JSON-LD, page shell, motion start
 src/components/         UI components, one file each (see Components)
-src/scripts/            Client-side TypeScript: mobile menu, schedule filter, promo expiry
-src/pages/dev/          Temporary: /dev/components gallery and /dev/content.json. Removed before launch
+src/scripts/            Client-side TypeScript: mobile menu, schedule filter, promo expiry, today marker
 src/content/            Keystatic-managed content: settings.yaml, promo.yaml, programs/*.mdoc, schedule/, coaches/, pricing/
 src/content.config.ts   Astro content collections over those files (zod schemas mirror keystatic.config.ts)
 keystatic.config.ts     The Keystatic admin schema
@@ -43,10 +42,12 @@ src/lib/content.ts      Typed access to every collection
 src/lib/schedule.ts     Time formatting, day grouping, derived "Mon–Thu · 5:00 PM" rows
 src/lib/belts.ts        Belt labels and stripe colors
 src/lib/gymdesk.ts      Gymdesk links with UTM parameters
+src/lib/seo.ts          LocalBusiness JSON-LD and opening hours derived from the schedule
 src/lib/motion.ts       All GSAP code, initialised once from Base.astro
 src/assets/             Photos. programs/<slug>/image.jpg and coaches/<slug>/photo.jpg are managed by Keystatic
-src/pages/              Routes
-public/                 Static files copied as is
+src/pages/              Routes (plus 404.astro and robots.txt.ts)
+public/                 Static files copied as is, including _redirects for the old site's URLs
+LAUNCH.md               Go-live steps: GitHub, Cloudflare, Keystatic Cloud, domain, Google
 ```
 
 ## Content
@@ -64,7 +65,6 @@ Mike edits content at `/keystatic` (dev server, or production once Keystatic Clo
 
 Keystatic storage is `local` until Mike's Keystatic Cloud project exists. Then set `KEYSTATIC_STORAGE=cloud` and `PUBLIC_KEYSTATIC_CLOUD_PROJECT` in `.env` (and in the Cloudflare build environment). In local mode the admin is only built into `astro dev`; production builds leave it out.
 
-`/dev/content.json` dumps every collection with the derived schedule strings. It is a dev aid and goes away before launch.
 
 ## Components
 
@@ -93,7 +93,6 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `ContactInfo`, `MapEmbed`, `ContactForm` | `settings`, `schedule` · `settings`, `class` (size) · `interests?` |
 | `GymdeskForm`, `GymdeskBooking` | `embed?` (render nothing until Mike pastes the embed code into settings) |
 
-`/dev/components` renders all of them with real content. Compare it against `design/mockups/*.png` with `npm run screenshots -- dev/components`.
 
 **Long headlines on phones.** The phone mockups clip single long words ("Fundamentals", "Instructors") at the viewport edge. Display sizes are therefore `min(token, --fit-size)`: `src/lib/fit.ts` measures a heading's widest word with a table of Archivo glyph widths and sets `--fit-size` inline so that word fits the viewport minus the gutters. When the word fits at the token size, nothing changes.
 
@@ -107,6 +106,7 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `/programs/<slug>` | `src/pages/programs/[slug].astro` | `program-<slug>` |
 | `/coaches` | `src/pages/coaches.astro` | `coaches` |
 | `/contact` | `src/pages/contact.astro` | `contact` |
+| 404 | `src/pages/404.astro` | `not-found` |
 
 Page copy (hero lines, section intros, the "New here?" steps) lives in the page templates. Everything with a time, a price, a name or a link comes from the content collections, and the "First time? Come to Fundamentals at 6 PM" and "Your first class" sentences are derived from the schedule (`src/lib/copy.ts`).
 
@@ -142,3 +142,11 @@ The schedule filter and the mobile menu dispatch cancelable `schedule:filter` an
 - Type styles are `text-<style>` utilities carrying size, line-height, weight and tracking. Headline styles are responsive by token: `text-display-xl` is 92px on phones and 180px from 768px up. Pair headline sizes with `display` (Archivo condensed, uppercase), `display-wide` (the marquee and wordmark) or `title` (schedule day names).
 - Dark is the default theme. Put `data-theme="light"` on a long-read section and every color utility inside it flips to the light values.
 - Belt rank colors live under `bg-belt-*` and don't change with the theme.
+
+## SEO
+
+- **Titles and descriptions:** every page passes its own `title` and `description` to `Base.astro`, which appends the gym name and writes the Open Graph and Twitter tags. All pages share one OG image: the team photo, cropped to 1200×630 at build time.
+- **Structured data:** `Base.astro` adds a `SportsActivityLocation` JSON-LD block built by `src/lib/seo.ts` from settings (name, address, phone, geo, social links) and the schedule. Opening hours run from each day's first class to the end of its last, so they follow schedule edits automatically.
+- **URLs:** `SITE_URL` (see `.env.example`) sets the canonical URLs, OG URLs, the sitemap (`@astrojs/sitemap`, public pages only) and `robots.txt` (`src/pages/robots.txt.ts`, which keeps `/keystatic` out). Pages build as `coaches.html` rather than `coaches/index.html` (`build.format: 'file'`) so Cloudflare serves `/coaches` without a trailing-slash redirect.
+- **Old site:** `public/_redirects` sends `/classes`, `/classes/*`, `/instructors`, `/relson-gracie` and `/login` to their new homes with 301s. The `/login` target is the Gymdesk member login; update it there if that URL changes. Redirects only apply on Cloudflare and in `npm run preview`, not in `npm run dev`.
+- **Gymdesk links:** every one goes through `gymdeskUrl()` (or `withUtmFrom()` for a pricing plan's own link), so each carries `utm_source=website&utm_medium=cta&utm_campaign=<page>&utm_content=<placement>`.
