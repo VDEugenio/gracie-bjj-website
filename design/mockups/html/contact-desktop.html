@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Contact — desktop</title>
+<!-- Claude Design source: the canvas runtime (support.js) is not included. Read this file as a spec; it also opens in a browser with only small differences (motion-note chips always show). -->
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap">
+<style>
+:root{--surface:#121212;--surface-raised:#1c1c1c;--surface-muted:#242424;--ink:#fafaf7;--ink-muted:#a3a19c;--line:#2e2e2e;--line-strong:#7a7a7a;--signal:#9d6bff;--signal-hover:#b38cff;--on-signal:#121212;--signal-soft:#2a1f45;--signal-text:#b9a0ff;--focus-ring:#9d6bff;--font-display:"Archivo","Arial Narrow",system-ui,sans-serif;--font-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-24:96px;--radius-sm:2px;--radius-pill:999px}
+body{margin:0;background:#121212;color:#fafaf7;font-family:var(--font-body)}
+a{color:#b9a0ff}a:hover{color:#fafaf7}
+.ph{display:flex;align-items:center;justify-content:center;text-align:center;background:#2a2a2a;color:#a3a19c;font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;padding:16px;box-sizing:border-box}
+.navlink{color:#fafaf7;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.01em}
+.navlink:hover{color:#b9a0ff}
+.rg-btn{text-decoration:none}
+.rg-display{font-stretch:62%;font-weight:900;letter-spacing:-0.01em;line-height:0.8}
+.wrap{max-width:1280px;margin:0 auto;padding:0 80px;box-sizing:border-box}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#a3a19c}
+.input{height:48px;box-sizing:border-box;padding:0 14px;background:#121212;border:1px solid #7a7a7a;border-radius:2px;color:#fafaf7;font-family:var(--font-body);font-size:16px;width:100%}
+.input:focus{outline:2px solid #9d6bff;outline-offset:2px}
+textarea.input{height:140px;padding:12px 14px;resize:vertical}
+.info{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:18px 0;border-bottom:1px solid #2e2e2e;align-items:start}
+.info svg{color:#a3a19c;margin-top:2px}
+</style>
+</helmet>
+<div style="width: 100%; box-sizing: border-box; background: #121212; color: #fafaf7; font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow: hidden">
+
+  <div class="rg-promo" role="region" aria-label="Current offer">
+    <span class="rg-tag">This month</span>
+    <span><strong>First week free</strong> — any class, no gi required.</span>
+    <a class="rg-link" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Claim it</a>
+  </div>
+
+  <header style="border-bottom: 1px solid #2e2e2e; background: #121212">
+    <div style="max-width: 1440px; margin: 0 auto; padding: 12px 80px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 32px">
+      <a href="home-desktop.html" aria-label="Relson Gracie Jiu-Jitsu of Charleston — home" style="display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: #fafaf7">
+        <img src="assets/logo-placeholder.webp" alt="" style="width: 60px; height: 60px">
+        <span style="display: flex; flex-direction: column; line-height: 1.1"><span class="rg-display" style="font-size: 15px; font-stretch: 125%; letter-spacing: 0.02em">Relson Gracie</span><span class="rg-label" style="color: #a3a19c; font-size: 11px">Charleston · No-Gi</span></span>
+      </a>
+      <nav aria-label="Primary" style="display: flex; align-items: center; gap: 32px">
+        <a class="navlink" href="home-desktop.html">Home</a>
+        <a class="navlink" href="schedule-desktop.html">Schedule</a>
+        <a class="navlink" href="programs-desktop.html">Programs</a>
+        <a class="navlink" href="coaches-desktop.html">Coaches</a>
+        <a class="navlink" href="contact-desktop.html" aria-current="page" style="border-bottom: 1px solid #fafaf7; padding-bottom: 2px">Contact</a>
+        <a class="navlink" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Sign up</a>
+      </nav>
+      <a class="rg-btn rg-btn-sm" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Start your free week</a>
+    </div>
+  </header>
+
+  <section aria-labelledby="contact-h" class="wrap" style="padding-top: 96px; padding-bottom: 96px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: start">
+    <div style="grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 24px">
+      <span class="rg-label" style="color: #a3a19c">Contact</span>
+      <h1 id="contact-h" class="rg-display" style="font-size: 190px; color: #fafaf7">Visit us</h1>
+      <p style="margin: 0; color: #a3a19c; font-size: 18px">West Ashley, on Savannah Highway. Call, message, or just come to a class.</p>
+      <div style="display: flex; flex-direction: column; border-top: 1px solid #2e2e2e">
+        <div class="info">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <address style="font-style: normal; line-height: 1.5; font-size: 17px"><span style="font-weight: 600">Relson Gracie Jiu-Jitsu of Charleston</span><br>2467 Savannah Hwy, Suite 130<br>Charleston, SC 29414</address>
+        </div>
+        <div class="info">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+          <a href="tel:+18433775361" class="rg-time" style="color: #fafaf7; text-decoration: none; font-size: 17px">(843) 377-5361</a>
+        </div>
+        <div class="info">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div style="display: flex; flex-direction: column; gap: 4px; font-size: 17px"><span>Classes Monday–Saturday. Closed Sunday.</span><a class="rg-link" href="schedule-desktop.html" style="align-self: flex-start; font-size: 15px">See class times</a></div>
+        </div>
+      </div>
+      <div style="border: 1px dashed #7a7a7a; padding: 16px; color: #a3a19c; font-size: 15px; line-height: 1.5">[Parking and entrance note for Suite 130 — where to park, which door to use.]</div>
+      <div style="display: flex; gap: 12px">
+        <a class="rg-btn" href="#contact-h">Get directions</a>
+        <a class="rg-btn" href="tel:+18433775361">Call</a>
+      </div>
+    </div>
+    <div class="ph" style="grid-column: 7 / span 6; height: 760px">Map embed · 2467 Savannah Hwy, Suite 130, Charleston, SC 29414</div>
+  </section>
+
+  <section aria-labelledby="form-h" style="background: #1c1c1c; border-top: 1px solid #2e2e2e; border-bottom: 1px solid #2e2e2e">
+    <div class="wrap" style="padding-top: 96px; padding-bottom: 96px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: start">
+      <div style="grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 24px">
+        <span class="rg-label" style="color: #a3a19c">Questions</span>
+        <h2 id="form-h" class="rg-display" style="font-size: 120px; color: #fafaf7">Send us<br>a message</h2>
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 16px; align-items: flex-start">
+          <span style="font-size: 17px">Or skip the message and come train. Your first week is free.</span>
+          <a class="rg-btn rg-btn-primary" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Start your free week <span class="rg-arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <form style="grid-column: 7 / span 6; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px" action="#">
+        <div class="field"><label for="d-name">Name</label><input class="input" id="d-name" type="text" autocomplete="name"></div>
+        <div class="field"><label for="d-email">Email</label><input class="input" id="d-email" type="email" autocomplete="email"></div>
+        <div class="field"><label for="d-phone">Phone (optional)</label><input class="input" id="d-phone" type="tel" autocomplete="tel"></div>
+        <div class="field"><label for="d-int">Interested in</label>
+          <select class="input" id="d-int">
+            <option>Adult jiu jitsu</option>
+            <option>Kids jiu jitsu</option>
+            <option>MMA</option>
+            <option>Not sure yet</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column: 1 / span 2"><label for="d-msg">Message</label><textarea class="input" id="d-msg"></textarea></div>
+        <div style="grid-column: 1 / span 2"><button class="rg-btn" type="submit">Send message</button></div>
+      </form>
+    </div>
+  </section>
+
+  <footer style="background: #121212">
+    <div class="wrap" style="padding-top: 64px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 48px">
+      <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: start">
+        <div style="grid-column: 1 / span 5; display: flex; gap: 24px; align-items: flex-start">
+          <img src="assets/logo-placeholder.webp" alt="Relson Gracie badge" style="width: 96px; height: 96px">
+          <div style="display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.5">
+            <span style="font-weight: 600">Relson Gracie Jiu-Jitsu of Charleston</span>
+            <span style="color: #a3a19c">2467 Savannah Hwy, Suite 130<br>Charleston, SC 29414</span>
+            <a href="tel:+18433775361" class="rg-time" style="color: #fafaf7; text-decoration: none; font-size: 15px">(843) 377-5361</a>
+            <a class="rg-link" href="schedule-desktop.html" style="margin-top: 8px; align-self: flex-start">Classes Monday–Saturday</a>
+          </div>
+        </div>
+        <nav aria-label="Footer" style="grid-column: 7 / span 3; display: flex; flex-direction: column; gap: 10px">
+          <span class="rg-label" style="color: #a3a19c; margin-bottom: 4px">Pages</span>
+          <a class="navlink" href="home-desktop.html">Home</a>
+          <a class="navlink" href="schedule-desktop.html">Schedule</a>
+          <a class="navlink" href="programs-desktop.html">Programs</a>
+          <a class="navlink" href="coaches-desktop.html">Coaches</a>
+          <a class="navlink" href="contact-desktop.html">Contact</a>
+          <a class="navlink" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Sign up</a>
+        </nav>
+        <div style="grid-column: 10 / span 3; display: flex; flex-direction: column; gap: 10px">
+          <span class="rg-label" style="color: #a3a19c; margin-bottom: 4px">Follow</span>
+          <a class="navlink" href="https://instagram.com">Instagram</a>
+          <a class="navlink" href="https://facebook.com">Facebook</a>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; border-top: 1px solid #2e2e2e; padding-top: 24px">
+        <span class="rg-time" style="color: #a3a19c; font-size: 12px">© 2026 Relson Gracie Jiu-Jitsu of Charleston</span>
+        <span class="rg-time" style="color: #a3a19c; font-size: 12px">No-Gi only · Mon–Sat</span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2300}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

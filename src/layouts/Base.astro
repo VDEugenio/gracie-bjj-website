@@ -1,0 +1,65 @@
+---
+/**
+ * Base layout: <head>, SEO basics, skip link, the page shell.
+ * The header, promo banner and footer are wired in during phase 3 (components);
+ * JSON-LD and the shared OG image land in phase 6 (SEO and launch).
+ */
+import '@/styles/global.css';
+
+export interface Props {
+  /** Unique page title. The gym name is appended automatically. */
+  title: string;
+  /** Unique meta description, about 150 characters. */
+  description: string;
+  /** Page slug used for utm_campaign on Gymdesk links, e.g. "home", "schedule", "program-fundamentals". */
+  campaign: string;
+  /** Path used for canonical URLs and aria-current, e.g. "/schedule". */
+  currentPath?: string;
+  /** Keep dev-only pages out of search results. */
+  noindex?: boolean;
+}
+
+const { title, description, currentPath = Astro.url.pathname, noindex = false } = Astro.props;
+
+const siteName = 'Relson Gracie Jiu-Jitsu of Charleston';
+const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
+const canonical = new URL(currentPath, Astro.site ?? Astro.url).href;
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#121212" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <slot name="head" />
+  </head>
+  <body class="bg-surface text-ink font-body">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:bg-signal focus:px-4 focus:py-3 focus:text-button focus:uppercase focus:text-on-signal"
+    >
+      Skip to content
+    </a>
+    <slot name="before-main" />
+    <main id="main" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <slot name="after-main" />
+  </body>
+</html>

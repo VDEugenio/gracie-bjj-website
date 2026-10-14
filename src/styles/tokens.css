@@ -1,0 +1,259 @@
+/* GENERATED FILE. Do not edit. Source: design/design-system/tokens.json via scripts/tokens.mjs */
+
+@theme static {
+  /* Drop Tailwind's default palette, sizes and fonts so only brand tokens generate utilities. */
+  --*: initial;
+
+  /* Color: dark is the default theme. */
+  --color-surface: #121212;
+  --color-surface-raised: #1c1c1c;
+  --color-surface-muted: #242424;
+  --color-ink: #fafaf7;
+  --color-ink-muted: #a3a19c;
+  --color-line: #2e2e2e;
+  --color-line-strong: #7a7a7a;
+  --color-signal: #9d6bff;
+  --color-signal-hover: #b38cff;
+  --color-on-signal: #121212;
+  --color-signal-soft: #2a1f45;
+  --color-signal-text: #b9a0ff;
+  --color-focus-ring: #9d6bff;
+
+  /* Belt rank colors (theme independent) */
+  --color-belt-white: #e8e6e0;
+  --color-belt-blue: #1f4e9c;
+  --color-belt-purple: #4b2f8a;
+  --color-belt-brown: #5a3a21;
+  --color-belt-black: #0b0b0b;
+  --color-belt-red: #8c1d1d;
+  --color-belt-unknown: #2a2a2a;
+
+  /* Fonts (self-hosted via Fontsource) */
+  --font-display: "Archivo Variable", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+  --default-font-family: var(--font-body);
+  --default-mono-font-family: var(--font-mono);
+
+  /* Spacing: tokens.json space-N is N x 4px, the same scale Tailwind uses (p-4 = space-4 = 16px). */
+  --spacing: 4px;
+  --container-site: 1280px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* Radius */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-pill: 999px;
+
+  /* Weight, leading, tracking */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  --leading-none: 1;
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+  --tracking-normal: 0;
+  --tracking-display: -0.01em;
+  --tracking-label: 0.12em;
+  --tracking-label-wide: 0.16em;
+  --tracking-chip: 0.1em;
+  --tracking-time: 0.02em;
+  --tracking-wordmark: 0.02em;
+
+  /* Type scale. Responsive sizes point at --fs-* variables that change at the md breakpoint. */
+  --text-display-page: var(--fs-display-page);
+  --text-display-page--line-height: 0.8;
+  --text-display-page--font-weight: 900;
+  --text-display-page--letter-spacing: -0.01em;
+  --text-display-xl: var(--fs-display-xl);
+  --text-display-xl--line-height: 0.8;
+  --text-display-xl--font-weight: 900;
+  --text-display-xl--letter-spacing: -0.01em;
+  --text-display-detail: var(--fs-display-detail);
+  --text-display-detail--line-height: 0.8;
+  --text-display-detail--font-weight: 900;
+  --text-display-detail--letter-spacing: -0.01em;
+  --text-display-l: var(--fs-display-l);
+  --text-display-l--line-height: 0.8;
+  --text-display-l--font-weight: 900;
+  --text-display-l--letter-spacing: -0.01em;
+  --text-display-m: var(--fs-display-m);
+  --text-display-m--line-height: 0.8;
+  --text-display-m--font-weight: 900;
+  --text-display-m--letter-spacing: -0.01em;
+  --text-display-name: var(--fs-display-name);
+  --text-display-name--line-height: 0.85;
+  --text-display-name--font-weight: 900;
+  --text-display-name--letter-spacing: -0.01em;
+  --text-display-name-sm: var(--fs-display-name-sm);
+  --text-display-name-sm--line-height: 0.85;
+  --text-display-name-sm--font-weight: 900;
+  --text-display-name-sm--letter-spacing: -0.01em;
+  --text-heading: var(--fs-heading);
+  --text-heading--line-height: 0.85;
+  --text-heading--font-weight: 900;
+  --text-heading--letter-spacing: -0.01em;
+  --text-heading-sm: var(--fs-heading-sm);
+  --text-heading-sm--line-height: 0.85;
+  --text-heading-sm--font-weight: 900;
+  --text-heading-sm--letter-spacing: -0.01em;
+  --text-marquee: var(--fs-marquee);
+  --text-marquee--line-height: 1;
+  --text-marquee--font-weight: 800;
+  --text-marquee--letter-spacing: -0.01em;
+  --text-wordmark: 15px;
+  --text-wordmark--line-height: 1.1;
+  --text-wordmark--font-weight: 800;
+  --text-wordmark--letter-spacing: 0.02em;
+  --text-title: 20px;
+  --text-title--line-height: 1.15;
+  --text-title--font-weight: 700;
+  --text-body-l: var(--fs-body-l);
+  --text-body-l--line-height: 1.6;
+  --text-body-l--font-weight: 400;
+  --text-body: 16px;
+  --text-body--line-height: 1.6;
+  --text-body--font-weight: 400;
+  --text-body-sm: 15px;
+  --text-body-sm--line-height: 1.5;
+  --text-body-sm--font-weight: 400;
+  --text-caption: 14px;
+  --text-caption--line-height: 1.5;
+  --text-caption--font-weight: 400;
+  --text-label: 12px;
+  --text-label--line-height: 1.2;
+  --text-label--font-weight: 600;
+  --text-label--letter-spacing: 0.12em;
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 1.2;
+  --text-label-sm--font-weight: 600;
+  --text-label-sm--letter-spacing: 0.12em;
+  --text-label-xs: 10px;
+  --text-label-xs--line-height: 1.2;
+  --text-label-xs--font-weight: 600;
+  --text-label-xs--letter-spacing: 0.16em;
+  --text-button: 13px;
+  --text-button--line-height: 1;
+  --text-button--font-weight: 600;
+  --text-button--letter-spacing: 0.12em;
+  --text-button-sm: 12px;
+  --text-button-sm--line-height: 1;
+  --text-button-sm--font-weight: 600;
+  --text-button-sm--letter-spacing: 0.12em;
+  --text-chip: 12px;
+  --text-chip--line-height: 1;
+  --text-chip--font-weight: 600;
+  --text-chip--letter-spacing: 0.1em;
+  --text-time: 14px;
+  --text-time--line-height: 1.2;
+  --text-time--font-weight: 500;
+  --text-time--letter-spacing: 0.02em;
+  --text-time-l: 18px;
+  --text-time-l--line-height: 1.2;
+  --text-time-l--font-weight: 500;
+  --text-time-l--letter-spacing: 0.02em;
+  --text-time-sm: 12px;
+  --text-time-sm--line-height: 1.2;
+  --text-time-sm--font-weight: 500;
+  --text-time-sm--letter-spacing: 0.02em;
+  --text-price: var(--fs-price);
+  --text-price--line-height: 1.1;
+  --text-price--font-weight: 600;
+  --text-price--letter-spacing: 0.02em;
+  --text-price-l: var(--fs-price-l);
+  --text-price-l--line-height: 1.1;
+  --text-price-l--font-weight: 600;
+  --text-price-l--letter-spacing: 0.02em;
+
+  /* Motion defaults for the few CSS hover transitions (GSAP handles everything else). */
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive type sizes: phone first, desktop from the md breakpoint. */
+:root {
+  --fs-display-page: 108px;
+  --fs-display-xl: 92px;
+  --fs-display-detail: 100px;
+  --fs-display-l: 72px;
+  --fs-display-m: 60px;
+  --fs-display-name: 72px;
+  --fs-display-name-sm: 34px;
+  --fs-heading: 44px;
+  --fs-heading-sm: 28px;
+  --fs-marquee: 40px;
+  --fs-body-l: 16px;
+  --fs-price: 32px;
+  --fs-price-l: 40px;
+}
+@media (min-width: 768px) {
+  :root {
+    --fs-display-page: 190px;
+    --fs-display-xl: 180px;
+    --fs-display-detail: 160px;
+    --fs-display-l: 120px;
+    --fs-display-m: 96px;
+    --fs-display-name: 64px;
+    --fs-display-name-sm: 64px;
+    --fs-heading: 48px;
+    --fs-heading-sm: 32px;
+    --fs-marquee: 96px;
+    --fs-body-l: 18px;
+    --fs-price: 40px;
+    --fs-price-l: 48px;
+  }
+}
+
+/* Themes. Dark is the default; add data-theme="light" to a section for long reads. */
+[data-theme="dark"] {
+  --color-surface: #121212;
+  --color-surface-raised: #1c1c1c;
+  --color-surface-muted: #242424;
+  --color-ink: #fafaf7;
+  --color-ink-muted: #a3a19c;
+  --color-line: #2e2e2e;
+  --color-line-strong: #7a7a7a;
+  --color-signal: #9d6bff;
+  --color-signal-hover: #b38cff;
+  --color-on-signal: #121212;
+  --color-signal-soft: #2a1f45;
+  --color-signal-text: #b9a0ff;
+  --color-focus-ring: #9d6bff;
+}
+[data-theme="light"] {
+  --color-surface: #fafaf7;
+  --color-surface-raised: #ffffff;
+  --color-surface-muted: #eceae5;
+  --color-ink: #121212;
+  --color-ink-muted: #5c5a55;
+  --color-line: #d8d6d1;
+  --color-line-strong: #7d7a73;
+  --color-signal: #6b3fd9;
+  --color-signal-hover: #5a2fc4;
+  --color-on-signal: #ffffff;
+  --color-signal-soft: #eee8ff;
+  --color-signal-text: #5a2fc4;
+  --color-focus-ring: #6b3fd9;
+}
+
+/* Spacing tokens by their design-system names, for plain CSS. */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-24: 96px;
+}

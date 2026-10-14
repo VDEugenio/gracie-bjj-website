@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Menu open — phone</title>
+<!-- Claude Design source: the canvas runtime (support.js) is not included. Read this file as a spec; it also opens in a browser with only small differences (motion-note chips always show). -->
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap">
+<style>
+:root{--surface:#121212;--surface-raised:#1c1c1c;--surface-muted:#242424;--ink:#fafaf7;--ink-muted:#a3a19c;--line:#2e2e2e;--line-strong:#7a7a7a;--signal:#9d6bff;--signal-hover:#b38cff;--on-signal:#121212;--signal-soft:#2a1f45;--signal-text:#b9a0ff;--focus-ring:#9d6bff;--font-display:"Archivo","Arial Narrow",system-ui,sans-serif;--font-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-24:96px;--radius-sm:2px;--radius-pill:999px}
+body{margin:0;background:#121212;color:#fafaf7;font-family:var(--font-body)}
+a{color:#b9a0ff}a:hover{color:#fafaf7}
+.rg-btn{text-decoration:none}
+.rg-display{font-stretch:62%;font-weight:900;letter-spacing:-0.01em;line-height:0.8}
+.menubtn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #7a7a7a;border-radius:2px;color:#fafaf7;box-sizing:border-box}
+.mlink{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 12px;border-bottom:1px solid #2e2e2e;color:#fafaf7;text-decoration:none;font-size:64px}
+.mlink:hover{color:#b9a0ff}
+.mo{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border:1px dashed #a3a19c;background:rgba(18,18,18,.88);color:#fafaf7;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;line-height:1.3;max-width:300px}
+.mo b{color:#a3a19c;font-weight:600}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; background: #121212; color: #fafaf7; font-family: var(--font-body); display: flex; flex-direction: column; overflow: hidden">
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 16px; border-bottom: 1px solid #2e2e2e">
+    <a href="home-phone.html" aria-label="Relson Gracie Jiu-Jitsu of Charleston — home" style="display: inline-flex; width: 56px; height: 56px">
+      <img src="assets/logo-placeholder.webp" alt="Relson Gracie badge" style="width: 56px; height: 56px">
+    </a>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <a class="rg-btn rg-btn-sm" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Start your free week</a>
+      <a class="menubtn" href="home-phone.html" aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <nav aria-label="Primary" style="position: relative; padding: 8px 16px 0; display: flex; flex-direction: column">
+    <sc-if value="{{notes}}" hint-placeholder-val="{{ true }}">
+      <span class="mo" style="top: 8px; right: 16px"><b>GSAP</b> links rise in, stagger .05, 0.4s · menu opens from the top, 0.3s</span>
+    </sc-if>
+    <a class="mlink rg-display" href="home-phone.html" aria-current="page">Home <span class="rg-label" style="color: #a3a19c">Current</span></a>
+    <a class="mlink rg-display" href="schedule-phone.html">Schedule <span class="rg-time" style="font-size: 12px; color: #a3a19c">02</span></a>
+    <a class="mlink rg-display" href="programs-phone.html">Programs <span class="rg-time" style="font-size: 12px; color: #a3a19c">03</span></a>
+    <a class="mlink rg-display" href="coaches-phone.html">Coaches <span class="rg-time" style="font-size: 12px; color: #a3a19c">04</span></a>
+    <a class="mlink rg-display" href="contact-phone.html">Contact <span class="rg-time" style="font-size: 12px; color: #a3a19c">05</span></a>
+    <a class="mlink rg-display" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Sign up <span class="rg-time" style="font-size: 12px; color: #a3a19c">06</span></a>
+  </nav>
+
+  <div style="margin-top: auto; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+    <a class="rg-btn rg-btn-primary" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup" style="justify-content: center">Start your free week <span class="rg-arrow" aria-hidden="true">→</span></a>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; font-size: 14px; line-height: 1.5">
+      <span style="color: #a3a19c">2467 Savannah Hwy, Suite 130<br>Charleston, SC 29414</span>
+      <a href="tel:+18433775361" class="rg-time" style="color: #fafaf7; text-decoration: none">(843) 377-5361</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"motionNotes":{"editor":"boolean","default":true,"section":"Annotations"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { notes: this.props.motionNotes ?? true };
+  }
+}
+</script>
+</body>
+</html>

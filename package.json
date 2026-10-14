@@ -1,0 +1,39 @@
+{
+  "name": "gracie-bjj-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Marketing site for Relson Gracie Jiu-Jitsu of Charleston",
+  "scripts": {
+    "predev": "node scripts/tokens.mjs",
+    "dev": "astro dev",
+    "prebuild": "node scripts/tokens.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "tokens": "node scripts/tokens.mjs",
+    "screenshots": "node scripts/screenshots.mjs",
+    "astro": "astro"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.3.4",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.8",
+    "lucide-astro": "^0.556.0",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "playwright": "^1.64.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.150.0"
+  }
+}

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Programs — desktop</title>
+<!-- Claude Design source: the canvas runtime (support.js) is not included. Read this file as a spec; it also opens in a browser with only small differences (motion-note chips always show). -->
+<link rel="stylesheet" href="../../design-system/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap">
+<style>
+:root{--surface:#121212;--surface-raised:#1c1c1c;--surface-muted:#242424;--ink:#fafaf7;--ink-muted:#a3a19c;--line:#2e2e2e;--line-strong:#7a7a7a;--signal:#9d6bff;--signal-hover:#b38cff;--on-signal:#121212;--signal-soft:#2a1f45;--signal-text:#b9a0ff;--focus-ring:#9d6bff;--font-display:"Archivo","Arial Narrow",system-ui,sans-serif;--font-body:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;--space-24:96px;--radius-sm:2px;--radius-pill:999px}
+body{margin:0;background:#121212;color:#fafaf7;font-family:var(--font-body)}
+a{color:#b9a0ff}a:hover{color:#fafaf7}
+.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1)}
+.mo{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border:1px dashed #a3a19c;background:rgba(18,18,18,.88);color:#fafaf7;font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;line-height:1.3;max-width:360px}
+.mo b{color:#a3a19c;font-weight:600}
+.navlink{color:#fafaf7;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.01em}
+.navlink:hover{color:#b9a0ff}
+.rg-btn{text-decoration:none}
+.rg-display{font-stretch:62%;font-weight:900;letter-spacing:-0.01em;line-height:0.8}
+.wrap{max-width:1280px;margin:0 auto;padding:0 80px;box-sizing:border-box}
+.prow{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px;padding:48px 0;border-top:1px solid #2e2e2e;align-items:start}
+.pnum{grid-column:1 / span 1;color:#a3a19c;padding-top:6px}
+.pphoto{grid-column:2 / span 4;position:relative;display:block;height:400px;overflow:hidden;background:#1c1c1c}
+.pbody{grid-column:7 / span 6;display:flex;flex-direction:column;gap:16px}
+.times{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 16px;margin:8px 0 0;padding-top:16px;border-top:1px solid #2e2e2e}
+.times dt{color:#a3a19c;font-family:var(--font-mono);font-size:14px}
+.times dd{margin:0;font-family:var(--font-mono);font-size:14px;color:#fafaf7}
+</style>
+</helmet>
+<div style="width: 100%; box-sizing: border-box; background: #121212; color: #fafaf7; font-family: var(--font-body); font-size: 16px; line-height: 1.6; overflow: hidden">
+
+  <div class="rg-promo" role="region" aria-label="Current offer">
+    <span class="rg-tag">This month</span>
+    <span><strong>First week free</strong> — any class, no gi required.</span>
+    <a class="rg-link" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Claim it</a>
+  </div>
+
+  <header style="border-bottom: 1px solid #2e2e2e; background: #121212">
+    <div style="max-width: 1440px; margin: 0 auto; padding: 12px 80px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 32px">
+      <a href="home-desktop.html" aria-label="Relson Gracie Jiu-Jitsu of Charleston — home" style="display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: #fafaf7">
+        <img src="assets/logo-placeholder.webp" alt="" style="width: 60px; height: 60px">
+        <span style="display: flex; flex-direction: column; line-height: 1.1"><span class="rg-display" style="font-size: 15px; font-stretch: 125%; letter-spacing: 0.02em">Relson Gracie</span><span class="rg-label" style="color: #a3a19c; font-size: 11px">Charleston · No-Gi</span></span>
+      </a>
+      <nav aria-label="Primary" style="display: flex; align-items: center; gap: 32px">
+        <a class="navlink" href="home-desktop.html">Home</a>
+        <a class="navlink" href="schedule-desktop.html">Schedule</a>
+        <a class="navlink" href="programs-desktop.html" aria-current="page" style="border-bottom: 1px solid #fafaf7; padding-bottom: 2px">Programs</a>
+        <a class="navlink" href="coaches-desktop.html">Coaches</a>
+        <a class="navlink" href="contact-desktop.html">Contact</a>
+        <a class="navlink" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Sign up</a>
+      </nav>
+      <a class="rg-btn rg-btn-sm" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Start your free week</a>
+    </div>
+  </header>
+
+  <section aria-labelledby="progs-h" class="wrap" style="padding-top: 96px; padding-bottom: 64px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: end">
+    <div style="grid-column: 1 / span 7; display: flex; flex-direction: column; gap: 24px">
+      <span class="rg-label" style="color: #a3a19c">Programs · 6</span>
+      <h1 id="progs-h" class="rg-display" style="font-size: 190px; color: #fafaf7">Programs</h1>
+    </div>
+    <div style="grid-column: 9 / span 4; display: flex; flex-direction: column; gap: 20px">
+      <p style="margin: 0; color: #a3a19c; font-size: 18px">Adults and kids, all levels. Not sure where to start? <span style="color: #fafaf7; font-weight: 600">Fundamentals</span> or <span style="color: #fafaf7; font-weight: 600">Mixed Level</span>.</p>
+      <nav aria-label="Jump to a program" style="display: flex; flex-wrap: wrap; gap: 8px">
+        <a class="rg-tag rg-tag-neutral" href="#p-mixed" style="text-decoration: none">Mixed Level</a>
+        <a class="rg-tag rg-tag-neutral" href="#p-fund" style="text-decoration: none">Fundamentals</a>
+        <a class="rg-tag rg-tag-neutral" href="#p-youth" style="text-decoration: none">Youth</a>
+        <a class="rg-tag rg-tag-neutral" href="#p-mma" style="text-decoration: none">MMA</a>
+        <a class="rg-tag rg-tag-neutral" href="#p-open" style="text-decoration: none">Open Mat</a>
+        <a class="rg-tag rg-tag-neutral" href="#p-comp" style="text-decoration: none">Competition</a>
+      </nav>
+    </div>
+  </section>
+
+  <section aria-label="All programs" class="wrap" style="position: relative; padding-bottom: 96px">
+    <sc-if value="{{notes}}" hint-placeholder-val="{{ true }}">
+      <span class="mo" style="top: -32px; right: 80px"><b>GSAP</b> each row: photo wipes in, text rises 24px · ScrollTrigger top 80%</span>
+    </sc-if>
+
+    <article id="p-mixed" class="prow" aria-labelledby="h-mixed">
+      <span class="pnum rg-time">01</span>
+      <a class="pphoto" href="program-detail-desktop.html" aria-label="Mixed Level Jiu Jitsu details"><img class="photo" src="assets/03-program-mixed-level.jpg" alt=""></a>
+      <div class="pbody">
+        <div style="display: flex; gap: 8px"><span class="rg-tag">Start here</span><span class="rg-tag rg-tag-neutral">All levels</span></div>
+        <h2 id="h-mixed" class="rg-display" style="font-size: 96px; color: #fafaf7">Mixed Level<br>Jiu Jitsu</h2>
+        <p style="margin: 0; color: #a3a19c; font-size: 17px; max-width: 520px">The core adult class, open to all levels. No-Gi grappling covering positions, submissions, escapes and transitions, plus live rolling.</p>
+        <dl class="times">
+          <dt>Mon</dt><dd>12:00 PM · 7:00 PM</dd>
+          <dt>Tue</dt><dd>12:00 PM · 6:00 PM</dd>
+          <dt>Wed</dt><dd>12:00 PM · 7:00 PM</dd>
+          <dt>Thu</dt><dd>6:00 PM</dd>
+          <dt>Fri</dt><dd>12:00 PM</dd>
+          <dt>Sat</dt><dd>10:00 AM</dd>
+        </dl>
+        <a class="rg-link" href="program-detail-desktop.html" style="align-self: flex-start">Program details →</a>
+      </div>
+    </article>
+
+    <article id="p-fund" class="prow" aria-labelledby="h-fund">
+      <span class="pnum rg-time">02</span>
+      <a class="pphoto" href="program-detail-desktop.html" aria-label="Fundamentals details"><img class="photo" src="assets/04-program-fundamentals.jpg" alt=""></a>
+      <div class="pbody">
+        <div style="display: flex; gap: 8px"><span class="rg-tag rg-tag-neutral">Beginners</span></div>
+        <h2 id="h-fund" class="rg-display" style="font-size: 96px; color: #fafaf7">Fundamentals</h2>
+        <p style="margin: 0; color: #a3a19c; font-size: 17px; max-width: 520px">Step-by-step, repetition-based instruction in core ground techniques and self-defense. Made for beginners, useful for any belt who wants sharper basics.</p>
+        <dl class="times">
+          <dt>Mon</dt><dd>6:00 PM</dd>
+          <dt>Wed</dt><dd>6:00 PM</dd>
+        </dl>
+        <a class="rg-link" href="program-detail-desktop.html" style="align-self: flex-start">Program details →</a>
+      </div>
+    </article>
+
+    <article id="p-youth" class="prow" aria-labelledby="h-youth">
+      <span class="pnum rg-time">03</span>
+      <a class="pphoto" href="program-detail-desktop.html" aria-label="Youth Jiu Jitsu details"><img class="photo" src="assets/05-program-youth.jpg" alt=""></a>
+      <div class="pbody">
+        <div style="display: flex; gap: 8px"><span class="rg-tag rg-tag-neutral">Kids</span><span class="rg-tag rg-tag-neutral">[Ages TBD]</span></div>
+        <h2 id="h-youth" class="rg-display" style="font-size: 96px; color: #fafaf7">Youth<br>Jiu Jitsu</h2>
+        <p style="margin: 0; color: #a3a19c; font-size: 17px; max-width: 520px">Kids learn real self-defense, including against bigger opponents, while building focus, discipline and confidence.</p>
+        <dl class="times">
+          <dt>Mon–Thu</dt><dd>5:00 PM</dd>
+        </dl>
+        <a class="rg-link" href="program-detail-desktop.html" style="align-self: flex-start">Program details →</a>
+      </div>
+    </article>
+
+    <article id="p-mma" class="prow" aria-labelledby="h-mma">
+      <span class="pnum rg-time">04</span>
+      <a class="pphoto" href="program-detail-desktop.html" aria-label="MMA details"><img class="photo" src="assets/program-mma-striking.jpg" alt="" style="object-position: 50% 35%"></a>
+      <div class="pbody">
+        <div style="display: flex; gap: 8px"><span class="rg-tag rg-tag-neutral">Adults</span></div>
+        <h2 id="h-mma" class="rg-display" style="font-size: 96px; color: #fafaf7">MMA</h2>
+        <p style="margin: 0; color: #a3a19c; font-size: 17px; max-width: 520px">Mixed martial arts training for adults. Included in the Adult membership.</p>
+        <dl class="times">
+          <dt>Thu</dt><dd>12:00 PM · 7:00 PM</dd>
+        </dl>
+        <a class="rg-link" href="program-detail-desktop.html" style="align-self: flex-start">Program details →</a>
+      </div>
+    </article>
+
+    <article id="p-open" class="prow" aria-labelledby="h-open">
+      <span class="pnum rg-time">05</span>
+      <a class="pphoto" href="program-detail-desktop.html" aria-label="Open Mat details"><img class="photo" src="assets/07-program-open-mat.jpg" alt=""></a>
+      <div class="pbody">
+        <div style="display: flex; gap: 8px"><span class="rg-tag rg-tag-neutral">Members</span></div>
+        <h2 id="h-open" class="rg-display" style="font-size: 96px; color: #fafaf7">Open Mat</h2>
+        <p style="margin: 0; color: #a3a19c; font-size: 17px; max-width: 520px">Unstructured early-morning rolling and drilling. Free for members, one session a day.</p>
+        <dl class="times">
+          <dt>Mon</dt><dd>6:00 AM</dd>
+          <dt>Wed</dt><dd>6:00 AM</dd>
+          <dt>Fri</dt><dd>6:00 AM</dd>
+        </dl>
+        <a class="rg-link" href="program-detail-desktop.html" style="align-self: flex-start">Program details →</a>
+      </div>
+    </article>
+
+    <article id="p-comp" class="prow" aria-labelledby="h-comp" style="border-bottom: 1px solid #2e2e2e">
+      <span class="pnum rg-time">06</span>
+      <a class="pphoto" href="program-detail-desktop.html" aria-label="Competition Training details"><img class="photo" src="assets/08-program-competition.jpg" alt=""></a>
+      <div class="pbody">
+        <div style="display: flex; gap: 8px"><span class="rg-tag rg-tag-neutral">Competitors</span></div>
+        <h2 id="h-comp" class="rg-display" style="font-size: 96px; color: #fafaf7">Competition<br>Training</h2>
+        <p style="margin: 0; color: #a3a19c; font-size: 17px; max-width: 520px">Friday-evening session for students preparing to compete.</p>
+        <dl class="times">
+          <dt>Fri</dt><dd>6:00 PM</dd>
+        </dl>
+        <a class="rg-link" href="program-detail-desktop.html" style="align-self: flex-start">Program details →</a>
+      </div>
+    </article>
+  </section>
+
+  <section aria-labelledby="price-h" style="background: #1c1c1c; border-top: 1px solid #2e2e2e; border-bottom: 1px solid #2e2e2e">
+    <div class="wrap" style="padding-top: 96px; padding-bottom: 96px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: end">
+      <div style="grid-column: 1 / span 6; display: flex; flex-direction: column; gap: 12px">
+        <span class="rg-label" style="color: #a3a19c">Membership</span>
+        <h2 id="price-h" class="rg-display" style="font-size: 120px; color: #fafaf7">One price,<br>every class</h2>
+      </div>
+      <div style="grid-column: 8 / span 5; display: flex; flex-direction: column; gap: 24px">
+        <div style="display: flex; flex-direction: column; border-top: 1px solid #2e2e2e">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #2e2e2e"><span>Adult No-Gi and MMA</span><span class="rg-time" style="color: #fafaf7; font-size: 18px">$100/mo</span></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #2e2e2e"><span>Kids No-Gi</span><span class="rg-time" style="color: #fafaf7; font-size: 18px">$100/mo</span></div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid #2e2e2e"><span>First week</span><span class="rg-time" style="color: #fafaf7; font-size: 18px">Free</span></div>
+        </div>
+        <div style="display: flex; gap: 12px">
+          <a class="rg-btn rg-btn-primary" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Start your free week <span class="rg-arrow" aria-hidden="true">→</span></a>
+          <a class="rg-btn" href="schedule-desktop.html">View schedule</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background: #121212">
+    <div class="wrap" style="padding-top: 64px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 48px">
+      <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 32px; align-items: start">
+        <div style="grid-column: 1 / span 5; display: flex; gap: 24px; align-items: flex-start">
+          <img src="assets/logo-placeholder.webp" alt="Relson Gracie badge" style="width: 96px; height: 96px">
+          <div style="display: flex; flex-direction: column; gap: 4px; font-size: 15px; line-height: 1.5">
+            <span style="font-weight: 600">Relson Gracie Jiu-Jitsu of Charleston</span>
+            <span style="color: #a3a19c">2467 Savannah Hwy, Suite 130<br>Charleston, SC 29414</span>
+            <a href="tel:+18433775361" class="rg-time" style="color: #fafaf7; text-decoration: none; font-size: 15px">(843) 377-5361</a>
+            <a class="rg-link" href="schedule-desktop.html" style="margin-top: 8px; align-self: flex-start">Classes Monday–Saturday</a>
+          </div>
+        </div>
+        <nav aria-label="Footer" style="grid-column: 7 / span 3; display: flex; flex-direction: column; gap: 10px">
+          <span class="rg-label" style="color: #a3a19c; margin-bottom: 4px">Pages</span>
+          <a class="navlink" href="home-desktop.html">Home</a>
+          <a class="navlink" href="schedule-desktop.html">Schedule</a>
+          <a class="navlink" href="programs-desktop.html">Programs</a>
+          <a class="navlink" href="coaches-desktop.html">Coaches</a>
+          <a class="navlink" href="contact-desktop.html">Contact</a>
+          <a class="navlink" href="https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/signup">Sign up</a>
+        </nav>
+        <div style="grid-column: 10 / span 3; display: flex; flex-direction: column; gap: 10px">
+          <span class="rg-label" style="color: #a3a19c; margin-bottom: 4px">Follow</span>
+          <a class="navlink" href="https://instagram.com">Instagram</a>
+          <a class="navlink" href="https://facebook.com">Facebook</a>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; border-top: 1px solid #2e2e2e; padding-top: 24px">
+        <span class="rg-time" style="color: #a3a19c; font-size: 12px">© 2026 Relson Gracie Jiu-Jitsu of Charleston</span>
+        <span class="rg-time" style="color: #a3a19c; font-size: 12px">No-Gi only · Mon–Sat</span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"motionNotes":{"editor":"boolean","default":true,"section":"Annotations"},"$preview":{"width":1440,"height":4700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { notes: this.props.motionNotes ?? true };
+  }
+}
+</script>
+</body>
+</html>
