@@ -1,7 +1,7 @@
 ---
 /**
- * Phase 1 smoke test. Replaced by the real home page in phase 4.
- * Exercises the token pipeline: fonts, display utilities, theme sections, spacing.
+ * Home page placeholder until phase 4 builds the real one from the mockup.
+ * Keeps the build green and exercises the layout (promo, header, footer).
  */
 import Base from '@/layouts/Base.astro';
 ---
@@ -12,22 +12,8 @@ import Base from '@/layouts/Base.astro';
   campaign="home"
 >
   <section class="wrap py-16 md:py-24">
-    <p class="text-label uppercase text-signal-text">Foundation check</p>
+    <p class="text-label uppercase text-ink-muted">Home</p>
     <h1 class="display text-display-xl mt-3">No-Gi<br />jiu jitsu<br />and MMA.</h1>
-    <p class="text-body-l mt-8 max-w-[48ch]">
-      West Ashley, Charleston. Adults and kids, all levels. First week free.
-    </p>
-    <p class="display-wide text-marquee mt-12 text-ink-muted">Mixed Level · Fundamentals</p>
-    <p class="font-mono text-time mt-6 text-ink-muted">6:00 PM · Fundamentals</p>
-  </section>
-  <section data-theme="light" class="bg-surface text-ink">
-    <div class="wrap py-16 md:py-24">
-      <p class="text-label uppercase text-ink-muted">Light section</p>
-      <h2 class="display text-display-l mt-3">What you'll<br />learn</h2>
-      <p class="text-body mt-6 text-ink">Long reads use the light theme. The accent flips to the deeper purple.</p>
-      <span class="mt-6 inline-flex h-12 items-center rounded-sm bg-signal px-6 text-button uppercase text-on-signal"
-        >Start your free week</span
-      >
-    </div>
+    <p class="mt-8 max-w-120 text-body-l">West Ashley, Charleston. Adults and kids, all levels. First week free.</p>
   </section>
 </Base>

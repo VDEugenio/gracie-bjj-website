@@ -1,0 +1,64 @@
+---
+/**
+ * Pricing card. The highlighted plan (the free week) sits on the page surface
+ * with a signal border, a "Start here" tag and the primary button; the others
+ * are raised cards with an outlined "Sign up".
+ */
+import Button from './Button.astro';
+import Tag from './Tag.astro';
+import type { Plan } from '@/lib/content';
+
+interface Props {
+  plan: Plan;
+  /** Signup link with UTM parameters. plan.ctaUrl overrides it when set. */
+  href: string;
+  class?: string;
+}
+
+const { plan, href, class: className } = Astro.props;
+const { data } = plan;
+
+const PERIOD: Record<Plan['data']['period'], { label: string; suffix?: string }> = {
+  month: { label: 'Monthly', suffix: '/month' },
+  free: { label: '7 days' },
+  'day-pass': { label: '1 day' },
+  '10-pass': { label: '10 days' },
+};
+const period = PERIOD[data.period];
+const cta = data.ctaUrl ?? href;
+---
+
+<article
+  class:list={[
+    'flex flex-col gap-4 rounded-sm border p-6 md:min-h-80 md:gap-6 md:p-8',
+    data.highlighted ? 'border-signal bg-surface' : 'border-line bg-surface-raised',
+    className,
+  ]}
+  data-motion="reveal"
+>
+  <div class:list={['items-center justify-between', data.highlighted ? 'flex' : 'hidden md:flex']}>
+    {data.highlighted ? <Tag variant="signal">Start here</Tag> : data.tag ? <Tag>{data.tag}</Tag> : <span></span>}
+    <span class="text-label uppercase text-ink-muted">{period.label}</span>
+  </div>
+
+  <div class="flex grow flex-col gap-1 md:gap-2">
+    <h3 class="display text-heading-sm text-ink">{data.name}</h3>
+    <div class="flex items-baseline gap-1.5">
+      <span class:list={['font-mono text-ink', data.highlighted ? 'text-price-l' : 'text-price']}>{data.price}</span>
+      {period.suffix && <span class="font-mono text-time text-ink-muted">{period.suffix}</span>}
+    </div>
+    {data.features.map((line) => <span class="text-body-sm text-ink-muted">{line}</span>)}
+  </div>
+
+  {
+    data.highlighted ? (
+      <Button href={cta} variant="primary" full arrow>
+        Start your free week
+      </Button>
+    ) : (
+      <Button href={cta} full>
+        Sign up
+      </Button>
+    )
+  }
+</article>

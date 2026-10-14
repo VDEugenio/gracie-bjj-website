@@ -1,0 +1,43 @@
+---
+/**
+ * Numbered steps.
+ * - numbered: the "New here?" list (01, 02, 03), a hairline list on phones and
+ *   three columns on desktop.
+ * - cards: the "Your first class" steps (Step 1, Step 2, Step 3) as raised cards.
+ */
+import { padIndex } from '@/lib/format';
+
+interface Props {
+  steps: Array<{ title: string; note?: string }>;
+  variant?: 'numbered' | 'cards';
+  class?: string;
+}
+
+const { steps, variant = 'numbered', class: className } = Astro.props;
+---
+
+{
+  variant === 'numbered' ? (
+    <ol class:list={['flex flex-col border-t border-line md:grid md:grid-cols-3 md:gap-8', className]}>
+      {steps.map((step, i) => (
+        <li class="flex gap-3 border-b border-line py-4 md:flex-col md:border-b-0 md:pb-0 md:pt-6" data-motion="reveal">
+          <span class="w-7 shrink-0 pt-1 font-mono text-time text-ink-muted md:w-auto md:pt-0">{padIndex(i + 1)}</span>
+          <div class="flex flex-col gap-1 md:gap-3">
+            <span class="text-lead text-ink">{step.title}</span>
+            {step.note && <span class="text-body-sm text-ink-muted">{step.note}</span>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  ) : (
+    <ol class:list={['flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-4', className]}>
+      {steps.map((step, i) => (
+        <li class="flex flex-col gap-1 rounded-sm border border-line bg-surface-raised p-4 md:gap-2 md:p-6" data-motion="reveal">
+          <span class="font-mono text-time text-ink-muted">Step {i + 1}</span>
+          <span class="text-lead text-ink">{step.title}</span>
+          {step.note && <span class="text-body-sm text-ink-muted">{step.note}</span>}
+        </li>
+      ))}
+    </ol>
+  )
+}

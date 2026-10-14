@@ -1,0 +1,29 @@
+---
+/**
+ * "Other programs" list on a program page: condensed name, mono time
+ * summary and an arrow, one hairline row each.
+ */
+interface Props {
+  items: Array<{ name: string; href: string; summary: string }>;
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<div class:list={['flex flex-col border-t border-line', className]}>
+  {
+    items.map((item) => (
+      <a
+        href={item.href}
+        class="flex items-center justify-between gap-4 border-b border-line py-4 text-ink no-underline transition-colors hover:text-signal-text md:py-5"
+      >
+        <span class="flex flex-col gap-1">
+          <span class="display text-heading">{item.name}</span>
+          <span class="font-mono text-time-sm text-ink-muted">{item.summary}</span>
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+    ))
+  }
+</div>

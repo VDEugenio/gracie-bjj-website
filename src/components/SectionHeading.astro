@@ -1,0 +1,58 @@
+---
+/**
+ * Eyebrow label + condensed display heading (+ optional intro slot).
+ * The heading text goes in the default slot so pages can stack lines with <br />.
+ *
+ *   <SectionHeading eyebrow="Programs" size="l" id="programs-h">Find your class</SectionHeading>
+ */
+import { fitStyle } from '@/lib/fit';
+
+type Size = 'page' | 'xl' | 'detail' | 'l' | 'm';
+
+interface Props {
+  eyebrow?: string;
+  /** Eyebrows are muted except the one signal highlight on the "New here?" strip. */
+  eyebrowTone?: 'muted' | 'signal';
+  level?: 1 | 2 | 3;
+  size?: Size;
+  id?: string;
+  /** Gap between eyebrow and heading. Page titles use the larger gap. */
+  gap?: 'tight' | 'loose';
+  class?: string;
+}
+
+const { eyebrow, eyebrowTone = 'muted', level = 2, size = 'l', id, gap, class: className } = Astro.props;
+
+// Cap the size so the longest word fits the viewport on phones (see src/lib/fit.ts).
+const fit = fitStyle(await Astro.slots.render('default'));
+
+const sizeClass: Record<Size, string> = {
+  page: 'text-display-page',
+  xl: 'text-display-xl',
+  detail: 'text-display-detail',
+  l: 'text-display-l',
+  m: 'text-display-m',
+};
+
+const gapClass = (gap ?? (size === 'page' ? 'loose' : 'tight')) === 'loose' ? 'gap-4 md:gap-6' : 'gap-2 md:gap-3';
+const Heading = `h${level}` as 'h1' | 'h2' | 'h3';
+---
+
+<div class:list={['flex flex-col', gapClass, className]}>
+  {
+    eyebrow && (
+      <span class:list={['text-label uppercase', eyebrowTone === 'signal' ? 'text-signal-text' : 'text-ink-muted']}>
+        {eyebrow}
+      </span>
+    )
+  }
+  <Heading
+    id={id}
+    class:list={['display text-ink', sizeClass[size]]}
+    style={fit}
+    data-motion={size === 'page' || size === 'detail' ? 'title' : undefined}
+  >
+    <slot />
+  </Heading>
+  <slot name="intro" />
+</div>

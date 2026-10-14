@@ -1,0 +1,48 @@
+---
+/**
+ * "Send us a message" form, built to the mockup. It has no submit handler:
+ * the real form is the Gymdesk lead form, which replaces this component once
+ * Mike supplies the embed code (see GymdeskForm.astro). Until then the button
+ * is inert.
+ */
+import Button from './Button.astro';
+
+interface Props {
+  interests?: string[];
+  class?: string;
+}
+
+const { interests = ['Adult jiu jitsu', 'Kids jiu jitsu', 'MMA', 'Not sure yet'], class: className } = Astro.props;
+
+const field = 'flex flex-col gap-2';
+const label = 'text-label uppercase text-ink-muted';
+const input = 'h-12 w-full rounded-sm border border-line-strong bg-surface px-3.5 text-body text-ink';
+---
+
+<form class:list={['grid gap-4 md:grid-cols-2', className]} novalidate data-contact-form>
+  <div class={field}>
+    <label for="cf-name" class={label}>Name</label>
+    <input id="cf-name" name="name" type="text" autocomplete="name" class={input} />
+  </div>
+  <div class={field}>
+    <label for="cf-email" class={label}>Email</label>
+    <input id="cf-email" name="email" type="email" autocomplete="email" class={input} />
+  </div>
+  <div class={field}>
+    <label for="cf-phone" class={label}>Phone (optional)</label>
+    <input id="cf-phone" name="phone" type="tel" autocomplete="tel" class={input} />
+  </div>
+  <div class={field}>
+    <label for="cf-interest" class={label}>Interested in</label>
+    <select id="cf-interest" name="interest" class={input}>
+      {interests.map((option) => <option value={option}>{option}</option>)}
+    </select>
+  </div>
+  <div class:list={[field, 'md:col-span-2']}>
+    <label for="cf-message" class={label}>Message</label>
+    <textarea id="cf-message" name="message" rows="5" class:list={[input, 'h-30 resize-y py-3 md:h-35']}></textarea>
+  </div>
+  <div class="md:col-span-2">
+    <Button type="button" class="w-full justify-center md:w-auto">Send message</Button>
+  </div>
+</form>

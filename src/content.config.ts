@@ -64,6 +64,7 @@ const programs = defineCollection({
   schema: ({ image }) =>
     z.object({
       name: z.string(),
+      shortName: optionalText,
       order: z.number().int(),
       tags: z.array(z.string()).default([]),
       startHere: z.boolean().default(false),

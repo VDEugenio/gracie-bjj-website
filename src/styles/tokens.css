@@ -38,6 +38,7 @@
   /* Spacing: tokens.json space-N is N x 4px, the same scale Tailwind uses (p-4 = space-4 = 16px). */
   --spacing: 4px;
   --container-site: 1280px;
+  --container-header: 1440px;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -68,54 +69,73 @@
   --tracking-time: 0.02em;
   --tracking-wordmark: 0.02em;
 
-  /* Type scale. Responsive sizes point at --fs-* variables that change at the md breakpoint. */
-  --text-display-page: var(--fs-display-page);
+  /* Motion defaults for the few CSS hover transitions (GSAP handles everything else). */
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+  Type scale. `inline` so each text-* utility carries the expression itself:
+  responsive sizes read --fs-* (which change at the md breakpoint) and display
+  sizes read --fit-size on the element, which caps a long word to its container.
+*/
+@theme inline {
+  --text-display-page: min(var(--fs-display-page), var(--fit-size, 9999px));
   --text-display-page--line-height: 0.8;
   --text-display-page--font-weight: 900;
   --text-display-page--letter-spacing: -0.01em;
-  --text-display-xl: var(--fs-display-xl);
+  --text-display-xl: min(var(--fs-display-xl), var(--fit-size, 9999px));
   --text-display-xl--line-height: 0.8;
   --text-display-xl--font-weight: 900;
   --text-display-xl--letter-spacing: -0.01em;
-  --text-display-detail: var(--fs-display-detail);
+  --text-display-detail: min(var(--fs-display-detail), var(--fit-size, 9999px));
   --text-display-detail--line-height: 0.8;
   --text-display-detail--font-weight: 900;
   --text-display-detail--letter-spacing: -0.01em;
-  --text-display-l: var(--fs-display-l);
+  --text-display-l: min(var(--fs-display-l), var(--fit-size, 9999px));
   --text-display-l--line-height: 0.8;
   --text-display-l--font-weight: 900;
   --text-display-l--letter-spacing: -0.01em;
-  --text-display-m: var(--fs-display-m);
+  --text-display-m: min(var(--fs-display-m), var(--fit-size, 9999px));
   --text-display-m--line-height: 0.8;
   --text-display-m--font-weight: 900;
   --text-display-m--letter-spacing: -0.01em;
-  --text-display-name: var(--fs-display-name);
+  --text-display-name: min(var(--fs-display-name), var(--fit-size, 9999px));
   --text-display-name--line-height: 0.85;
   --text-display-name--font-weight: 900;
   --text-display-name--letter-spacing: -0.01em;
-  --text-display-name-sm: var(--fs-display-name-sm);
+  --text-display-name-sm: min(var(--fs-display-name-sm), var(--fit-size, 9999px));
   --text-display-name-sm--line-height: 0.85;
   --text-display-name-sm--font-weight: 900;
   --text-display-name-sm--letter-spacing: -0.01em;
-  --text-heading: var(--fs-heading);
+  --text-heading: min(var(--fs-heading), var(--fit-size, 9999px));
   --text-heading--line-height: 0.85;
   --text-heading--font-weight: 900;
   --text-heading--letter-spacing: -0.01em;
-  --text-heading-sm: var(--fs-heading-sm);
+  --text-heading-sm: min(var(--fs-heading-sm), var(--fit-size, 9999px));
   --text-heading-sm--line-height: 0.85;
   --text-heading-sm--font-weight: 900;
   --text-heading-sm--letter-spacing: -0.01em;
-  --text-marquee: var(--fs-marquee);
+  --text-menu: min(64px, var(--fit-size, 9999px));
+  --text-menu--line-height: 0.8;
+  --text-menu--font-weight: 900;
+  --text-menu--letter-spacing: -0.01em;
+  --text-marquee: min(var(--fs-marquee), var(--fit-size, 9999px));
   --text-marquee--line-height: 1;
   --text-marquee--font-weight: 800;
   --text-marquee--letter-spacing: -0.01em;
-  --text-wordmark: 15px;
+  --text-wordmark: min(15px, var(--fit-size, 9999px));
   --text-wordmark--line-height: 1.1;
   --text-wordmark--font-weight: 800;
   --text-wordmark--letter-spacing: 0.02em;
   --text-title: 20px;
   --text-title--line-height: 1.15;
   --text-title--font-weight: 700;
+  --text-lead: var(--fs-lead);
+  --text-lead--line-height: 1.3;
+  --text-lead--font-weight: 600;
   --text-body-l: var(--fs-body-l);
   --text-body-l--line-height: 1.6;
   --text-body-l--font-weight: 400;
@@ -172,16 +192,12 @@
   --text-price-l--line-height: 1.1;
   --text-price-l--font-weight: 600;
   --text-price-l--letter-spacing: 0.02em;
-
-  /* Motion defaults for the few CSS hover transitions (GSAP handles everything else). */
-  --default-transition-duration: 200ms;
-  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Responsive type sizes: phone first, desktop from the md breakpoint. */
+/* --fit-available is the width a headline can use: the viewport minus the page gutters. */
 :root {
+  --fit-available: calc(100vw - 2 * var(--space-4));
   --fs-display-page: 108px;
   --fs-display-xl: 92px;
   --fs-display-detail: 100px;
@@ -192,12 +208,14 @@
   --fs-heading: 44px;
   --fs-heading-sm: 28px;
   --fs-marquee: 40px;
+  --fs-lead: 18px;
   --fs-body-l: 16px;
   --fs-price: 32px;
   --fs-price-l: 40px;
 }
 @media (min-width: 768px) {
   :root {
+    --fit-available: calc(min(100vw, var(--container-site)) - 2 * var(--space-20));
     --fs-display-page: 190px;
     --fs-display-xl: 180px;
     --fs-display-detail: 160px;
@@ -208,6 +226,7 @@
     --fs-heading: 48px;
     --fs-heading-sm: 32px;
     --fs-marquee: 96px;
+    --fs-lead: 20px;
     --fs-body-l: 18px;
     --fs-price: 40px;
     --fs-price-l: 48px;
@@ -246,7 +265,7 @@
   --color-focus-ring: #6b3fd9;
 }
 
-/* Spacing tokens by their design-system names, for plain CSS. */
+/* Spacing tokens by their design-system names, for plain CSS. space-20 is the desktop page gutter from the mockups. */
 :root {
   --space-1: 4px;
   --space-2: 8px;
@@ -256,4 +275,5 @@
   --space-8: 32px;
   --space-12: 48px;
   --space-24: 96px;
+  --space-20: 80px;
 }

@@ -1,0 +1,78 @@
+---
+/**
+ * Site header. Sticky so the free-week button is always in reach.
+ * Desktop: badge + wordmark, primary nav, quiet "Member login", free-week button.
+ * Phone: badge, free-week button, menu toggle. The full-screen menu is MobileMenu.
+ */
+import { Menu } from 'lucide-astro';
+import Button from './Button.astro';
+import Logo from './Logo.astro';
+import MobileMenu from './MobileMenu.astro';
+import type { Settings } from '@/lib/content';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { NAV, isCurrent } from '@/lib/nav';
+
+interface Props {
+  settings: Settings;
+  currentPath: string;
+  campaign: string;
+}
+
+const { settings, currentPath, campaign } = Astro.props;
+const signupHeader = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'header');
+const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-surface" data-site-header>
+  <div class="mx-auto flex max-w-header items-center justify-between gap-3 px-4 py-2 md:gap-8 md:px-20 md:py-3">
+    <a href="/" class="inline-flex items-center gap-3.5 text-ink no-underline" aria-label={`${settings.name} — home`}>
+      <Logo class="size-14 md:size-15" decorative />
+      <span class="hidden flex-col leading-tight md:flex">
+        <span class="display-wide text-wordmark">{settings.wordmark}</span>
+        {settings.wordmarkSub && <span class="text-label-sm uppercase text-ink-muted">{settings.wordmarkSub}</span>}
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-8 md:flex">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            class="navlink aria-[current=page]:border-b aria-[current=page]:border-ink aria-[current=page]:pb-0.5"
+            aria-current={isCurrent(item.href, currentPath) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a href={signupNav} class="navlink">Sign up</a>
+    </nav>
+
+    <div class="flex items-center gap-2 md:gap-5">
+      {
+        settings.gymdesk.loginUrl && (
+          <a href={settings.gymdesk.loginUrl} class="hidden text-caption text-ink-muted no-underline hover:text-ink md:inline">
+            Member login
+          </a>
+        )
+      }
+      <Button href={signupHeader} size="sm">Start your free week</Button>
+      <button
+        type="button"
+        class="inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-line-strong text-ink hover:border-ink md:hidden"
+        aria-label="Open menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        data-menu-toggle
+      >
+        <Menu size={20} stroke-width={1.5} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu settings={settings} currentPath={currentPath} campaign={campaign} />
+
+<script>
+  import '@/scripts/mobile-menu';
+</script>

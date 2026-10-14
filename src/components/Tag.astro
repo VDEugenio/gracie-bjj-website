@@ -1,0 +1,33 @@
+---
+/**
+ * Pill tag. `signal` is reserved for "Start here" and the promo chip;
+ * everything else (levels, specialties, audiences) is `neutral`.
+ * With href it becomes a link (the jump links on the programs page).
+ */
+interface Props {
+  variant?: 'signal' | 'neutral';
+  href?: string;
+  class?: string;
+}
+
+const { variant = 'neutral', href, class: className } = Astro.props;
+
+const classes = [
+  'inline-flex h-6 items-center rounded-pill px-2.5 text-label-sm uppercase no-underline whitespace-nowrap',
+  variant === 'signal' ? 'bg-signal-soft text-signal-text' : 'bg-surface-muted text-ink-muted',
+  href && 'hover:text-ink',
+  className,
+];
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes}>
+      <slot />
+    </a>
+  ) : (
+    <span class:list={classes}>
+      <slot />
+    </span>
+  )
+}

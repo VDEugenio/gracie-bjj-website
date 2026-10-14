@@ -144,7 +144,11 @@ export default config({
       schema: {
         enabled: fields.checkbox({ label: 'Show the banner', defaultValue: true }),
         tag: fields.text({ label: 'Tag', description: 'Small chip, e.g. "This month"' }),
-        message: fields.text({ label: 'Message', validation: { isRequired: true } }),
+        message: fields.text({
+          label: 'Message',
+          description: 'Text before an em dash (—) is shown bold, e.g. "First week free — any class, no gi required."',
+          validation: { isRequired: true },
+        }),
         linkLabel: fields.text({ label: 'Link label', description: 'e.g. "Claim it"' }),
         linkUrl: fields.url({ label: 'Link URL' }),
         expiresOn: fields.date({
@@ -165,6 +169,10 @@ export default config({
       schema: {
         name: fields.slug({
           name: { label: 'Name', description: 'A proper noun, e.g. "Mixed Level Jiu Jitsu".', validation: { isRequired: true } },
+        }),
+        shortName: fields.text({
+          label: 'Short name',
+          description: 'For the marquee and link lists, e.g. "Mixed Level". Leave empty to use the full name.',
         }),
         order: fields.integer({ label: 'Order', description: '1 shows first.', validation: { isRequired: true } }),
         tags: textList('Tags', 'Tag', 'Short labels like "All levels", "Kids". "Start here" is a separate switch below.'),

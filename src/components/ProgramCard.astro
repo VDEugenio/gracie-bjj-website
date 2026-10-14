@@ -1,0 +1,52 @@
+---
+/**
+ * Home-page program card: photo under a scrim, index number, one tag, the
+ * name in condensed display type and a one-line time summary.
+ * The photo is decorative here; the link text is the program name.
+ */
+import Photo from './Photo.astro';
+import Tag from './Tag.astro';
+import type { Program } from '@/lib/content';
+import { padIndex } from '@/lib/format';
+
+interface Props {
+  program: Program;
+  index: number;
+  /** One-line time summary from summaryFor(). */
+  summary: string;
+  class?: string;
+}
+
+const { program, index, summary, class: className } = Astro.props;
+const { data } = program;
+const firstTag = data.tags[0];
+---
+
+<a
+  href={`/programs/${program.id}`}
+  class:list={[
+    'group relative flex min-h-90 flex-col justify-end overflow-hidden rounded-sm border border-line bg-surface-raised p-6 text-ink no-underline transition-colors hover:border-ink md:min-h-110',
+    className,
+  ]}
+  data-motion="reveal"
+>
+  <div class="absolute inset-0 bg-surface-muted" aria-hidden="true">
+    <Photo
+      image={data.image}
+      alt=""
+      position={data.imagePosition}
+      widths={[400, 800]}
+      sizes="(min-width: 768px) 33vw, 100vw"
+      class="transition-transform"
+    />
+    <div class="absolute inset-0 scrim-program"></div>
+  </div>
+  <span class="absolute right-6 top-6 font-mono text-time text-ink-muted" aria-hidden="true">{padIndex(index)}</span>
+  <div class="relative grid gap-2">
+    <div class="flex gap-2">
+      {data.startHere ? <Tag variant="signal">Start here</Tag> : firstTag && <Tag>{firstTag}</Tag>}
+    </div>
+    <h3 class="display text-heading">{data.name}</h3>
+    <p class="text-caption text-ink-muted">{summary}</p>
+  </div>
+</a>

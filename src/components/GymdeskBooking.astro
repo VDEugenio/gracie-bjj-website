@@ -1,0 +1,22 @@
+---
+/**
+ * Gymdesk booking widget embed (Gym > Bookings > Settings in Gymdesk).
+ * Renders nothing until the embed code is pasted into settings. Its script
+ * loads only on pages that render this component.
+ */
+interface Props {
+  embed?: string;
+  class?: string;
+}
+
+const { embed, class: className } = Astro.props;
+---
+
+{embed && <div class:list={['gymdesk-embed', className]} set:html={embed} />}
+
+<style>
+  .gymdesk-embed :global(iframe) {
+    width: 100%;
+    border: 0;
+  }
+</style>

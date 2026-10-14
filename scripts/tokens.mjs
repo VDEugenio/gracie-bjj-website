@@ -50,12 +50,14 @@ const TYPE = {
   'display-name-sm': { size: ['34px', '64px'], lh: 0.85, tracking: '-0.01em', weight: 900 },
   heading: { size: ['44px', '48px'], lh: 0.85, tracking: '-0.01em', weight: 900 },
   'heading-sm': { size: ['28px', '32px'], lh: 0.85, tracking: '-0.01em', weight: 900 },
+  menu: { size: '64px', lh: 0.8, tracking: '-0.01em', weight: 900 },
   // Archivo expanded, 800 (pair with the `display-wide` utility)
   marquee: { size: ['40px', '96px'], lh: 1, tracking: '-0.01em', weight: 800 },
   wordmark: { size: '15px', lh: 1.1, tracking: '0.02em', weight: 800 },
   // Archivo normal width, 700 (pair with the `title` utility)
   title: { size: '20px', lh: 1.15, weight: 700 },
   // Geist
+  lead: { size: ['18px', '20px'], lh: 1.3, weight: 600 },
   'body-l': { size: ['16px', '18px'], lh: 1.6, weight: 400 },
   body: { size: '16px', lh: 1.6, weight: 400 },
   'body-sm': { size: '15px', lh: 1.5, weight: 400 },
@@ -142,6 +144,7 @@ push();
 push('  /* Spacing: tokens.json space-N is N x 4px, the same scale Tailwind uses (p-4 = space-4 = 16px). */');
 push('  --spacing: 4px;');
 push('  --container-site: 1280px;');
+push('  --container-header: 1440px;');
 for (const [name, value] of Object.entries(BREAKPOINTS)) push('  --breakpoint-' + name + ': ' + value + ';');
 push();
 push('  /* Radius */');
@@ -152,14 +155,6 @@ for (const [name, value] of Object.entries(WEIGHTS)) push('  --font-weight-' + n
 for (const [name, value] of Object.entries(LEADING)) push('  --leading-' + name + ': ' + value + ';');
 for (const [name, value] of Object.entries(TRACKING)) push('  --tracking-' + name + ': ' + value + ';');
 push();
-push('  /* Type scale. Responsive sizes point at --fs-* variables that change at the md breakpoint. */');
-for (const [name, def] of Object.entries(TYPE)) {
-  push('  --text-' + name + ': ' + (isResponsive(def) ? 'var(--fs-' + name + ')' : def.size) + ';');
-  push('  --text-' + name + '--line-height: ' + def.lh + ';');
-  if (def.weight) push('  --text-' + name + '--font-weight: ' + def.weight + ';');
-  if (def.tracking) push('  --text-' + name + '--letter-spacing: ' + def.tracking + ';');
-}
-push();
 push('  /* Motion defaults for the few CSS hover transitions (GSAP handles everything else). */');
 push('  --default-transition-duration: 200ms;');
 push('  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);');
@@ -167,12 +162,33 @@ push('  --ease-out: cubic-bezier(0, 0, 0.2, 1);');
 push('  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);');
 push('}');
 push();
+push('/*');
+push('  Type scale. `inline` so each text-* utility carries the expression itself:');
+push('  responsive sizes read --fs-* (which change at the md breakpoint) and display');
+push('  sizes read --fit-size on the element, which caps a long word to its container.');
+push('*/');
+push('@theme inline {');
+for (const [name, def] of Object.entries(TYPE)) {
+  // Display sizes can be capped per heading with --fit-size (see src/lib/fit.ts) so a long single
+  // word like "Fundamentals" shrinks to its container instead of clipping on phones.
+  const base = isResponsive(def) ? 'var(--fs-' + name + ')' : def.size;
+  const value = def.weight >= 800 ? 'min(' + base + ', var(--fit-size, 9999px))' : base;
+  push('  --text-' + name + ': ' + value + ';');
+  push('  --text-' + name + '--line-height: ' + def.lh + ';');
+  if (def.weight) push('  --text-' + name + '--font-weight: ' + def.weight + ';');
+  if (def.tracking) push('  --text-' + name + '--letter-spacing: ' + def.tracking + ';');
+}
+push('}');
+push();
 push('/* Responsive type sizes: phone first, desktop from the md breakpoint. */');
+push('/* --fit-available is the width a headline can use: the viewport minus the page gutters. */');
 push(':root {');
+push('  --fit-available: calc(100vw - 2 * var(--space-4));');
 for (const [name, def] of Object.entries(TYPE)) if (isResponsive(def)) push('  --fs-' + name + ': ' + def.size[0] + ';');
 push('}');
 push('@media (min-width: ' + BREAKPOINTS.md + ') {');
 push('  :root {');
+push('    --fit-available: calc(min(100vw, var(--container-site)) - 2 * var(--space-20));');
 for (const [name, def] of Object.entries(TYPE)) if (isResponsive(def)) push('    --fs-' + name + ': ' + def.size[1] + ';');
 push('  }');
 push('}');
@@ -184,9 +200,10 @@ for (const theme of themes) {
   push('}');
 }
 push();
-push('/* Spacing tokens by their design-system names, for plain CSS. */');
+push('/* Spacing tokens by their design-system names, for plain CSS. space-20 is the desktop page gutter from the mockups. */');
 push(':root {');
 for (const t of tokens.spacing.tokens) push('  --' + t.name + ': ' + t.value + ';');
+push('  --space-20: 80px;');
 push('}');
 push();
 

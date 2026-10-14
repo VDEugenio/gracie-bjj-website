@@ -1,0 +1,25 @@
+---
+/**
+ * The Relson Gracie badge. A 60px placeholder until the vector arrives, so it
+ * is a plain <img> sized by CSS (size-14 for the phone header, size-15 desktop,
+ * size-18 and size-24 in the footers). Swap the import for the SVG later.
+ */
+import logo from '@/assets/logo-placeholder.webp';
+
+interface Props {
+  class?: string;
+  /** Decorative when the parent link already has a label. */
+  decorative?: boolean;
+}
+
+const { class: className = 'size-14', decorative = false } = Astro.props;
+---
+
+<img
+  src={logo.src}
+  width={logo.width}
+  height={logo.height}
+  alt={decorative ? '' : 'Relson Gracie badge'}
+  class:list={['rounded-full', className]}
+  decoding="async"
+/>

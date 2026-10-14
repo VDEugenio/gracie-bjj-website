@@ -1,10 +1,15 @@
 ---
 /**
- * Base layout: <head>, SEO basics, skip link, the page shell.
- * The header, promo banner and footer are wired in during phase 3 (components);
- * JSON-LD and the shared OG image land in phase 6 (SEO and launch).
+ * Base layout: <head>, SEO basics, promo banner, header, the page, footer.
+ * JSON-LD and the shared OG image land in phase 6 (SEO and launch);
+ * motion initialisation lands in phase 5.
  */
 import '@/styles/global.css';
+import Footer from '@/components/Footer.astro';
+import Header from '@/components/Header.astro';
+import PromoBanner from '@/components/PromoBanner.astro';
+import { getPromo, getSchedule, getSettings } from '@/lib/content';
+import { gymdeskUrl } from '@/lib/gymdesk';
 
 export interface Props {
   /** Unique page title. The gym name is appended automatically. */
@@ -13,17 +18,20 @@ export interface Props {
   description: string;
   /** Page slug used for utm_campaign on Gymdesk links, e.g. "home", "schedule", "program-fundamentals". */
   campaign: string;
-  /** Path used for canonical URLs and aria-current, e.g. "/schedule". */
+  /** Path used for canonical URLs and aria-current, e.g. "/schedule". Defaults to the current URL. */
   currentPath?: string;
   /** Keep dev-only pages out of search results. */
   noindex?: boolean;
 }
 
-const { title, description, currentPath = Astro.url.pathname, noindex = false } = Astro.props;
+const { title, description, campaign, currentPath = Astro.url.pathname, noindex = false } = Astro.props;
 
-const siteName = 'Relson Gracie Jiu-Jitsu of Charleston';
+const [settings, promo, schedule] = await Promise.all([getSettings(), getPromo(), getSchedule()]);
+
+const siteName = settings.name;
 const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
 const canonical = new URL(currentPath, Astro.site ?? Astro.url).href;
+const promoHref = promo?.linkUrl ? gymdeskUrl(promo.linkUrl, campaign, 'promo') : undefined;
 ---
 
 <!doctype html>
@@ -49,17 +57,18 @@ const canonical = new URL(currentPath, Astro.site ?? Astro.url).href;
     <meta name="generator" content={Astro.generator} />
     <slot name="head" />
   </head>
-  <body class="bg-surface text-ink font-body">
+  <body class="bg-surface font-body text-ink">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:bg-signal focus:px-4 focus:py-3 focus:text-button focus:uppercase focus:text-on-signal"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-signal focus:px-4 focus:py-3 focus:text-button focus:uppercase focus:text-on-signal"
     >
       Skip to content
     </a>
-    <slot name="before-main" />
+    <PromoBanner promo={promo} href={promoHref} />
+    <Header settings={settings} currentPath={currentPath} campaign={campaign} />
     <main id="main" tabindex="-1" class="outline-none">
       <slot />
     </main>
-    <slot name="after-main" />
+    <Footer settings={settings} schedule={schedule} currentPath={currentPath} campaign={campaign} />
   </body>
 </html>

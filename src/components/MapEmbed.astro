@@ -1,0 +1,25 @@
+---
+/**
+ * Google Maps iframe for the gym address, lazy-loaded and shown in black and
+ * white so purple stays the only color on the page. Size it with classes.
+ */
+import type { Settings } from '@/lib/content';
+import { mapEmbedSrc } from '@/lib/maps';
+
+interface Props {
+  settings: Settings;
+  class?: string;
+}
+
+const { settings, class: className } = Astro.props;
+---
+
+<div class:list={['relative overflow-hidden bg-surface-muted', className]} data-motion="reveal">
+  <iframe
+    src={mapEmbedSrc(settings)}
+    title={`Map to ${settings.name}`}
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen
+    class="absolute inset-0 h-full w-full border-0 grayscale"></iframe>
+</div>

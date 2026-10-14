@@ -1,0 +1,23 @@
+---
+/**
+ * Filter chip for the schedule. A pressed chip is the one signal fill in that
+ * row. State lives in aria-pressed, which the filter script toggles.
+ */
+interface Props {
+  label: string;
+  /** Filter key, e.g. "all", "adults", "kids", "beginners", or "program:mma". */
+  value: string;
+  pressed?: boolean;
+}
+
+const { label, value, pressed = false } = Astro.props;
+---
+
+<button
+  type="button"
+  class="h-9 shrink-0 cursor-pointer rounded-pill border border-line-strong bg-transparent px-4 text-chip uppercase text-ink transition-colors hover:border-ink aria-pressed:border-signal aria-pressed:bg-signal aria-pressed:text-on-signal"
+  aria-pressed={pressed ? 'true' : 'false'}
+  data-filter={value}
+>
+  {label}
+</button>

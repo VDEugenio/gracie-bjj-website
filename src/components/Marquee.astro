@@ -1,0 +1,35 @@
+---
+/**
+ * Scrolling program-name strip. The one place the expanded Archivo width is
+ * used (with the header wordmark). Decorative: aria-hidden, and the list is
+ * rendered twice so the GSAP loop (phase 5) can slide it seamlessly. Without
+ * JavaScript it is a static, clipped strip.
+ */
+interface Props {
+  items: string[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<div
+  aria-hidden="true"
+  class:list={['relative overflow-hidden border-y border-line bg-surface py-5 md:py-8', className]}
+  data-motion="marquee"
+>
+  <div class="flex w-max whitespace-nowrap" data-marquee-track>
+    {
+      [0, 1].map(() => (
+        <div class="display-wide text-marquee flex shrink-0 items-center text-ink">
+          {items.map((item) => (
+            <>
+              <span class="px-3 md:px-6">{item}</span>
+              <span class="text-ink-muted">·</span>
+            </>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>

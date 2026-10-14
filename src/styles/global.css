@@ -105,6 +105,100 @@
   filter: grayscale(1);
 }
 
+/* Inline links in running copy and the "See the full schedule" style links. */
+@utility link {
+  color: var(--color-signal-text);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  &:hover {
+    color: var(--color-ink);
+  }
+}
+
+/* Header and footer navigation links. */
+@utility navlink {
+  color: var(--color-ink);
+  text-decoration: none;
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.01em;
+  &:hover {
+    color: var(--color-signal-text);
+  }
+}
+
+/*
+  Scrims: the only gradients on the site, always from a surface color to
+  transparent so text stays readable over photos. --scrim-color defaults to
+  the page surface; add `scrim-raised` inside a raised band.
+*/
+@utility scrim-raised {
+  --scrim-color: var(--color-surface-raised);
+}
+@utility scrim-bottom {
+  background: linear-gradient(
+    to top,
+    var(--scrim-color, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 55%, transparent) 22%,
+    transparent 55%
+  );
+}
+@utility scrim-up {
+  background: linear-gradient(to top, var(--scrim-color, var(--color-surface)) 0%, transparent 45%);
+}
+@utility scrim-cta {
+  background: linear-gradient(
+    to top,
+    var(--scrim-color, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 78%, transparent) 50%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 20%, transparent) 100%
+  );
+}
+@utility scrim-left {
+  background: linear-gradient(
+    to right,
+    var(--scrim-color, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 70%, transparent) 28%,
+    transparent 62%
+  );
+}
+@utility scrim-left-soft {
+  background: linear-gradient(
+    to right,
+    var(--scrim-color, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 40%, transparent) 30%,
+    transparent 60%
+  );
+}
+@utility scrim-left-cta {
+  background: linear-gradient(
+    to right,
+    var(--scrim-color, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 60%, transparent) 25%,
+    transparent 55%
+  );
+}
+@utility scrim-card {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-surface) 94%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface) 60%, transparent) 26%,
+    transparent 52%
+  );
+}
+@utility scrim-program {
+  background: linear-gradient(to top, var(--color-surface) 8%, transparent 70%);
+}
+
+/* Hide scrollbars on horizontally scrolling chip rows. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Page gutter and max width from the mockups: 16px on phones, 80px from md, 1280px max. */
 @utility wrap {
   width: 100%;

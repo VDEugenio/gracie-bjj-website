@@ -1,0 +1,21 @@
+---
+/**
+ * The belt stripe across a coach card: rank color with a bar near the right
+ * end (red on black, black on blue/purple/brown, none on red or unknown).
+ * 1px line-strong edges so a black belt still reads on the dark card.
+ * data-motion="belt" lets phase 5 "tie it on" (scaleX 0 to 1).
+ */
+import { beltStripe, type BeltKey } from '@/lib/belts';
+
+interface Props {
+  belt: BeltKey;
+  size?: 'md' | 'sm';
+}
+
+const { belt, size = 'md' } = Astro.props;
+const stripe = beltStripe(belt);
+---
+
+<div class:list={['relative border-y border-line-strong', size === 'sm' ? 'h-2' : 'h-2.5', stripe.stripe]} aria-hidden="true" data-motion="belt">
+  {stripe.bar && <span class:list={['absolute inset-y-0 block', size === 'sm' ? 'right-6 w-9' : 'right-10 w-14', stripe.bar]}></span>}
+</div>

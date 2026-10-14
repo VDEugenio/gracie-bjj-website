@@ -1,0 +1,65 @@
+---
+/**
+ * Programs-page row: index, photo, tags, big name, summary, the day/time
+ * list derived from the schedule, and a details link.
+ * Stacks on phones; on desktop it sits on the 12-column grid
+ * (number 1 / photo 2-5 / text 7-12).
+ */
+import Photo from './Photo.astro';
+import ProgramTimes from './ProgramTimes.astro';
+import Tag from './Tag.astro';
+import type { Program } from '@/lib/content';
+import { fitStyle } from '@/lib/fit';
+import { padIndex } from '@/lib/format';
+import type { TimeRow } from '@/lib/schedule';
+
+interface Props {
+  program: Program;
+  index: number;
+  rows: TimeRow[];
+  /** Draw the closing hairline (last row). */
+  last?: boolean;
+}
+
+const { program, index, rows, last = false } = Astro.props;
+const { data } = program;
+const href = `/programs/${program.id}`;
+const headingId = `program-${program.id}`;
+---
+
+<article
+  id={`p-${program.id}`}
+  class:list={[
+    'border-t border-line md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-12',
+    last && 'md:border-b',
+  ]}
+  aria-labelledby={headingId}
+  data-motion="reveal"
+>
+  <span class="hidden font-mono text-time text-ink-muted md:col-span-1 md:block md:pt-1.5" aria-hidden="true">
+    {padIndex(index)}
+  </span>
+
+  <a
+    href={href}
+    class="relative block h-75 overflow-hidden bg-surface-raised md:col-span-4 md:col-start-2 md:h-100"
+    aria-label={`${data.name} details`}
+    data-motion="photo-wipe"
+  >
+    <Photo image={data.image} alt="" position={data.imagePosition} widths={[400, 800]} sizes="(min-width: 768px) 33vw, 100vw" />
+    <span class="absolute left-4 top-4 bg-surface/75 px-1.5 py-0.5 font-mono text-time text-ink md:hidden" aria-hidden="true">
+      {padIndex(index)}
+    </span>
+  </a>
+
+  <div class="flex flex-col gap-3 px-4 pb-10 pt-6 md:col-span-6 md:col-start-7 md:gap-4 md:p-0">
+    <div class="flex flex-wrap gap-2">
+      {data.startHere && <Tag variant="signal">Start here</Tag>}
+      {data.tags.map((tag) => <Tag>{tag}</Tag>)}
+    </div>
+    <h2 id={headingId} class="display text-display-m" style={fitStyle(data.name)}>{data.name}</h2>
+    <p class="text-body text-ink-muted md:max-w-130 md:text-body-l">{data.summary}</p>
+    <ProgramTimes rows={rows} />
+    <a href={href} class="link mt-1 self-start">Program details →</a>
+  </div>
+</article>

@@ -1,0 +1,55 @@
+---
+/**
+ * Promo banner above the header. Rendered only while the promo is live at
+ * build time; a tiny client script removes it if the expiry date passes
+ * between builds. Text before an em dash is bold, as in the mockups.
+ */
+import Tag from './Tag.astro';
+import { isPromoLive, type Promo } from '@/lib/content';
+
+interface Props {
+  promo: Promo | null;
+  /** Link with UTM parameters already applied. */
+  href?: string;
+}
+
+const { promo, href } = Astro.props;
+const live = isPromoLive(promo);
+
+const [lead, rest] = live && promo.message.includes(' — ') ? promo.message.split(/ — (.*)/s) : [null, null];
+const expires = live && promo.expiresOn ? promo.expiresOn.toISOString().slice(0, 10) : undefined;
+---
+
+{
+  live && (
+    <div
+      class="flex flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b border-line bg-surface-muted px-4 py-3 text-caption text-ink md:justify-center"
+      role="region"
+      aria-label="Current offer"
+      data-promo
+      data-promo-expires={expires}
+    >
+      {promo.tag && <Tag variant="signal">{promo.tag}</Tag>}
+      <span>
+        {lead ? (
+          <>
+            <strong class="font-semibold">{lead}</strong>
+            {' — '}
+            {rest}
+          </>
+        ) : (
+          promo.message
+        )}
+      </span>
+      {promo.linkLabel && (href ?? promo.linkUrl) && (
+        <a href={href ?? promo.linkUrl} class="link">
+          {promo.linkLabel}
+        </a>
+      )}
+    </div>
+  )
+}
+
+<script>
+  import '@/scripts/promo-expiry';
+</script>

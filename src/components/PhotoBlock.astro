@@ -1,0 +1,52 @@
+---
+/**
+ * A framed photo with an optional scrim and overlay content. Size it with
+ * classes (h-75, aspect-4/5, min-h-90). Gets data-motion="photo-wipe" so the
+ * clip-path reveal can attach in phase 5.
+ */
+import Photo from './Photo.astro';
+
+type Scrim = 'none' | 'bottom' | 'up' | 'cta' | 'left' | 'left-soft' | 'left-cta' | 'card' | 'program';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  position?: string;
+  scrim?: Scrim;
+  /** Use the raised surface as the scrim color (inside a raised band). */
+  raised?: boolean;
+  widths?: number[];
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  priority?: boolean;
+  /** Size and position classes for the frame. */
+  class?: string;
+  /** Skip the photo-wipe motion hook (e.g. inside a card that already animates). */
+  still?: boolean;
+}
+
+const {
+  image,
+  alt,
+  position,
+  scrim = 'none',
+  raised = false,
+  widths,
+  sizes,
+  loading,
+  priority,
+  class: className,
+  still = false,
+} = Astro.props;
+
+const scrimClass = scrim === 'none' ? null : `scrim-${scrim}`;
+---
+
+<div
+  class:list={['relative overflow-hidden bg-surface-muted', raised && 'scrim-raised', className]}
+  data-motion={still ? undefined : 'photo-wipe'}
+>
+  <Photo image={image} alt={alt} position={position} widths={widths} sizes={sizes} loading={loading} priority={priority} />
+  {scrimClass && <div class:list={['pointer-events-none absolute inset-0', scrimClass]} aria-hidden="true"></div>}
+  <slot />
+</div>

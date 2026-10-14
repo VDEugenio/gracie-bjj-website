@@ -1,0 +1,134 @@
+---
+/**
+ * Fighter-style coach card.
+ * - full (coaches page): 4:5 portrait under a scrim, mono index top-left, rank
+ *   set vertically top-right, role and stacked name over the bottom, belt
+ *   stripe, specialties, bio and a "Teaches" line.
+ * - compact (home): photo, name, belt stripe and rank, linking to /coaches.
+ * Phase 5 adds the desktop tilt; the markup only carries data-motion hooks.
+ */
+import BeltStripe from './BeltStripe.astro';
+import Photo from './Photo.astro';
+import Tag from './Tag.astro';
+import { beltLabel, rankLine } from '@/lib/belts';
+import type { Coach } from '@/lib/content';
+import { firstRole, padIndex, splitName } from '@/lib/format';
+
+interface Props {
+  coach: Coach;
+  index: number;
+  variant?: 'full' | 'compact';
+  headingLevel?: 2 | 3;
+  class?: string;
+}
+
+const { coach, index, variant = 'full', headingLevel = 2, class: className } = Astro.props;
+const { data } = coach;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const { first, last } = splitName(data.name);
+const headingId = `coach-${variant}-${coach.id}`;
+const rank = rankLine(data);
+const alt = `Portrait of ${data.name}`;
+---
+
+{
+  variant === 'full' ? (
+    <article
+      class:list={['group relative flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors', className]}
+      aria-labelledby={headingId}
+      data-motion="coach-card"
+    >
+      <div class="relative aspect-4/5 w-full overflow-hidden bg-surface-muted" data-coach-photo>
+        {data.photo ? (
+          <Photo image={data.photo} alt={alt} position={data.photoPosition} widths={[360, 480, 720]} sizes="(min-width: 768px) 33vw, 100vw" />
+        ) : (
+          <div class="absolute inset-0 flex items-center justify-center p-4 text-center font-mono text-time-sm text-ink-muted">
+            4:5 portrait · {data.name}
+          </div>
+        )}
+        <div class="absolute inset-0 scrim-card" aria-hidden="true" />
+        <span class="absolute left-3.5 top-3.5 bg-surface/80 px-2 py-1 font-mono text-time-sm text-ink" aria-hidden="true">
+          {padIndex(index)}
+        </span>
+        <span class="absolute right-3.5 top-3.5 bg-surface/80 px-1 py-2.5 text-label-xs uppercase text-ink [writing-mode:vertical-rl]">{rank}</span>
+        <div class="absolute bottom-5.5 left-5 right-13 flex flex-col gap-2.5">
+          <span class="text-label uppercase text-ink">{data.role}</span>
+          <Heading id={headingId} class="display text-display-name text-ink">
+            {first}
+            {last && (
+              <>
+                <br />
+                {last}
+              </>
+            )}
+          </Heading>
+        </div>
+      </div>
+      <BeltStripe belt={data.belt} />
+      <div class="flex flex-1 flex-col gap-3 p-5 pb-6">
+        {data.specialties.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {data.specialties.map((s) => (
+              <Tag>{s}</Tag>
+            ))}
+          </div>
+        )}
+        <p class="text-body-sm leading-relaxed text-ink-muted">{data.bio}</p>
+        <div class="mt-auto flex justify-between gap-3 border-t border-line pt-3">
+          <span class="pt-0.75 text-label uppercase text-ink-muted">Teaches</span>
+          <span class="text-right font-mono text-time text-ink">{data.teaches}</span>
+        </div>
+      </div>
+    </article>
+  ) : (
+    <a
+      href="/coaches"
+      class:list={[
+        'group relative flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised text-ink no-underline transition-colors hover:border-ink',
+        className,
+      ]}
+      aria-labelledby={headingId}
+      data-motion="coach-card"
+    >
+      <div class="relative aspect-4/5 overflow-hidden bg-surface-muted" data-coach-photo>
+        {data.photo ? (
+          <Photo image={data.photo} alt={alt} position={data.photoPosition} widths={[240, 360, 480]} sizes="(min-width: 768px) 25vw, 50vw" />
+        ) : (
+          <div class="absolute inset-0 flex items-center justify-center p-4 text-center font-mono text-time-sm text-ink-muted">
+            4:5 portrait · {data.name}
+          </div>
+        )}
+        <div class="absolute inset-0 scrim-card" aria-hidden="true" />
+        <span class="absolute left-2.5 top-2.5 bg-surface/80 px-1.5 py-0.5 font-mono text-time-sm text-ink" aria-hidden="true">
+          {padIndex(index)}
+        </span>
+        <div class="absolute bottom-3.5 left-3 right-3 flex flex-col gap-1.5">
+          <span class="text-label-xs uppercase text-ink md:text-label-sm">{firstRole(data.role)}</span>
+          <Heading id={headingId} class="display text-display-name-sm text-ink">
+            {first}
+            {last && (
+              <>
+                <br />
+                {last}
+              </>
+            )}
+          </Heading>
+        </div>
+      </div>
+      <BeltStripe belt={data.belt} size="sm" />
+      <div class="flex flex-col gap-2.5 p-3 md:px-5 md:pb-5 md:pt-4">
+        <span class="text-label-xs uppercase text-ink-muted md:text-label">
+          <span class="md:hidden">{beltLabel(data.belt)}</span>
+          <span class="hidden md:inline">{rank}</span>
+        </span>
+        {data.specialties.length > 0 && (
+          <div class="hidden flex-wrap gap-2 md:flex">
+            {data.specialties.map((s) => (
+              <Tag>{s}</Tag>
+            ))}
+          </div>
+        )}
+      </div>
+    </a>
+  )
+}

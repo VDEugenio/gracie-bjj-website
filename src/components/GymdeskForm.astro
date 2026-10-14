@@ -1,0 +1,42 @@
+---
+/**
+ * Gymdesk lead/trial form embed (Website > Forms > Embed in Gymdesk).
+ * Renders nothing until the embed code is pasted into settings. Its script
+ * loads only on pages that render this component. Styling is best-effort:
+ * if Gymdesk serves an iframe, it keeps its own styles.
+ */
+interface Props {
+  embed?: string;
+  class?: string;
+}
+
+const { embed, class: className } = Astro.props;
+---
+
+{embed && <div class:list={['gymdesk-embed', className]} set:html={embed} />}
+
+<style>
+  .gymdesk-embed :global(iframe) {
+    width: 100%;
+    border: 0;
+  }
+  .gymdesk-embed :global(input),
+  .gymdesk-embed :global(select),
+  .gymdesk-embed :global(textarea) {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+  }
+  .gymdesk-embed :global(button),
+  .gymdesk-embed :global([type='submit']) {
+    font-family: var(--font-body);
+    background: var(--color-signal);
+    color: var(--color-on-signal);
+    border: 0;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-label);
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+/**
+ * A photo that fills its positioned parent: AVIF and WebP sources with a JPEG
+ * fallback, explicit width/height, lazy by default, and a CSS grayscale so a
+ * color upload still renders black and white.
+ *
+ * Requested widths are capped at the source width so a small portrait is
+ * never upscaled.
+ */
+import { Picture } from 'astro:assets';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  /** Candidate widths for srcset. Defaults suit a full-width phone photo up to a 3-column card. */
+  widths?: number[];
+  /** The `sizes` attribute, e.g. "(min-width: 768px) 33vw, 100vw". */
+  sizes?: string;
+  /** CSS object-position from the CMS, e.g. "50% 30%". */
+  position?: string;
+  loading?: 'lazy' | 'eager';
+  /** Above-the-fold hero photo: eager, high priority. */
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  image,
+  alt,
+  widths = [390, 640, 960, 1280],
+  sizes = '100vw',
+  position,
+  loading = 'lazy',
+  priority = false,
+  class: className,
+} = Astro.props;
+
+const capped = [...new Set(widths.filter((w) => w <= image.width))].sort((a, b) => a - b);
+if (capped.length === 0 || capped[capped.length - 1]! < image.width) capped.push(image.width);
+---
+
+<Picture
+  src={image}
+  alt={alt}
+  widths={capped}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  fallbackFormat="jpg"
+  loading={priority ? 'eager' : loading}
+  decoding={priority ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : undefined}
+  class:list={['photo', className]}
+  style={position ? `object-position: ${position}` : undefined}
+  pictureAttributes={{ class: 'contents' }}
+/>

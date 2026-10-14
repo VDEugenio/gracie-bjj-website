@@ -1,0 +1,91 @@
+---
+/**
+ * Full-screen phone menu: graphite overlay, big condensed links with the
+ * current page marked, the free-week button and the address at the bottom.
+ * Hidden until the header toggle opens it (src/scripts/mobile-menu.ts).
+ * Phase 5 animates it from the top and staggers the links in.
+ */
+import { X } from 'lucide-astro';
+import Button from './Button.astro';
+import Logo from './Logo.astro';
+import type { Settings } from '@/lib/content';
+import { padIndex, telHref } from '@/lib/format';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { NAV, isCurrent } from '@/lib/nav';
+
+interface Props {
+  settings: Settings;
+  currentPath: string;
+  campaign: string;
+}
+
+const { settings, currentPath, campaign } = Astro.props;
+const links = [
+  ...NAV.map((item) => ({ ...item, current: isCurrent(item.href, currentPath) })),
+  { label: 'Sign up', href: gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'menu'), current: false },
+];
+const signup = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'menu');
+const { address } = settings;
+---
+
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-surface text-ink md:hidden"
+  hidden
+  data-mobile-menu
+  data-motion="menu"
+>
+  <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-2">
+    <a href="/" class="inline-flex size-14" aria-label={`${settings.name} — home`}>
+      <Logo class="size-14" decorative />
+    </a>
+    <div class="flex items-center gap-2">
+      <Button href={signup} size="sm">Start your free week</Button>
+      <button
+        type="button"
+        class="inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-line-strong text-ink hover:border-ink"
+        aria-label="Close menu"
+        data-menu-close
+      >
+        <X size={20} stroke-width={1.5} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+
+  <nav aria-label="Primary" class="flex flex-col px-4 pt-2">
+    {
+      links.map((link, i) => (
+        <a
+          href={link.href}
+          class="display text-menu flex items-baseline justify-between gap-4 border-b border-line pb-3 pt-3.5 text-ink no-underline hover:text-signal-text"
+          aria-current={link.current ? 'page' : undefined}
+          data-motion="menu-link"
+        >
+          {link.label}
+          {link.current ? (
+            <span class="text-label uppercase text-ink-muted">Current</span>
+          ) : (
+            <span class="font-mono text-time-sm text-ink-muted">{padIndex(i + 1)}</span>
+          )}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="mt-auto flex flex-col gap-4 px-4 pb-6 pt-4" data-motion="menu-link">
+    <Button href={signup} variant="primary" full arrow>Start your free week</Button>
+    <div class="flex items-end justify-between gap-4 text-caption leading-normal">
+      <span class="text-ink-muted">
+        {address.street}<br />{address.city}, {address.state} {address.zip}
+      </span>
+      <a href={telHref(settings.phone)} class="font-mono text-time text-ink no-underline">{settings.phone}</a>
+    </div>
+    {
+      settings.gymdesk.loginUrl && (
+        <a href={settings.gymdesk.loginUrl} class="self-start text-caption text-ink-muted no-underline hover:text-ink">
+          Member login
+        </a>
+      )
+    }
+  </div>
+</div>

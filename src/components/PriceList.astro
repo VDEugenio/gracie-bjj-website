@@ -1,0 +1,22 @@
+---
+/**
+ * The three-line price summary on the programs page ("Adult No-Gi and MMA  $100/mo").
+ */
+interface Props {
+  rows: Array<{ label: string; price: string }>;
+  class?: string;
+}
+
+const { rows, class: className } = Astro.props;
+---
+
+<div class:list={['flex flex-col border-t border-line', className]}>
+  {
+    rows.map((row) => (
+      <div class="flex items-baseline justify-between gap-4 border-b border-line py-3 md:py-3.5">
+        <span class="text-body text-ink">{row.label}</span>
+        <span class="font-mono text-time text-ink md:text-time-l">{row.price}</span>
+      </div>
+    ))
+  }
+</div>

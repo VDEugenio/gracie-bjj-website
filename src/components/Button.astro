@@ -1,0 +1,55 @@
+---
+/**
+ * Button. Renders <a> when href is given, otherwise <button>.
+ * - primary: the one signal-filled action on a screen ("Start your free week").
+ * - secondary: outlined, border goes to ink on hover.
+ * The arrow is the "→" character, as in the mockups, and nudges right on hover.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
+  href?: string;
+  variant?: 'primary' | 'secondary';
+  size?: 'md' | 'sm';
+  /** Show the trailing arrow. */
+  arrow?: boolean;
+  /** Stretch to the container and center the label (phone stacks). */
+  full?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'secondary',
+  size = 'md',
+  arrow = false,
+  full = false,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = [
+  'group/btn inline-flex items-center gap-2 rounded-sm border no-underline uppercase transition-colors cursor-pointer select-none whitespace-nowrap',
+  size === 'sm' ? 'h-9 px-4 text-button-sm' : 'h-12 px-6 text-button',
+  variant === 'primary'
+    ? 'bg-signal border-signal text-on-signal hover:bg-signal-hover hover:border-signal-hover'
+    : 'bg-transparent border-line-strong text-ink hover:border-ink',
+  full && 'w-full justify-center',
+  className,
+];
+
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  class:list={classes}
+  data-motion={variant === 'primary' ? 'magnetic' : undefined}
+  {...rest}
+>
+  <slot />
+  {arrow && <span class="transition-transform group-hover/btn:translate-x-0.75" aria-hidden="true">→</span>}
+</Tag>

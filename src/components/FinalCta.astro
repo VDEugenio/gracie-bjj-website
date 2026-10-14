@@ -1,0 +1,93 @@
+---
+/**
+ * The closing call to action.
+ * - photo: headline over a photo (the home page's team photo; the schedule
+ *   page on phones). Phone: text over the bottom of the photo. Desktop: photo
+ *   on the right 60%, text on the left.
+ * - band: headline and button on a plain band (coaches, program pages,
+ *   schedule desktop, contact).
+ * Headline lines go in the default slot.
+ */
+import Button from './Button.astro';
+import Photo from './Photo.astro';
+import { fitStyle } from '@/lib/fit';
+
+interface Props {
+  variant?: 'photo' | 'band';
+  /** Band background: raised (coaches, schedule) or the page surface (program pages, contact). */
+  tone?: 'raised' | 'surface';
+  /** Headline size: xl for "Your first class is on us.", l for the smaller bands. */
+  size?: 'xl' | 'l';
+  image?: ImageMetadata;
+  alt?: string;
+  position?: string;
+  /** Short supporting line, e.g. "Any class, Monday to Saturday." */
+  body?: string;
+  /** Primary button link (Gymdesk signup with UTM parameters). */
+  href: string;
+  secondary?: { href: string; label: string };
+  id?: string;
+}
+
+const {
+  variant = 'band',
+  tone = 'raised',
+  size = 'xl',
+  image,
+  alt = '',
+  position,
+  body,
+  href,
+  secondary,
+  id = 'cta-h',
+} = Astro.props;
+
+const headingSize = size === 'xl' ? 'text-display-xl' : 'text-display-l';
+const fit = fitStyle(await Astro.slots.render('default'));
+---
+
+{
+  variant === 'photo' && image ? (
+    <section class="relative h-120 overflow-hidden bg-surface-raised md:h-160 md:border-t md:border-line" aria-labelledby={id}>
+      <div class="absolute inset-0 md:left-2/5" data-motion="photo-wipe">
+        <Photo image={image} alt={alt} position={position} widths={[390, 780, 1280]} sizes="(min-width: 768px) 60vw, 100vw" />
+        <div class="absolute inset-0 scrim-cta md:hidden" aria-hidden="true" />
+        <div class="absolute inset-0 hidden scrim-raised scrim-left-cta md:block" aria-hidden="true" />
+      </div>
+      <div class="absolute inset-x-0 bottom-0 flex flex-col gap-5 px-4 pb-12 md:inset-y-0 md:left-20 md:right-auto md:w-190 md:justify-center md:gap-8 md:px-0 md:pb-0">
+        <h2 id={id} class:list={['display text-ink', headingSize]} style={fit}>
+          <slot />
+        </h2>
+        <div class="flex flex-col gap-3 md:flex-row md:items-center">
+          <Button href={href} variant="primary" arrow class="w-full justify-center md:w-auto">
+            Start your free week
+          </Button>
+          {secondary && (
+            <Button href={secondary.href} class="w-full justify-center md:w-auto">
+              {secondary.label}
+            </Button>
+          )}
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class:list={['border-t border-line', tone === 'raised' ? 'border-b bg-surface-raised' : 'bg-surface']} aria-labelledby={id}>
+      <div class="wrap flex flex-col gap-5 py-14 md:grid md:grid-cols-12 md:items-end md:gap-x-8 md:py-24">
+        <h2 id={id} class:list={['display text-ink md:col-span-8', headingSize]} style={fit}>
+          <slot />
+        </h2>
+        <div class:list={['flex flex-col gap-3 md:col-span-4 md:gap-4', body ? 'md:items-start' : 'md:items-end']}>
+          {body && <p class="text-body text-ink-muted md:text-body-sm">{body}</p>}
+          <Button href={href} variant="primary" arrow class="w-full justify-center md:w-auto">
+            Start your free week
+          </Button>
+          {secondary && (
+            <Button href={secondary.href} class="w-full justify-center md:w-auto">
+              {secondary.label}
+            </Button>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

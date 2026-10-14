@@ -1,0 +1,39 @@
+---
+/**
+ * The compact "Drop-ins" row: day passes in one card, stacked on phones and
+ * in a single line on desktop.
+ */
+import Button from './Button.astro';
+import type { Plan } from '@/lib/content';
+
+interface Props {
+  plans: Plan[];
+  href: string;
+  class?: string;
+}
+
+const { plans, href, class: className } = Astro.props;
+---
+
+{
+  plans.length > 0 && (
+    <article
+      class:list={[
+        'flex flex-col gap-3 rounded-sm border border-line bg-surface-raised px-6 py-4 md:flex-row md:items-center md:gap-8 md:px-8 md:py-6',
+        className,
+      ]}
+      data-motion="reveal"
+    >
+      <span class="text-label uppercase text-ink-muted md:w-40 md:shrink-0">Drop-ins</span>
+      {plans.map((plan) => (
+        <div class="flex items-baseline justify-between border-t border-line pt-3 md:flex-1 md:justify-start md:gap-3 md:border-0 md:pt-0">
+          <span class="text-body text-ink">{plan.data.name}</span>
+          <span class="font-mono text-time text-ink md:text-time-l">{plan.data.price}</span>
+        </div>
+      ))}
+      <Button href={plans[0]?.data.ctaUrl ?? href} size="sm" class="mt-1 w-full justify-center md:mt-0 md:w-auto">
+        Sign up
+      </Button>
+    </article>
+  )
+}

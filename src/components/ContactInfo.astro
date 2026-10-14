@@ -1,0 +1,60 @@
+---
+/**
+ * Address, phone and hours with Lucide icons, one hairline row each.
+ * The hours line is derived from the schedule.
+ */
+import { Clock, Mail, MapPin, Phone } from 'lucide-astro';
+import type { ClassEntry, Settings } from '@/lib/content';
+import { telHref } from '@/lib/format';
+import { DAYS } from '@/lib/schedule';
+
+interface Props {
+  settings: Settings;
+  schedule: ClassEntry[];
+  class?: string;
+}
+
+const { settings, schedule, class: className } = Astro.props;
+const { address } = settings;
+
+const activeDays = DAYS.filter((d) => schedule.some((c) => c.data.day === d.key));
+const first = activeDays[0];
+const last = activeDays[activeDays.length - 1];
+const classDays = first && last ? `${first.label}–${last.label}` : null;
+const closedDays = ['Sunday', ...DAYS.filter((d) => !activeDays.includes(d)).map((d) => d.label)];
+
+const row = 'grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 border-b border-line py-4 md:py-4.5';
+const icon = 'mt-0.5 flex w-7 text-ink-muted';
+---
+
+<div class:list={['flex flex-col border-t border-line', className]}>
+  <div class={row}>
+    <span class={icon}><MapPin size={20} stroke-width={1.5} aria-hidden="true" /></span>
+    <address class="text-body leading-normal text-ink md:text-body-l">
+      <span class="font-semibold">{settings.name}</span><br />
+      {address.street}<br />
+      {address.city}, {address.state} {address.zip}
+    </address>
+  </div>
+  <div class={row}>
+    <span class={icon}><Phone size={20} stroke-width={1.5} aria-hidden="true" /></span>
+    <a href={telHref(settings.phone)} class="font-mono text-time-l text-ink no-underline">{settings.phone}</a>
+  </div>
+  {
+    settings.email && (
+      <div class={row}>
+        <span class={icon}><Mail size={20} stroke-width={1.5} aria-hidden="true" /></span>
+        <a href={`mailto:${settings.email}`} class="text-body text-ink no-underline hover:text-signal-text md:text-body-l">
+          {settings.email}
+        </a>
+      </div>
+    )
+  }
+  <div class={row}>
+    <span class={icon}><Clock size={20} stroke-width={1.5} aria-hidden="true" /></span>
+    <div class="flex flex-col gap-1 text-body text-ink md:text-body-l">
+      <span>{classDays ? `Classes ${classDays}.` : 'Class times are being updated.'} Closed {closedDays.join(' and ')}.</span>
+      <a href="/schedule" class="link self-start text-body-sm">See class times</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+---
+/**
+ * Filter chips for the schedule page plus the "Today · Monday, Oct 12" label
+ * (filled client-side by the today script in phase 4).
+ *
+ * Filter keys: all, adults, kids, beginners (startHere programs) and
+ * program:<id> for a single program. The MMA chip is only offered when an
+ * "mma" program exists.
+ */
+import Chip from './Chip.astro';
+
+interface Props {
+  /** Program ids that exist, used to decide whether to show the MMA chip. */
+  programIds: string[];
+  class?: string;
+}
+
+const { programIds, class: className } = Astro.props;
+
+const filters = [
+  { value: 'all', label: 'All' },
+  { value: 'adults', label: 'Adults' },
+  { value: 'kids', label: 'Kids' },
+  { value: 'beginners', label: 'Beginners' },
+  ...(programIds.includes('mma') ? [{ value: 'program:mma', label: 'MMA' }] : []),
+];
+---
+
+<div
+  class:list={[
+    'flex flex-col gap-4 border-b border-line pb-6 md:flex-row md:items-center md:justify-between md:gap-8 md:border-y md:py-5',
+    className,
+  ]}
+  data-schedule-filter
+>
+  <div class="no-scrollbar flex gap-2 overflow-x-auto md:overflow-visible" role="group" aria-label="Filter classes">
+    {filters.map((f) => <Chip label={f.label} value={f.value} pressed={f.value === 'all'} />)}
+  </div>
+  <span class="hidden font-mono text-time text-ink-muted md:inline" data-today-label></span>
+</div>
+
+<script>
+  import '@/scripts/schedule-filter';
+</script>

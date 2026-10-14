@@ -1,0 +1,89 @@
+---
+/**
+ * Site footer: badge and address, page links, social links, copyright.
+ * The "Classes Monday–Saturday" line is derived from the schedule.
+ */
+import { Facebook, Instagram } from 'lucide-astro';
+import Logo from './Logo.astro';
+import type { ClassEntry, Settings } from '@/lib/content';
+import { telHref } from '@/lib/format';
+import { gymdeskUrl } from '@/lib/gymdesk';
+import { NAV, isCurrent } from '@/lib/nav';
+import { DAYS } from '@/lib/schedule';
+
+interface Props {
+  settings: Settings;
+  schedule: ClassEntry[];
+  currentPath: string;
+  campaign: string;
+}
+
+const { settings, schedule, currentPath, campaign } = Astro.props;
+const { address } = settings;
+const year = new Date().getFullYear();
+
+const activeDays = DAYS.filter((d) => schedule.some((c) => c.data.day === d.key));
+const firstDay = activeDays[0];
+const lastDay = activeDays[activeDays.length - 1];
+const classDays = firstDay && lastDay ? `${firstDay.label}–${lastDay.label}` : null;
+const classDaysShort = firstDay && lastDay ? `${firstDay.short}–${lastDay.short}` : null;
+
+const links = [...NAV, { label: 'Sign up', href: gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav') }];
+---
+
+<footer class="border-t border-line bg-surface">
+  <div class="wrap flex flex-col gap-8 pb-8 pt-12 md:gap-12 md:pt-16">
+    <div class="flex flex-col gap-8 md:grid md:grid-cols-12 md:items-start md:gap-x-8">
+      <div class="flex flex-col gap-4 md:col-span-5 md:flex-row md:items-start md:gap-6">
+        <Logo class="size-18 md:size-24" />
+        <div class="flex flex-col gap-1 text-body-sm leading-normal">
+          <span class="font-semibold">{settings.name}</span>
+          <span class="text-ink-muted">
+            {address.street}<br />{address.city}, {address.state} {address.zip}
+          </span>
+          <a href={telHref(settings.phone)} class="font-mono text-time text-ink no-underline">{settings.phone}</a>
+          {classDays && <a href="/schedule" class="link mt-2 self-start">Classes {classDays}</a>}
+        </div>
+      </div>
+
+      <nav
+        aria-label="Footer"
+        class="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-6 md:col-span-3 md:col-start-7 md:flex md:flex-col md:gap-2.5 md:border-0 md:pt-0"
+      >
+        <span class="mb-1 hidden text-label uppercase text-ink-muted md:block">Pages</span>
+        {
+          links.map((item) => (
+            <a href={item.href} class="navlink" aria-current={isCurrent(item.href, currentPath) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex gap-4 border-t border-line pt-6 md:col-span-3 md:col-start-10 md:flex-col md:gap-2.5 md:border-0 md:pt-0">
+        <span class="mb-1 hidden text-label uppercase text-ink-muted md:block">Follow</span>
+        {
+          settings.instagram && (
+            <a href={settings.instagram} class="navlink inline-flex items-center gap-2 text-ink-muted md:text-ink" rel="noopener">
+              <Instagram size={20} stroke-width={1.5} aria-hidden="true" />
+              Instagram
+            </a>
+          )
+        }
+        {
+          settings.facebook && (
+            <a href={settings.facebook} class="navlink inline-flex items-center gap-2 text-ink-muted md:text-ink" rel="noopener">
+              <Facebook size={20} stroke-width={1.5} aria-hidden="true" />
+              Facebook
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 font-mono text-time-sm text-ink-muted md:flex-row md:justify-between md:border-t md:border-line md:pt-6">
+      <span>© {year} {settings.name}</span>
+      {classDaysShort && <span class="hidden md:inline">No-Gi only · {classDaysShort}</span>}
+    </div>
+  </div>
+</footer>
