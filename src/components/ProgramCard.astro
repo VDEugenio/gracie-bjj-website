@@ -3,6 +3,7 @@
  * Home-page program card: photo under a scrim, index number, one tag, the
  * name in condensed display type and a one-line time summary.
  * The photo is decorative here; the link text is the program name.
+ * Desktop pointers get the same 3D tilt as the coach cards (src/lib/motion.ts).
  */
 import Photo from './Photo.astro';
 import Tag from './Tag.astro';
@@ -29,15 +30,15 @@ const firstTag = data.tags[0];
     className,
   ]}
   data-motion="reveal"
+  data-tilt
 >
-  <div class="absolute inset-0 bg-surface-muted" aria-hidden="true">
+  <div class="absolute inset-0 overflow-hidden bg-surface-muted" aria-hidden="true" data-tilt-photo>
     <Photo
       image={data.image}
       alt=""
       position={data.imagePosition}
       widths={[400, 800]}
       sizes="(min-width: 768px) 33vw, 100vw"
-      class="transition-transform"
     />
     <div class="absolute inset-0 scrim-program"></div>
   </div>

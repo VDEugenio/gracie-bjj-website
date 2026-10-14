@@ -191,7 +191,7 @@
   background: linear-gradient(to top, var(--color-surface) 8%, transparent 70%);
 }
 
-/* Parent of the coach cards: gives the tilt in src/lib/motion.ts its 3D space. */
+/* Parent of the coach and program cards: gives the tilt in src/lib/motion.ts its 3D space. */
 @utility tilt-stage {
   perspective: 900px;
 }

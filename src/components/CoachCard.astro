@@ -37,8 +37,9 @@ const alt = `Portrait of ${data.name}`;
       class:list={['group relative flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors hover:border-ink', className]}
       aria-labelledby={headingId}
       data-motion="coach-card"
+      data-tilt
     >
-      <div class="relative aspect-4/5 w-full overflow-hidden bg-surface-muted" data-coach-photo>
+      <div class="relative aspect-4/5 w-full overflow-hidden bg-surface-muted" data-tilt-photo>
         {data.photo ? (
           <Photo image={data.photo} alt={alt} position={data.photoPosition} widths={[360, 480, 720]} sizes="(min-width: 768px) 33vw, 100vw" />
         ) : (
@@ -89,8 +90,9 @@ const alt = `Portrait of ${data.name}`;
       ]}
       aria-labelledby={headingId}
       data-motion="coach-card"
+      data-tilt
     >
-      <div class="relative aspect-4/5 overflow-hidden bg-surface-muted" data-coach-photo>
+      <div class="relative aspect-4/5 overflow-hidden bg-surface-muted" data-tilt-photo>
         {data.photo ? (
           <Photo image={data.photo} alt={alt} position={data.photoPosition} widths={[240, 360, 480]} sizes="(min-width: 768px) 25vw, 50vw" />
         ) : (

@@ -134,7 +134,7 @@ const newHere = [
         <Button href="/schedule">View schedule</Button>
       </div>
     </div>
-    <div class="grid gap-4 md:grid-cols-3">
+    <div class="tilt-stage grid gap-4 md:grid-cols-3">
       {programs.map((p, i) => <ProgramCard program={p} index={i + 1} summary={summaryFor(p, schedule)} />)}
     </div>
   </section>

@@ -18,7 +18,8 @@
  *   hero-cta     fades up after the headline     title       page titles: same line reveal
  *   photo-wipe   clip-path wipe on scroll        reveal      fade + rise, staggered, once
  *   marquee      infinite program-name loop      magnetic    primary buttons follow the pointer
- *   coach-card   rise in, desktop 3D tilt        belt        belt stripe "ties on" (scaleX)
+ *   coach-card   rise in one by one              belt        belt stripe "ties on" (scaleX)
+ *   tilt         desktop 3D tilt toward the pointer; the [data-tilt-photo] image drifts the other way
  *   menu / menu-link   mobile menu from the top, links staggered
  *   schedule rows      fade and collapse on filter (via the schedule:filter event)
  */
@@ -69,7 +70,7 @@ export function initMotion(): void {
   });
 
   mm.add(FINE_POINTER, () => {
-    const cleanups = [magnetic(), coachTilt()];
+    const cleanups = [magnetic(), cardTilt()];
     return () => cleanups.forEach((fn) => fn());
   });
 }
@@ -168,7 +169,8 @@ function reveals(): void {
         duration: REVEAL,
         ease: 'power3.out',
         stagger: 0.08,
-        overwrite: true,
+        // "auto" only takes over y and opacity, so a tilted card keeps its rotation tweens.
+        overwrite: 'auto',
         clearProps: 'transform',
       }),
   });
@@ -204,14 +206,14 @@ function coachCards(): void {
   }
 }
 
-/** Desktop only: the card tilts toward the cursor, the photo drifts the other way. */
-function coachTilt(): () => void {
+/** Desktop only (coach and program cards): the card tilts toward the cursor, the photo drifts the other way. */
+function cardTilt(): () => void {
   const MAX_TILT = 8;
   const MAX_DRIFT = 12;
   const removers: Array<() => void> = [];
 
-  for (const card of all('[data-motion="coach-card"]')) {
-    const photo = card.querySelector<HTMLElement>('[data-coach-photo] img');
+  for (const card of all('[data-tilt]')) {
+    const photo = card.querySelector<HTMLElement>('[data-tilt-photo] img');
 
     const quick = { duration: 0.4, ease: 'power3.out' };
     const rotX = gsap.quickTo(card, 'rotationX', quick);
@@ -227,7 +229,8 @@ function coachTilt(): () => void {
       rect = card.getBoundingClientRect();
       setDuration(0.4);
       // Scale the photo just enough that a 12px drift never shows its edge. The text is never scaled.
-      if (photo) gsap.to(photo, { scale: 1 + (MAX_DRIFT * 2 + 4) / rect.width, duration: 0.4, ease: 'power3.out' });
+      const shortSide = Math.min(rect.width, rect.height);
+      if (photo) gsap.to(photo, { scale: 1 + (MAX_DRIFT * 2 + 4) / shortSide, duration: 0.4, ease: 'power3.out' });
     };
     const move = (event: PointerEvent) => {
       const nx = gsap.utils.clamp(-1, 1, ((event.clientX - rect.left) / rect.width) * 2 - 1);
