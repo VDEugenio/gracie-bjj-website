@@ -19,8 +19,8 @@
  *   photo-wipe   clip-path wipe on scroll        reveal      fade + rise, staggered, once
  *   marquee      infinite program-name loop      magnetic    primary buttons follow the pointer
  *   coach-card   rise in one by one              belt        belt stripe "ties on" (scaleX)
- *   tilt         3D tilt toward the pointer on desktop, or with the phone's own tilt on touch
- *                screens; the [data-tilt-photo] image drifts the other way
+ *   tilt         desktop cards tilt toward the pointer; the [data-tilt-photo] image drifts the other way
+ *   hero-tilt    the homepage hero photo leans toward the pointer (desktop) or with the phone (touch)
  *   menu / menu-link   mobile menu from the top, links staggered
  *   schedule rows      fade and collapse on filter (via the schedule:filter event)
  */
@@ -72,11 +72,11 @@ export function initMotion(): void {
   });
 
   mm.add(FINE_POINTER, () => {
-    const cleanups = [magnetic(), cardTilt()];
+    const cleanups = [magnetic(), cardTilt(), heroTiltPointer()];
     return () => cleanups.forEach((fn) => fn());
   });
 
-  mm.add(TOUCH, () => phoneTilt());
+  mm.add(TOUCH, () => heroTiltPhone());
 }
 
 /* ---------- Line reveals (SplitText) ---------- */
@@ -263,47 +263,133 @@ function cardTilt(): () => void {
   return () => removers.forEach((fn) => fn());
 }
 
+/* ---------- Hero photo tilt ---------- */
+
+const HERO_TILT = 4;
+const HERO_DRIFT = 10;
+const HERO_PERSPECTIVE = 1000;
+
+interface HeroTilt {
+  frame: HTMLElement;
+  /** Lean toward a normalised point (-1…1 on each axis). */
+  lean: (nx: number, ny: number) => void;
+  /** Spring duration for the next moves (0.4s to follow, 0.6s to settle back). */
+  duration: (seconds: number) => void;
+  destroy: () => void;
+}
+
 /**
- * Touch screens: the cards on screen lean with the phone (deviceorientation).
+ * The homepage hero photo leans in 3D inside its frame and drifts the other
+ * way. Only the [data-hero-tilt] layer moves: the scrims and the headline stay
+ * put, and the text is never scaled. Null when the page has no hero tilt layer.
+ */
+function heroTilt(): HeroTilt | null {
+  const layer = document.querySelector<HTMLElement>('[data-hero-tilt]');
+  const frame = layer?.closest<HTMLElement>('[data-motion="hero-photo"]');
+  if (!layer || !frame) return null;
+
+  const quick = { duration: 0.4, ease: 'power3.out' };
+  const rotX = gsap.quickTo(layer, 'rotationX', quick);
+  const rotY = gsap.quickTo(layer, 'rotationY', quick);
+  const driftX = gsap.quickTo(layer, 'x', quick);
+  const driftY = gsap.quickTo(layer, 'y', quick);
+  const springs = [rotX, rotY, driftX, driftY];
+
+  // Zoom the photo just enough that the lean (its far edge recedes) plus the drift never show its
+  // edges. Applied on the first move, so a visitor who never tilts sees the photo exactly as designed.
+  let covered = false;
+  const coverScale = () => {
+    const { width, height } = frame.getBoundingClientRect();
+    const recede = HERO_PERSPECTIVE / (HERO_PERSPECTIVE + Math.sin((HERO_TILT * Math.PI) / 180) * (Math.max(width, height) / 2));
+    return (1 + (HERO_DRIFT * 2 + 4) / Math.min(width, height)) / recede;
+  };
+  const onResize = () => {
+    if (covered) gsap.set(layer, { scale: coverScale() });
+  };
+  gsap.set(layer, { transformPerspective: HERO_PERSPECTIVE });
+  window.addEventListener('resize', onResize);
+
+  return {
+    frame,
+    lean(nx, ny) {
+      if (!covered) {
+        covered = true;
+        gsap.to(layer, { scale: coverScale(), duration: REVEAL, ease: 'power3.out' });
+      }
+      rotY(nx * HERO_TILT);
+      rotX(-ny * HERO_TILT);
+      driftX(-nx * HERO_DRIFT);
+      driftY(-ny * HERO_DRIFT);
+    },
+    duration: (seconds) => springs.forEach((fn) => fn.tween.duration(seconds)),
+    destroy() {
+      window.removeEventListener('resize', onResize);
+      gsap.killTweensOf(layer);
+      gsap.set(layer, { clearProps: 'transform' });
+    },
+  };
+}
+
+/** Desktop: the hero photo leans toward the pointer anywhere over the hero. */
+function heroTiltPointer(): () => void {
+  const hero = heroTilt();
+  if (!hero) return () => {};
+  const area = hero.frame.closest<HTMLElement>('section') ?? hero.frame;
+  let rect = area.getBoundingClientRect();
+
+  const enter = () => {
+    rect = area.getBoundingClientRect();
+    hero.duration(0.4);
+  };
+  const move = (event: PointerEvent) => {
+    hero.lean(
+      gsap.utils.clamp(-1, 1, ((event.clientX - rect.left) / rect.width) * 2 - 1),
+      gsap.utils.clamp(-1, 1, ((event.clientY - rect.top) / rect.height) * 2 - 1),
+    );
+  };
+  const leave = () => {
+    hero.duration(0.6);
+    hero.lean(0, 0);
+  };
+
+  area.addEventListener('pointerenter', enter);
+  area.addEventListener('pointermove', move);
+  area.addEventListener('pointerleave', leave);
+  return () => {
+    area.removeEventListener('pointerenter', enter);
+    area.removeEventListener('pointermove', move);
+    area.removeEventListener('pointerleave', leave);
+    hero.destroy();
+  };
+}
+
+/**
+ * Touch screens: the hero photo leans with the phone (deviceorientation),
+ * measured from the angle the phone is held at, which slowly re-centres.
  * Browsers only send orientation on HTTPS. iOS also needs permission, which it
  * only lets a page ask for during a tap, so the prompt waits for the visitor's
- * first tap on a page with tilt cards. A "denied" answer is remembered and
- * never asked again.
+ * first tap that isn't on a link or control (so it never lands on top of a
+ * navigation). A "denied" answer is remembered and never asked again.
  */
-function phoneTilt(): () => void {
-  const cards = all('[data-tilt]');
-  if (!cards.length || !('DeviceOrientationEvent' in window)) return () => {};
+function heroTiltPhone(): () => void {
+  if (!('DeviceOrientationEvent' in window)) return () => {};
+  const hero = heroTilt();
+  if (!hero) return () => {};
 
-  const MAX_TILT = 6;
-  const MAX_DRIFT = 10;
-  /** Degrees of phone tilt away from the resting angle that give the full card tilt. */
+  /** Degrees of phone tilt away from the resting angle that give the full lean. */
   const RANGE = 20;
   /** How quickly the resting angle follows the way the phone is held (per event). */
   const RECENTER = 0.02;
   const ASKED_KEY = 'rg-motion-permission';
 
-  const quick = { duration: 0.4, ease: 'power3.out' };
-  const springs = cards.map((card) => {
-    const photo = card.querySelector<HTMLElement>('[data-tilt-photo] img');
-    return {
-      card,
-      photo,
-      rotX: gsap.quickTo(card, 'rotationX', quick),
-      rotY: gsap.quickTo(card, 'rotationY', quick),
-      driftX: photo ? gsap.quickTo(photo, 'x', quick) : null,
-      driftY: photo ? gsap.quickTo(photo, 'y', quick) : null,
-    };
+  // Only follow the phone while the hero is on screen.
+  let onScreen = true;
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry) onScreen = entry.isIntersecting;
   });
-
-  // Only cards on screen follow the phone.
-  const visible = new Set<Element>();
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target);
-  });
-  cards.forEach((card) => observer.observe(card));
+  observer.observe(hero.frame);
 
   let rest: { x: number; y: number } | null = null;
-  let running = false;
 
   const onOrientation = (event: DeviceOrientationEvent) => {
     if (event.beta === null || event.gamma === null) return;
@@ -315,35 +401,10 @@ function phoneTilt(): () => void {
       : angle === 180 ? [-event.gamma, -event.beta]
       : [event.gamma, event.beta];
 
-    if (!rest) {
-      rest = { x, y };
-      // Scale each photo just enough that the drift never shows its edge. The text is never scaled.
-      for (const { card, photo } of springs) {
-        const { width, height } = card.getBoundingClientRect();
-        if (photo) gsap.to(photo, { scale: 1 + (MAX_DRIFT * 2 + 4) / Math.min(width, height), duration: REVEAL, ease: 'power3.out' });
-      }
-    }
+    rest ??= { x, y };
     rest.x += (x - rest.x) * RECENTER;
     rest.y += (y - rest.y) * RECENTER;
-
-    const nx = gsap.utils.clamp(-1, 1, (x - rest.x) / RANGE);
-    const ny = gsap.utils.clamp(-1, 1, (y - rest.y) / RANGE);
-    for (const s of springs) {
-      if (!visible.has(s.card)) continue;
-      // Each card gets its own vanishing point (a tall stacked grid would skew cards far from its centre).
-      // Set here rather than once, because the reveal's clearProps wipes it.
-      if (!gsap.getProperty(s.card, 'transformPerspective')) gsap.set(s.card, { transformPerspective: 900 });
-      s.rotY(nx * MAX_TILT);
-      s.rotX(-ny * MAX_TILT);
-      s.driftX?.(-nx * MAX_DRIFT);
-      s.driftY?.(-ny * MAX_DRIFT);
-    }
-  };
-
-  const start = () => {
-    if (running) return;
-    running = true;
-    window.addEventListener('deviceorientation', onOrientation);
+    if (onScreen) hero.lean(gsap.utils.clamp(-1, 1, (x - rest.x) / RANGE), gsap.utils.clamp(-1, 1, (y - rest.y) / RANGE));
   };
 
   const remember = (state: string) => {
@@ -364,25 +425,25 @@ function phoneTilt(): () => void {
   type IOSOrientation = typeof DeviceOrientationEvent & { requestPermission?: () => Promise<PermissionState> };
   const requestPermission = (DeviceOrientationEvent as IOSOrientation).requestPermission;
 
-  const onTap = () => {
-    requestPermission!.call(DeviceOrientationEvent).then(
-      (state) => {
-        stopAsking();
-        remember(state);
-        if (state === 'granted') start();
-      },
-      // Not counted as a tap (e.g. the end of a scroll): wait for the next one.
-      () => {},
-    );
-  };
   const stopAsking = () => {
     document.removeEventListener('click', onTap);
     document.removeEventListener('touchend', onTap);
   };
+  function onTap(event: Event) {
+    if ((event.target as Element | null)?.closest('a, button, input, select, textarea, label, summary')) return;
+    requestPermission!.call(DeviceOrientationEvent).then(
+      (state) => {
+        stopAsking();
+        remember(state);
+      },
+      // Not counted as a tap (e.g. the end of a scroll): wait for the next one.
+      () => {},
+    );
+  }
 
-  // Listen straight away: Android sends orientation without asking, and on iOS an earlier "granted"
-  // may still hold. Where a permission API exists, the first tap confirms it (or shows the prompt).
-  start();
+  // Listen straight away: Android sends orientation without asking, and on iOS events start
+  // arriving once permission is granted (or still holds from earlier).
+  window.addEventListener('deviceorientation', onOrientation);
   if (requestPermission && recalled() !== 'denied') {
     document.addEventListener('click', onTap);
     document.addEventListener('touchend', onTap);
@@ -392,8 +453,7 @@ function phoneTilt(): () => void {
     stopAsking();
     window.removeEventListener('deviceorientation', onOrientation);
     observer.disconnect();
-    gsap.set(cards, { clearProps: 'transform' });
-    for (const { photo } of springs) if (photo) gsap.set(photo, { clearProps: 'transform' });
+    hero.destroy();
   };
 }
 

@@ -144,7 +144,8 @@ All GSAP code is in `src/lib/motion.ts`, started once from `Base.astro`. Compone
 | `photo-wipe` | Photos wipe in left to right as they scroll in |
 | `reveal` | Cards, rows and steps fade and rise with a stagger at 80% of the viewport, once |
 | `coach-card`, `belt` | Coach cards rise in one by one and the belt stripe ties on (scaleX). Desktop pointers also get the tilt (see `tilt`) |
-| `tilt`, `tilt-photo` | `data-tilt` / `data-tilt-photo` (plain attributes, not `data-motion`): coach cards and homepage program cards tilt toward a desktop pointer, or lean with the phone on touch screens (HTTPS only; iOS asks for motion access on the first tap), and the photo drifts the other way. The parent grid needs `tilt-stage` |
+| `tilt`, `tilt-photo` | `data-tilt` / `data-tilt-photo` (plain attributes, not `data-motion`): coach cards and homepage program cards tilt toward a desktop pointer and the photo drifts the other way (desktop only). The parent grid needs `tilt-stage` |
+| `hero-tilt` | `data-hero-tilt` on the layer around the homepage hero photo: it leans toward the pointer on desktop, or with the phone on touch screens (HTTPS only; iOS asks for motion access on the first tap that isn't on a link or control) |
 | `marquee` | The program-name strip loops while it is on screen |
 | `magnetic` | Primary buttons lean toward the pointer (desktop pointers only) |
 | `menu`, `menu-link` | The phone menu slides down from the top, links rise in with a 0.05 stagger |

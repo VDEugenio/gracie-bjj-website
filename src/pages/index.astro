@@ -67,14 +67,16 @@ const newHere = [
 >
   <!-- Hero -->
   <section id="top" class="relative h-154 overflow-hidden bg-surface-raised md:h-205 md:bg-surface" aria-labelledby="hero-h">
-    <div class="absolute inset-0 md:left-[46%]" data-motion="hero-photo">
-      <Photo
-        image={heroPhoto}
-        alt="Two No-Gi athletes working an arm lock on the mats"
-        priority
-        sizes="(min-width: 768px) 54vw, 100vw"
-        class="object-[50%_30%] md:object-[50%_45%]"
-      />
+    <div class="absolute inset-0 overflow-hidden md:left-[46%]" data-motion="hero-photo">
+      <div class="absolute inset-0" data-hero-tilt>
+        <Photo
+          image={heroPhoto}
+          alt="Two No-Gi athletes working an arm lock on the mats"
+          priority
+          sizes="(min-width: 768px) 54vw, 100vw"
+          class="object-[50%_30%] md:object-[50%_45%]"
+        />
+      </div>
       <div class="absolute inset-0 scrim-bottom md:hidden" aria-hidden="true"></div>
       <div class="absolute inset-0 hidden scrim-left md:block" aria-hidden="true"></div>
       <div class="absolute inset-0 hidden scrim-up md:block" aria-hidden="true"></div>
