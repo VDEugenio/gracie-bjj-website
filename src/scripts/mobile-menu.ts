@@ -65,7 +65,7 @@ if (menu && toggle) {
 
   menu.querySelectorAll('a[href]').forEach((link) => link.addEventListener('click', () => close(false)));
 
-  const desktop = window.matchMedia('(min-width: 768px)');
+  const desktop = window.matchMedia('(min-width: 1024px)');
   desktop.addEventListener('change', (event) => {
     if (event.matches) close(false);
   });

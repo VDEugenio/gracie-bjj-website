@@ -16,17 +16,25 @@
  * Hooks:
  *   hero-photo   settles from a slight zoom      hero-title  SplitText lines rise from a mask
  *   hero-cta     fades up after the headline     title       page titles: same line reveal
- *   photo-wipe   clip-path wipe on scroll        reveal      fade + rise, staggered, once
+ *   photo-wipe   clip-path wipe on scroll        reveal      fade + rise, staggered
  *   marquee      infinite program-name loop      magnetic    primary buttons follow the pointer
  *   coach-card   rise in one by one              belt        belt stripe "ties on" (scaleX)
+ *   data-pulse   the hero's free-week button sends out a signal ring every few seconds
  *   tilt         desktop cards tilt toward the pointer; the [data-tilt-photo] image drifts the other way
- *   hero-tilt    the homepage hero photo leans toward the pointer (desktop) or with the phone (touch)
+ *   photo-tilt   photos lean inside their frames toward the pointer (desktop); the homepage
+ *                hero also leans with the phone (touch)
+ *   coach flip   coach cards turn over to the bio (via the coach:flip event)
  *   menu / menu-link   mobile menu from the top, links staggered
  *   schedule rows      fade and collapse on filter (via the schedule:filter event)
+ *
+ * Every entrance replays: once an element has fully left the screen it resets
+ * (unseen), and it plays again when it comes back, from below or above. See
+ * replayOnScroll().
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import type { CoachFlipDetail } from '@/scripts/coach-flip';
 import type { MenuCloseDetail } from '@/scripts/mobile-menu';
 import type { ScheduleFilterDetail } from '@/scripts/schedule-filter';
 
@@ -51,6 +59,62 @@ const START = (self: ScrollTrigger): number => {
 const all = <T extends Element = HTMLElement>(selector: string, root: ParentNode = document): T[] =>
   Array.from(root.querySelectorAll<T>(selector));
 
+/**
+ * Plays an entrance whenever `el` comes on screen, and resets it once it has
+ * fully left the viewport, so the reset is never seen. Scrolling down it plays
+ * at START (top at 80%); scrolling back up it plays as soon as its bottom edge
+ * comes back in. `shown` is true for entrances that already play on load (the hero).
+ */
+function replayOnScroll(el: Element, { play, reset, shown = false }: { play: () => void; reset: () => void; shown?: boolean }): void {
+  const enter = () => {
+    if (shown) return;
+    shown = true;
+    play();
+  };
+  const leave = () => {
+    if (!shown) return;
+    shown = false;
+    reset();
+  };
+  ScrollTrigger.create({ trigger: el, start: START, onEnter: enter });
+  ScrollTrigger.create({ trigger: el, start: 'top bottom', end: 'bottom top', onEnterBack: enter, onLeave: leave, onLeaveBack: leave });
+}
+
+/**
+ * Collects the elements that come on screen in the same frame, so they play as
+ * one group staggered top to bottom. An element reset before the frame (a fast
+ * scroll straight past it) is dropped from the group, so it stays ready to play.
+ */
+function grouped(play: (group: HTMLElement[]) => void): { add: (el: HTMLElement) => void; drop: (el: HTMLElement) => void } {
+  const group = new Set<HTMLElement>();
+  return {
+    add(el) {
+      group.add(el);
+      if (group.size > 1) return;
+      requestAnimationFrame(() => {
+        const ready = [...group].sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+        group.clear();
+        if (ready.length) play(ready);
+      });
+    },
+    drop: (el) => group.delete(el),
+  };
+}
+
+/**
+ * The entrance playing (or waiting on a delay) for each element, so a reset can
+ * cancel it outright, even one that hasn't started yet.
+ */
+const entrances = new WeakMap<Element, gsap.core.Animation>();
+const startEntrance = (el: Element, animation: gsap.core.Animation): void => {
+  entrances.get(el)?.kill();
+  entrances.set(el, animation);
+};
+const stopEntrance = (el: Element): void => {
+  entrances.get(el)?.kill();
+  entrances.delete(el);
+};
+
 let started = false;
 
 export function initMotion(): void {
@@ -67,12 +131,12 @@ export function initMotion(): void {
     reveals();
     coachCards();
     marquees();
-    const cleanups = [mobileMenu(), scheduleFilter()];
+    const cleanups = [ctaPulse(), coachFlips(), mobileMenu(), scheduleFilter()];
     return () => cleanups.forEach((fn) => fn());
   });
 
   mm.add(FINE_POINTER, () => {
-    const cleanups = [magnetic(), cardTilt(), heroTiltPointer()];
+    const cleanups = [magnetic(), cardTilt(), photoTiltPointer()];
     return () => cleanups.forEach((fn) => fn());
   });
 
@@ -82,13 +146,14 @@ export function initMotion(): void {
 /* ---------- Line reveals (SplitText) ---------- */
 
 /**
- * Splits a heading into masked lines and slides each line up. autoSplit
- * re-splits when the web fonts finish loading or the width changes; returning
- * the tween lets SplitText carry its progress over to the new lines.
+ * Splits a heading into masked lines and slides each line up, every time the
+ * heading comes on screen. autoSplit re-splits when the web fonts finish
+ * loading or the width changes; returning the tween lets SplitText carry its
+ * progress over to the new lines. `onLoad` headings (in a hero) play straight away.
  */
-function splitLines(el: HTMLElement, { delay = 0, onScroll = false } = {}): void {
-  // A re-split builds a new tween, so the scroll trigger lives outside it and just plays whichever is current.
-  let entered = !onScroll;
+function splitLines(el: HTMLElement, { delay = 0, onLoad = false } = {}): void {
+  // A re-split builds a new tween, so the scroll triggers live outside it and drive whichever is current.
+  let onScreen = onLoad;
   let tween: gsap.core.Tween | undefined;
 
   SplitText.create(el, {
@@ -100,22 +165,22 @@ function splitLines(el: HTMLElement, { delay = 0, onScroll = false } = {}): void
     aria: 'none',
     autoSplit: true,
     onSplit: (self: SplitText) => {
-      tween = gsap.from(self.lines, { yPercent: 110, duration: HERO, ease: 'expo.out', stagger: 0.08, delay, paused: !entered });
+      tween = gsap.from(self.lines, { yPercent: 110, duration: HERO, ease: 'expo.out', stagger: 0.08, delay, paused: !onScreen });
       return tween;
     },
   });
 
-  if (onScroll) {
-    ScrollTrigger.create({
-      trigger: el,
-      start: START,
-      once: true,
-      onEnter: () => {
-        entered = true;
-        tween?.play();
-      },
-    });
-  }
+  replayOnScroll(el, {
+    shown: onLoad,
+    play: () => {
+      onScreen = true;
+      tween?.restart(true);
+    },
+    reset: () => {
+      onScreen = false;
+      tween?.pause(0);
+    },
+  });
 }
 
 function hero(): void {
@@ -124,13 +189,16 @@ function hero(): void {
   // faded: it paints at once and settles from a slight zoom. The clip-path wipe
   // is for photos further down.
   const img = photo?.querySelector('img');
-  if (img) gsap.from(img, { scale: 1.12, duration: 1.1, ease: 'expo.out', clearProps: 'transform' });
+  if (photo && img) {
+    const settle = gsap.from(img, { scale: 1.12, duration: 1.1, ease: 'expo.out' });
+    replayOnScroll(photo, { shown: true, play: () => settle.restart(), reset: () => settle.pause(0) });
+  }
 
-  for (const title of all('[data-motion="hero-title"]')) splitLines(title, { delay: 0.15 });
+  for (const title of all('[data-motion="hero-title"]')) splitLines(title, { delay: 0.15, onLoad: true });
 
-  const ctas = all('[data-motion="hero-cta"]');
-  if (ctas.length) {
-    gsap.from(ctas, { autoAlpha: 0, y: 16, duration: REVEAL, ease: 'power3.out', delay: 0.55, clearProps: 'transform' });
+  for (const cta of all('[data-motion="hero-cta"]')) {
+    const rise = gsap.from(cta, { autoAlpha: 0, y: 16, duration: REVEAL, ease: 'power3.out', delay: 0.55 });
+    replayOnScroll(cta, { shown: true, play: () => rise.restart(true), reset: () => rise.pause(0) });
   }
 }
 
@@ -138,7 +206,7 @@ function titles(): void {
   for (const title of all('[data-motion="title"]')) {
     // Program-page titles sit in the hero and play on load; page titles further down wait for the scroll.
     const inHero = title.closest('section')?.querySelector('[data-motion="hero-photo"]');
-    splitLines(title, inHero ? { delay: 0.15 } : { onScroll: true });
+    splitLines(title, inHero ? { delay: 0.15, onLoad: true } : {});
   }
 }
 
@@ -146,14 +214,11 @@ function titles(): void {
 
 function photoWipes(): void {
   for (const frame of all('[data-motion="photo-wipe"]')) {
-    const tl = gsap.timeline({ scrollTrigger: { trigger: frame, start: START, once: true } });
-    tl.fromTo(
-      frame,
-      { clipPath: 'inset(0% 100% 0% 0%)' },
-      { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9, ease: 'power3.out', clearProps: 'clipPath' },
-    );
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(frame, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.9, ease: 'power3.out' });
     const img = frame.querySelector('img');
-    if (img) tl.from(img, { scale: 1.1, duration: 0.9, ease: 'power3.out', clearProps: 'transform' }, 0);
+    if (img) tl.from(img, { scale: 1.1, duration: 0.9, ease: 'power3.out' }, 0);
+    replayOnScroll(frame, { play: () => tl.restart(), reset: () => tl.pause(0) });
   }
 }
 
@@ -162,22 +227,27 @@ function photoWipes(): void {
 function reveals(): void {
   const items = all('[data-motion="reveal"]');
   if (!items.length) return;
-  gsap.set(items, { autoAlpha: 0, y: 32 });
-  ScrollTrigger.batch(items, {
-    start: START,
-    once: true,
-    onEnter: (batch) =>
-      gsap.to(batch, {
-        autoAlpha: 1,
-        y: 0,
-        duration: REVEAL,
-        ease: 'power3.out',
-        stagger: 0.08,
+  const hidden = { autoAlpha: 0, y: 32 };
+  gsap.set(items, hidden);
+  const play = grouped((group) =>
+    group.forEach((item, i) =>
+      startEntrance(
+        item,
         // "auto" only takes over y and opacity, so a tilted card keeps its rotation tweens.
-        overwrite: 'auto',
-        clearProps: 'transform',
-      }),
-  });
+        gsap.to(item, { autoAlpha: 1, y: 0, duration: REVEAL, ease: 'power3.out', delay: i * 0.08, overwrite: 'auto' }),
+      ),
+    ),
+  );
+  for (const item of items) {
+    replayOnScroll(item, {
+      play: () => play.add(item),
+      reset: () => {
+        play.drop(item);
+        stopEntrance(item);
+        gsap.set(item, hidden);
+      },
+    });
+  }
 }
 
 /* ---------- Coach cards: rise in one by one, then the belt ties on ---------- */
@@ -185,30 +255,137 @@ function reveals(): void {
 function coachCards(): void {
   const cards = all('[data-motion="coach-card"]');
   const belts = all('[data-motion="belt"]');
-  if (belts.length) gsap.set(belts, { scaleX: 0, transformOrigin: '0% 50%' });
+  const untied = { scaleX: 0, transformOrigin: '0% 50%' };
+  if (belts.length) gsap.set(belts, untied);
 
-  const tieOn = (belt: Element) => gsap.to(belt, { scaleX: 1, duration: REVEAL, ease: 'power3.out' });
+  const tieOn = (belt: Element) => gsap.to(belt, { scaleX: 1, duration: REVEAL, ease: 'power3.out', overwrite: 'auto' });
 
   if (cards.length) {
-    gsap.set(cards, { autoAlpha: 0, y: 40 });
-    ScrollTrigger.batch(cards, {
-      start: START,
-      once: true,
-      onEnter: (batch) =>
-        batch.forEach((card, i) => {
-          const tl = gsap.timeline({ delay: i * 0.1 });
-          tl.to(card, { autoAlpha: 1, y: 0, duration: REVEAL, ease: 'power3.out' });
-          const belt = card.querySelector('[data-motion="belt"]');
-          if (belt) tl.add(tieOn(belt), 0.3);
-        }),
-    });
+    const hidden = { autoAlpha: 0, y: 40 };
+    gsap.set(cards, hidden);
+    const play = grouped((group) =>
+      group.forEach((card, i) => {
+        const tl = gsap.timeline({ delay: i * 0.1 });
+        tl.to(card, { autoAlpha: 1, y: 0, duration: REVEAL, ease: 'power3.out', overwrite: 'auto' });
+        const belt = card.querySelector('[data-motion="belt"]');
+        if (belt) tl.add(tieOn(belt), 0.3);
+        startEntrance(card, tl);
+      }),
+    );
+    for (const card of cards) {
+      const belt = card.querySelector('[data-motion="belt"]');
+      replayOnScroll(card, {
+        play: () => play.add(card),
+        reset: () => {
+          play.drop(card);
+          stopEntrance(card);
+          gsap.set(card, hidden);
+          if (belt) gsap.set(belt, untied);
+        },
+      });
+    }
   }
 
   // A belt stripe used outside a coach card ties on by itself.
   for (const belt of belts.filter((b) => !b.closest('[data-motion="coach-card"]'))) {
-    ScrollTrigger.create({ trigger: belt, start: START, once: true, onEnter: () => tieOn(belt) });
+    replayOnScroll(belt, {
+      play: () => startEntrance(belt, tieOn(belt)),
+      reset: () => {
+        stopEntrance(belt);
+        gsap.set(belt, untied);
+      },
+    });
   }
 }
+
+/* ---------- Coach card flip ---------- */
+
+/**
+ * Turns a coach card over to its bio and back (src/scripts/coach-flip.ts sets
+ * the state). The inline rotation takes over from the CSS one, so a turn
+ * always starts from where the card is, even mid-turn.
+ */
+function coachFlips(): () => void {
+  const inners = all('[data-coach-flip] [data-flip-inner]');
+  if (!inners.length) return () => {};
+  for (const inner of inners) gsap.set(inner, { rotationY: inner.closest('[data-flipped]') ? 180 : 0 });
+
+  const onFlip = (event: Event) => {
+    const { inner, flipped } = (event as CustomEvent<CoachFlipDetail>).detail;
+    gsap.to(inner, { rotationY: flipped ? 180 : 0, duration: REVEAL, ease: 'power2.inOut', overwrite: 'auto' });
+  };
+  document.addEventListener('coach:flip', onFlip);
+  return () => {
+    document.removeEventListener('coach:flip', onFlip);
+    gsap.killTweensOf(inners);
+    gsap.set(inners, { clearProps: 'transform' });
+  };
+}
+
+/* ---------- Hero free-week button: a signal ring every few seconds ---------- */
+
+/**
+ * The hero's primary button sends a 2px signal ring outward and fades it while
+ * the arrow nudges right. It waits for the button to fade in, runs only while
+ * the button is on screen, and stops for good once the visitor points at or
+ * focuses the button (they have found it).
+ */
+function ctaPulse(): () => void {
+  const removers: Array<() => void> = [];
+  const GROW = 12;
+
+  for (const button of all('[data-pulse]')) {
+    const ring = button.querySelector<HTMLElement>('[data-pulse-ring]');
+    if (!ring) continue;
+    const arrow = button.querySelector<HTMLElement>('[data-pulse-arrow]');
+
+    const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 1.8, delay: 1.2 });
+    loop.fromTo(
+      ring,
+      { autoAlpha: 0.7, scaleX: 1, scaleY: 1 },
+      {
+        autoAlpha: 0,
+        // The ring grows by the same few pixels on every side, whatever the button's shape.
+        scaleX: () => 1 + (GROW * 2) / button.offsetWidth,
+        scaleY: () => 1 + (GROW * 2) / button.offsetHeight,
+        duration: 1.2,
+        ease: 'power3.out',
+      },
+    );
+    if (arrow) loop.to(arrow, { x: 4, duration: 0.3, ease: 'power2.inOut', yoyo: true, repeat: 1 }, 0);
+
+    let found = false;
+    const trigger = ScrollTrigger.create({
+      trigger: button,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: (self) => {
+        if (found) return;
+        if (self.isActive) loop.play();
+        else loop.pause();
+      },
+    });
+    const stop = () => {
+      found = true;
+      loop.pause();
+      gsap.to(ring, { autoAlpha: 0, duration: UI, ease: 'power3.out' });
+      if (arrow) gsap.to(arrow, { x: 0, duration: UI, ease: 'power3.out' });
+    };
+    button.addEventListener('pointerenter', stop, { once: true });
+    button.addEventListener('focus', stop, { once: true });
+    removers.push(() => {
+      button.removeEventListener('pointerenter', stop);
+      button.removeEventListener('focus', stop);
+      trigger.kill();
+      loop.kill();
+      gsap.set(arrow ? [ring, arrow] : [ring], { clearProps: 'all' });
+    });
+  }
+
+  return () => removers.forEach((fn) => fn());
+}
+
+/* ---------- Card tilt ---------- */
 
 /** Desktop only (coach and program cards): the card tilts toward the cursor, the photo drifts the other way. */
 function cardTilt(): () => void {
@@ -263,13 +440,13 @@ function cardTilt(): () => void {
   return () => removers.forEach((fn) => fn());
 }
 
-/* ---------- Hero photo tilt ---------- */
+/* ---------- Photo tilt ---------- */
 
-const HERO_TILT = 4;
-const HERO_DRIFT = 10;
-const HERO_PERSPECTIVE = 1000;
+const PHOTO_TILT = 4;
+const PHOTO_DRIFT = 10;
+const PHOTO_PERSPECTIVE = 1000;
 
-interface HeroTilt {
+interface PhotoTilt {
   frame: HTMLElement;
   /** Lean toward a normalised point (-1…1 on each axis). */
   lean: (nx: number, ny: number) => void;
@@ -279,14 +456,13 @@ interface HeroTilt {
 }
 
 /**
- * The homepage hero photo leans in 3D inside its frame and drifts the other
- * way. Only the [data-hero-tilt] layer moves: the scrims and the headline stay
- * put, and the text is never scaled. Null when the page has no hero tilt layer.
+ * A photo leans in 3D inside its frame and drifts the other way. Only the
+ * [data-photo-tilt] layer moves: the frame clips it, and the scrims and any
+ * text stay put and are never scaled. The frame is the layer's parent.
  */
-function heroTilt(): HeroTilt | null {
-  const layer = document.querySelector<HTMLElement>('[data-hero-tilt]');
-  const frame = layer?.closest<HTMLElement>('[data-motion="hero-photo"]');
-  if (!layer || !frame) return null;
+function photoTilt(layer: HTMLElement): PhotoTilt | null {
+  const frame = layer.parentElement;
+  if (!frame) return null;
 
   const quick = { duration: 0.4, ease: 'power3.out' };
   const rotX = gsap.quickTo(layer, 'rotationX', quick);
@@ -300,13 +476,13 @@ function heroTilt(): HeroTilt | null {
   let covered = false;
   const coverScale = () => {
     const { width, height } = frame.getBoundingClientRect();
-    const recede = HERO_PERSPECTIVE / (HERO_PERSPECTIVE + Math.sin((HERO_TILT * Math.PI) / 180) * (Math.max(width, height) / 2));
-    return (1 + (HERO_DRIFT * 2 + 4) / Math.min(width, height)) / recede;
+    const recede = PHOTO_PERSPECTIVE / (PHOTO_PERSPECTIVE + Math.sin((PHOTO_TILT * Math.PI) / 180) * (Math.max(width, height) / 2));
+    return (1 + (PHOTO_DRIFT * 2 + 4) / Math.min(width, height)) / recede;
   };
   const onResize = () => {
     if (covered) gsap.set(layer, { scale: coverScale() });
   };
-  gsap.set(layer, { transformPerspective: HERO_PERSPECTIVE });
+  gsap.set(layer, { transformPerspective: PHOTO_PERSPECTIVE });
   window.addEventListener('resize', onResize);
 
   return {
@@ -316,10 +492,10 @@ function heroTilt(): HeroTilt | null {
         covered = true;
         gsap.to(layer, { scale: coverScale(), duration: REVEAL, ease: 'power3.out' });
       }
-      rotY(nx * HERO_TILT);
-      rotX(-ny * HERO_TILT);
-      driftX(-nx * HERO_DRIFT);
-      driftY(-ny * HERO_DRIFT);
+      rotY(nx * PHOTO_TILT);
+      rotX(-ny * PHOTO_TILT);
+      driftX(-nx * PHOTO_DRIFT);
+      driftY(-ny * PHOTO_DRIFT);
     },
     duration: (seconds) => springs.forEach((fn) => fn.tween.duration(seconds)),
     destroy() {
@@ -330,37 +506,47 @@ function heroTilt(): HeroTilt | null {
   };
 }
 
-/** Desktop: the hero photo leans toward the pointer anywhere over the hero. */
-function heroTiltPointer(): () => void {
-  const hero = heroTilt();
-  if (!hero) return () => {};
-  const area = hero.frame.closest<HTMLElement>('section') ?? hero.frame;
-  let rect = area.getBoundingClientRect();
+/**
+ * Desktop: each photo leans toward the pointer while it is over the photo, or
+ * over the wider [data-tilt-area] around it (the homepage hero follows the
+ * pointer anywhere over the hero), and settles back on leave.
+ */
+function photoTiltPointer(): () => void {
+  const removers: Array<() => void> = [];
 
-  const enter = () => {
-    rect = area.getBoundingClientRect();
-    hero.duration(0.4);
-  };
-  const move = (event: PointerEvent) => {
-    hero.lean(
-      gsap.utils.clamp(-1, 1, ((event.clientX - rect.left) / rect.width) * 2 - 1),
-      gsap.utils.clamp(-1, 1, ((event.clientY - rect.top) / rect.height) * 2 - 1),
-    );
-  };
-  const leave = () => {
-    hero.duration(0.6);
-    hero.lean(0, 0);
-  };
+  for (const layer of all('[data-photo-tilt]')) {
+    const photo = photoTilt(layer);
+    if (!photo) continue;
+    const area = layer.closest<HTMLElement>('[data-tilt-area]') ?? photo.frame;
+    let rect = area.getBoundingClientRect();
 
-  area.addEventListener('pointerenter', enter);
-  area.addEventListener('pointermove', move);
-  area.addEventListener('pointerleave', leave);
-  return () => {
-    area.removeEventListener('pointerenter', enter);
-    area.removeEventListener('pointermove', move);
-    area.removeEventListener('pointerleave', leave);
-    hero.destroy();
-  };
+    const enter = () => {
+      rect = area.getBoundingClientRect();
+      photo.duration(0.4);
+    };
+    const move = (event: PointerEvent) => {
+      photo.lean(
+        gsap.utils.clamp(-1, 1, ((event.clientX - rect.left) / rect.width) * 2 - 1),
+        gsap.utils.clamp(-1, 1, ((event.clientY - rect.top) / rect.height) * 2 - 1),
+      );
+    };
+    const leave = () => {
+      photo.duration(0.6);
+      photo.lean(0, 0);
+    };
+
+    area.addEventListener('pointerenter', enter);
+    area.addEventListener('pointermove', move);
+    area.addEventListener('pointerleave', leave);
+    removers.push(() => {
+      area.removeEventListener('pointerenter', enter);
+      area.removeEventListener('pointermove', move);
+      area.removeEventListener('pointerleave', leave);
+      photo.destroy();
+    });
+  }
+
+  return () => removers.forEach((fn) => fn());
 }
 
 /**
@@ -373,7 +559,8 @@ function heroTiltPointer(): () => void {
  */
 function heroTiltPhone(): () => void {
   if (!('DeviceOrientationEvent' in window)) return () => {};
-  const hero = heroTilt();
+  const layer = document.querySelector<HTMLElement>('[data-photo-tilt="phone"]');
+  const hero = layer && photoTilt(layer);
   if (!hero) return () => {};
 
   /** Degrees of phone tilt away from the resting angle that give the full lean. */

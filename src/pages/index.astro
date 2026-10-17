@@ -1,7 +1,7 @@
 ---
 /**
  * Home page, built from design/mockups/html/home-{phone,desktop}.html.
- * Sections: hero, "New here?", marquee, programs, today at the gym, coaches,
+ * Sections: hero, marquee, programs, today at the gym, coaches,
  * pricing, visit us, final CTA. Everything with a time or a price comes from
  * the content collections.
  */
@@ -12,13 +12,10 @@ import FinalCta from '@/components/FinalCta.astro';
 import MapEmbed from '@/components/MapEmbed.astro';
 import Marquee from '@/components/Marquee.astro';
 import Photo from '@/components/Photo.astro';
-import PhotoBlock from '@/components/PhotoBlock.astro';
 import PricingCard from '@/components/PricingCard.astro';
-import PricingDropIns from '@/components/PricingDropIns.astro';
 import ProgramCard from '@/components/ProgramCard.astro';
 import ScheduleDay from '@/components/ScheduleDay.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import Steps from '@/components/Steps.astro';
 import { getHomeCoaches, getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
 import { todaySentence } from '@/lib/copy';
 import { fitStyle } from '@/lib/fit';
@@ -27,7 +24,6 @@ import { gymdeskUrl } from '@/lib/gymdesk';
 import { directionsUrl } from '@/lib/maps';
 import { groupByDay, summaryFor } from '@/lib/schedule';
 import heroPhoto from '@/assets/sections/hero-arm-lock-mirrored.jpg';
-import welcomePhoto from '@/assets/sections/welcome.jpg';
 import teamPhoto from '@/assets/sections/team-group-photo.jpg';
 
 const campaign = 'home';
@@ -50,13 +46,6 @@ const panels = [
 ];
 
 const plans = pricing.filter((p) => p.data.period === 'month' || p.data.period === 'free');
-const dropIns = pricing.filter((p) => p.data.period === 'day-pass' || p.data.period === '10-pass');
-
-const newHere = [
-  { title: 'No experience needed', note: 'Every class has first-timers. Coaches walk you through everything.' },
-  { title: 'No gi needed — rash guard and shorts', note: "Wear what you'd wear to any gym. We train No-Gi only." },
-  { title: 'Your first week is free', note: 'Try any class for seven days before you decide.' },
-];
 ---
 
 <Base
@@ -66,9 +55,9 @@ const newHere = [
   currentPath="/"
 >
   <!-- Hero -->
-  <section id="top" class="relative h-154 overflow-hidden bg-surface-raised md:h-205 md:bg-surface" aria-labelledby="hero-h">
+  <section id="top" class="relative h-154 overflow-hidden bg-surface-raised md:h-205 md:bg-surface" aria-labelledby="hero-h" data-tilt-area>
     <div class="absolute inset-0 overflow-hidden md:left-[46%]" data-motion="hero-photo">
-      <div class="absolute inset-0" data-hero-tilt>
+      <div class="absolute inset-0" data-photo-tilt="phone">
         <Photo
           image={heroPhoto}
           alt="Two No-Gi athletes working an arm lock on the mats"
@@ -88,7 +77,7 @@ const newHere = [
           {address.neighborhood ?? address.city}, {address.city}. Adults and kids, all levels. First week free.
         </p>
         <div class="hidden items-center gap-3 md:flex" data-motion="hero-cta">
-          <Button href={signup('hero')} variant="primary" arrow>Start your free week</Button>
+          <Button href={signup('hero')} variant="primary" arrow pulse>Start your free week</Button>
           <Button href="/schedule">View schedule</Button>
         </div>
       </div>
@@ -98,29 +87,9 @@ const newHere = [
     </span>
   </section>
   <div class="flex flex-col gap-2 bg-surface px-4 pb-6 pt-4 md:hidden" data-motion="hero-cta">
-    <Button href={signup('hero')} variant="primary" arrow full>Start your free week</Button>
+    <Button href={signup('hero')} variant="primary" arrow full pulse>Start your free week</Button>
     <Button href="/schedule" full>View schedule</Button>
   </div>
-
-  <!-- New here? -->
-  <section aria-labelledby="newhere-h" class="border-t border-line bg-surface-raised">
-    <div class="md:wrap md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
-      <PhotoBlock
-        image={welcomePhoto}
-        alt="A coach welcoming a new student at the edge of the mat"
-        position="50% 28%"
-        scrim="up"
-        scrimClass="md:hidden"
-        raised
-        class="h-75 md:col-span-4 md:h-140"
-        sizes="(min-width: 768px) 33vw, 100vw"
-      />
-      <div class="flex flex-col gap-6 px-4 pb-12 pt-2 md:col-span-7 md:col-start-6 md:gap-12 md:p-0">
-        <SectionHeading eyebrow="First class" eyebrowTone="signal" size="l" id="newhere-h">New here?</SectionHeading>
-        <Steps steps={newHere} />
-      </div>
-    </div>
-  </section>
 
   <Marquee items={programs.map((p) => p.data.shortName ?? p.data.name)} />
 
@@ -179,8 +148,8 @@ const newHere = [
         <Button href="/coaches">Meet the coaches</Button>
       </div>
     </div>
-    <div class="tilt-stage grid grid-cols-2 gap-4 md:grid-cols-4">
-      {coaches.map((c, i) => <CoachCard coach={c} index={i + 1} variant="compact" headingLevel={3} />)}
+    <div class="tilt-stage grid grid-cols-2 gap-4 md:grid-cols-3">
+      {coaches.map((c) => <CoachCard coach={c} variant="compact" headingLevel={3} />)}
     </div>
     <Button href="/coaches" class="self-start md:hidden">Meet the coaches</Button>
   </section>
@@ -191,17 +160,14 @@ const newHere = [
       <div class="md:grid md:grid-cols-12 md:items-end md:gap-x-8">
         <SectionHeading eyebrow="Pricing" size="l" id="pricing-h" class="md:col-span-6">
           Simple pricing
-          <p slot="intro" class="mt-2 max-w-80 text-body text-ink-muted md:hidden">One rate for adults, one for kids. Open mat included.</p>
+          <p slot="intro" class="mt-2 max-w-80 text-body text-ink-muted md:hidden">One monthly rate for adults and kids. Open mat included.</p>
         </SectionHeading>
         <p class="hidden text-body text-ink-muted md:col-span-4 md:col-start-8 md:block">
-          One rate for adults, one for kids. Open mat included with both.
+          One monthly rate for adults and kids. Open mat included.
         </p>
       </div>
-      <div class="flex flex-col gap-4">
-        <div class="grid gap-4 md:grid-cols-3">
-          {plans.map((plan) => <PricingCard plan={plan} href={signup('pricing')} />)}
-        </div>
-        <PricingDropIns plans={dropIns} href={signup('pricing')} />
+      <div class="grid gap-4 md:grid-cols-2">
+        {plans.map((plan) => <PricingCard plan={plan} href={signup('pricing')} />)}
       </div>
     </div>
   </section>

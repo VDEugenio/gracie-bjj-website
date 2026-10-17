@@ -1,7 +1,8 @@
 ---
 /**
  * Coaches page, built from design/mockups/html/coaches-{phone,desktop}.html.
- * Fighter-style cards, three across on desktop, stacked on phones.
+ * Fighter-style cards that flip to show the bio: three across on wide
+ * desktops, two on tablets and small laptops, stacked on phones.
  */
 import Base from '@/layouts/Base.astro';
 import CoachCard from '@/components/CoachCard.astro';
@@ -33,8 +34,8 @@ const signup = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'final-cta');
     </p>
   </section>
 
-  <section aria-label="Instructors" class="tilt-stage wrap grid gap-4 pb-16 pt-4 md:grid-cols-3 md:items-stretch md:pb-24 md:pt-6">
-    {coaches.map((coach, i) => <CoachCard coach={coach} index={i + 1} />)}
+  <section aria-label="Instructors" class="tilt-stage wrap grid gap-4 pb-16 pt-4 md:grid-cols-2 md:items-stretch xl:grid-cols-3 md:pb-24 md:pt-6">
+    {coaches.map((coach) => <CoachCard coach={coach} />)}
   </section>
 
   <FinalCta variant="band" href={signup} secondary={{ href: '/schedule', label: 'View schedule' }} secondaryPhoneOnly>

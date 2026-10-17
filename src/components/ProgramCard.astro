@@ -1,6 +1,7 @@
 ---
 /**
- * Home-page program card: photo under a scrim, index number, one tag, the
+ * Home-page program card: photo under a scrim, index number, one tag (the
+ * audience for "Start here" programs, otherwise the first tag), the
  * name in condensed display type and a one-line time summary.
  * The photo is decorative here; the link text is the program name.
  * Desktop pointers get the same 3D tilt as the coach cards (src/lib/motion.ts).
@@ -8,6 +9,7 @@
 import Photo from './Photo.astro';
 import Tag from './Tag.astro';
 import type { Program } from '@/lib/content';
+import { AUDIENCE_LABEL } from '@/lib/copy';
 import { padIndex } from '@/lib/format';
 
 interface Props {
@@ -20,7 +22,7 @@ interface Props {
 
 const { program, index, summary, class: className } = Astro.props;
 const { data } = program;
-const firstTag = data.tags[0];
+const tag = data.startHere ? AUDIENCE_LABEL[data.audience] : data.tags[0];
 ---
 
 <a
@@ -45,7 +47,7 @@ const firstTag = data.tags[0];
   <span class="absolute right-6 top-6 font-mono text-time text-ink-muted" aria-hidden="true">{padIndex(index)}</span>
   <div class="relative grid gap-2">
     <div class="flex gap-2">
-      {data.startHere ? <Tag variant="signal">Start here</Tag> : firstTag && <Tag>{firstTag}</Tag>}
+      {tag && <Tag>{tag}</Tag>}
     </div>
     <h3 class="display text-heading">{data.name}</h3>
     <p class="text-caption text-ink-muted">{summary}</p>

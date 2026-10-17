@@ -53,8 +53,10 @@ const fit = fitStyle(await Astro.slots.render('default'));
 {
   variant === 'photo' && image ? (
     <section class="relative h-120 overflow-hidden bg-surface-raised md:h-160 md:border-t md:border-line" aria-labelledby={id}>
-      <div class="absolute inset-0 md:left-2/5" data-motion="photo-wipe">
-        <Photo image={image} alt={alt} position={position} widths={[390, 780, 1280]} sizes="(min-width: 768px) 60vw, 100vw" />
+      <div class="absolute inset-0 overflow-hidden md:left-2/5" data-motion="photo-wipe">
+        <div class="absolute inset-0" data-photo-tilt>
+          <Photo image={image} alt={alt} position={position} widths={[390, 780, 1280]} sizes="(min-width: 768px) 60vw, 100vw" />
+        </div>
         <div class="absolute inset-0 scrim-cta md:hidden" aria-hidden="true" />
         <div class="absolute inset-0 hidden scrim-raised scrim-left-cta md:block" aria-hidden="true" />
       </div>

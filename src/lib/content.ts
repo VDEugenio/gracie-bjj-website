@@ -51,9 +51,9 @@ export async function getCoaches(): Promise<Coach[]> {
   return all.sort((a, b) => a.data.order - b.data.order);
 }
 
-/** The compact cards on the home page: coaches flagged showOnHome, at most four. */
+/** The compact cards on the home page: every coach flagged showOnHome. */
 export async function getHomeCoaches(): Promise<Coach[]> {
-  return (await getCoaches()).filter((c) => c.data.showOnHome).slice(0, 4);
+  return (await getCoaches()).filter((c) => c.data.showOnHome);
 }
 
 export async function getPricing(): Promise<Plan[]> {

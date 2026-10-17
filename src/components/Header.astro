@@ -1,8 +1,9 @@
 ---
 /**
  * Site header. Sticky so the free-week button is always in reach.
- * Desktop: badge + wordmark, primary nav, quiet "Member login", free-week button.
- * Phone: badge, free-week button, menu toggle. The full-screen menu is MobileMenu.
+ * Desktop (from lg): badge, primary nav, free-week button; from xl the wordmark
+ * and the quiet "Member login" join them (seven nav links need the room).
+ * Phone and tablet: badge, free-week button, menu toggle. The full-screen menu is MobileMenu.
  */
 import { Menu } from 'lucide-astro';
 import Button from './Button.astro';
@@ -24,16 +25,16 @@ const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
 ---
 
 <header class="sticky top-0 z-40 border-b border-line bg-surface" data-site-header>
-  <div class="mx-auto flex max-w-header items-center justify-between gap-3 px-4 py-2 md:gap-8 md:px-20 md:py-3">
+  <div class="mx-auto flex max-w-header items-center justify-between gap-3 px-4 py-2 md:px-20 lg:gap-6 lg:px-8 lg:py-3 xl:gap-8 xl:px-20">
     <a href="/" class="inline-flex items-center gap-3.5 text-ink no-underline" aria-label={`${settings.name} — home`}>
-      <Logo class="size-14 md:size-15" decorative />
-      <span class="hidden flex-col leading-tight md:flex">
+      <Logo class="size-14 lg:size-15" decorative />
+      <span class="hidden flex-col leading-tight xl:flex">
         <span class="display-wide text-wordmark">{settings.wordmark}</span>
         {settings.wordmarkSub && <span class="text-label-sm uppercase text-ink-muted">{settings.wordmarkSub}</span>}
       </span>
     </a>
 
-    <nav aria-label="Primary" class="hidden items-center gap-8 md:flex">
+    <nav aria-label="Primary" class="hidden items-center gap-6 lg:flex xl:gap-8">
       {
         NAV.map((item) => (
           <a
@@ -48,10 +49,10 @@ const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
       <a href={signupNav} class="navlink">Sign up</a>
     </nav>
 
-    <div class="flex items-center gap-2 md:gap-5">
+    <div class="flex items-center gap-2 xl:gap-5">
       {
         settings.gymdesk.loginUrl && (
-          <a href={gymdeskUrl(settings.gymdesk.loginUrl, campaign, 'login')} class="hidden text-caption text-ink-muted no-underline hover:text-ink md:inline">
+          <a href={gymdeskUrl(settings.gymdesk.loginUrl, campaign, 'login')} class="hidden text-caption text-ink-muted no-underline hover:text-ink xl:inline">
             Member login
           </a>
         )
@@ -59,7 +60,7 @@ const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
       <Button href={signupHeader} size="sm">Start your free week</Button>
       <button
         type="button"
-        class="inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-line-strong text-ink hover:border-ink md:hidden"
+        class="inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-sm border border-line-strong text-ink hover:border-ink lg:hidden"
         aria-label="Open menu"
         aria-controls="mobile-menu"
         aria-expanded="false"

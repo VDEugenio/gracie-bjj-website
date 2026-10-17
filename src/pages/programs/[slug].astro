@@ -59,8 +59,10 @@ const others = programs
 <Base title={data.name} description={`${data.summary} ${data.cost}.`} campaign={campaign} currentPath={`/programs/${program.id}`}>
   <!-- Hero -->
   <section class="relative h-130 overflow-hidden bg-surface-raised md:h-160 md:bg-surface" aria-labelledby="prog-h">
-    <div class="absolute inset-0 md:left-[58%]" data-motion="hero-photo">
-      <Photo image={data.image} alt={data.imageAlt} priority sizes="(min-width: 768px) 42vw, 100vw" class="object-[50%_25%] md:object-[50%_30%]" />
+    <div class="absolute inset-0 overflow-hidden md:left-[58%]" data-motion="hero-photo">
+      <div class="absolute inset-0" data-photo-tilt>
+        <Photo image={data.image} alt={data.imageAlt} priority sizes="(min-width: 768px) 42vw, 100vw" class="object-[50%_25%] md:object-[50%_30%]" />
+      </div>
       <div class="absolute inset-0 scrim-bottom md:hidden" aria-hidden="true"></div>
       <div class="absolute inset-0 hidden scrim-left-soft md:block" aria-hidden="true"></div>
     </div>
@@ -112,6 +114,7 @@ const others = programs
       <div class="wrap flex flex-col gap-5 py-12 md:gap-12 md:py-24">
         <SectionHeading eyebrow="New here?" size="l" id="first-h">Your first class</SectionHeading>
         <Steps steps={steps} variant="cards" />
+        <a href="/new-here" class="link self-start">More for first-timers →</a>
       </div>
     </section>
 

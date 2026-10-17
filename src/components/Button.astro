@@ -4,6 +4,8 @@
  * - primary: the one signal-filled action on a screen ("Start your free week").
  * - secondary: outlined, border goes to ink on hover.
  * The arrow is the "→" character, as in the mockups, and nudges right on hover.
+ * `pulse` (the hero's free-week button) adds a signal ring that src/lib/motion.ts
+ * sends outward every few seconds; it stays invisible without motion.
  */
 import type { HTMLAttributes } from 'astro/types';
 
@@ -15,6 +17,8 @@ interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
   arrow?: boolean;
   /** Stretch to the container and center the label (phone stacks). */
   full?: boolean;
+  /** Attention ring for the hero's primary button. */
+  pulse?: boolean;
   type?: 'button' | 'submit';
   class?: string;
 }
@@ -25,6 +29,7 @@ const {
   size = 'md',
   arrow = false,
   full = false,
+  pulse = false,
   type = 'button',
   class: className,
   ...rest
@@ -37,6 +42,7 @@ const classes = [
     ? 'bg-signal border-signal text-on-signal hover:bg-signal-hover hover:border-signal-hover'
     : 'bg-transparent border-line-strong text-ink hover:border-ink',
   full && 'w-full justify-center',
+  pulse && 'relative',
   className,
 ];
 
@@ -48,8 +54,16 @@ const Tag = href ? 'a' : 'button';
   type={href ? undefined : type}
   class:list={classes}
   data-motion={variant === 'primary' ? 'magnetic' : undefined}
+  data-pulse={pulse ? '' : undefined}
   {...rest}
 >
+  {pulse && <span class="pointer-events-none absolute -inset-px rounded-sm border-2 border-signal opacity-0" aria-hidden="true" data-pulse-ring></span>}
   <slot />
-  {arrow && <span class="transition-transform group-hover/btn:translate-x-0.75" aria-hidden="true">→</span>}
+  {
+    arrow && (
+      <span class="transition-transform group-hover/btn:translate-x-0.75" aria-hidden="true" data-pulse-arrow={pulse ? '' : undefined}>
+        →
+      </span>
+    )
+  }
 </Tag>

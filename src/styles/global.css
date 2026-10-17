@@ -196,6 +196,44 @@
   perspective: 900px;
 }
 
+/*
+  Coach card flip. src/scripts/coach-flip.ts sets data-flip-ready; until then
+  (or with JavaScript off) the back face reads below the front and the cues
+  stay hidden. Both faces share one grid cell, so the card is as tall as the
+  taller face and the portrait grows to fill the front. With motion allowed,
+  src/lib/motion.ts turns the card; otherwise data-flipped swaps the faces at once.
+*/
+[data-flip-cue] {
+  display: none;
+}
+[data-flip-ready] {
+  cursor: pointer;
+  perspective: 1400px;
+  & [data-flip-cue] {
+    display: flex;
+  }
+  & [data-flip-inner] {
+    display: grid;
+    transform-style: preserve-3d;
+  }
+  & [data-flip-face] {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+  }
+  & [data-flip-face='back'] {
+    transform: rotateY(180deg);
+  }
+  &[data-flipped] [data-flip-inner] {
+    transform: rotateY(180deg);
+  }
+}
+[data-flip-face='back'] {
+  margin-top: -1px;
+  [data-flip-ready] & {
+    margin-top: 0;
+  }
+}
+
 /* Hide scrollbars on horizontally scrolling chip rows. */
 @utility no-scrollbar {
   scrollbar-width: none;
