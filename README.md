@@ -102,8 +102,8 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `ProgramLinkList` | `items[] {name, href, summary}` |
 | `ScheduleDay` | `day`, `today?`, `variant` card/home, `headingLevel?`, `showTags?`, `note?` |
 | `ScheduleFilter` | `programIds[]` |
-| `CoachCard`, `BeltStripe` | `coach`, `index`, `variant` full/compact, `headingLevel?` · `belt`, `size?` |
-| `PricingCard`, `PricingDropIns`, `PriceList` | `plan`, `href` · `plans[]`, `href` · `rows[] {label, price}` |
+| `CoachCard`, `BeltStripe` | `coach`, `variant` full (flips to the bio, `src/scripts/coach-flip.ts`)/compact, `headingLevel?` · `belt`, `size?` |
+| `PricingCard`, `PriceList` | `plan`, `href` · `rows[] {label, price}` |
 | `Steps` | `steps[] {title, note?}`, `variant` numbered/cards |
 | `FactList` | `facts[] {label, value, mono?}` |
 | `FinalCta` | `variant` photo/band, `tone?`, `size?`, `image?`, `alt?`, `position?`, `body?`, `href`, `secondary?`; headline in the slot |
@@ -118,6 +118,7 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | Route | Source | Campaign (utm_campaign) |
 |---|---|---|
 | `/` | `src/pages/index.astro` | `home` |
+| `/new-here` | `src/pages/new-here.astro` | `new-here` |
 | `/schedule` | `src/pages/schedule.astro` | `schedule` |
 | `/programs` | `src/pages/programs/index.astro` | `programs` |
 | `/programs/<slug>` | `src/pages/programs/[slug].astro` | `program-<slug>` |
@@ -142,12 +143,16 @@ All GSAP code is in `src/lib/motion.ts`, started once from `Base.astro`. Compone
 | `hero-photo`, `hero-title`, `hero-cta` | On load: the photo settles from a slight zoom (never clipped, so it stays the fast LCP paint), the headline lines rise from a mask (SplitText, 0.08 stagger, `expo.out`), then the buttons fade up |
 | `title` | Page and program titles: the same line reveal (on load in a hero, on scroll elsewhere) |
 | `photo-wipe` | Photos wipe in left to right as they scroll in |
-| `reveal` | Cards, rows and steps fade and rise with a stagger at 80% of the viewport, once |
+| `reveal` | Cards, rows and steps fade and rise with a stagger at 80% of the viewport |
 | `coach-card`, `belt` | Coach cards rise in one by one and the belt stripe ties on (scaleX). Desktop pointers also get the tilt (see `tilt`) |
 | `tilt`, `tilt-photo` | `data-tilt` / `data-tilt-photo` (plain attributes, not `data-motion`): coach cards and homepage program cards tilt toward a desktop pointer and the photo drifts the other way (desktop only). The parent grid needs `tilt-stage` |
-| `hero-tilt` | `data-hero-tilt` on the layer around the homepage hero photo: it leans toward the pointer on desktop, or with the phone on touch screens (HTTPS only; iOS asks for motion access on the first tap that isn't on a link or control) |
+| `photo-tilt` | `data-photo-tilt` on the layer around a photo (inside its clipping frame): it leans toward a desktop pointer while the pointer is over the photo, or anywhere over a `data-tilt-area` ancestor (the homepage hero). Only `data-photo-tilt="phone"` (the homepage hero) also leans with the phone on touch screens (HTTPS only; iOS asks for motion access on the first tap that isn't on a link or control) |
+| `data-pulse` | `<Button pulse>`: a signal ring goes out from the hero's free-week button every ~3s while it is on screen, until the visitor points at or focuses it |
+| coach flip | `coach:flip` events from `src/scripts/coach-flip.ts` turn the card over on `rotateY` |
 | `marquee` | The program-name strip loops while it is on screen |
 | `magnetic` | Primary buttons lean toward the pointer (desktop pointers only) |
+
+Every entrance replays: an element resets once it has fully left the screen and plays again when it comes back (`replayOnScroll()`).
 | `menu`, `menu-link` | The phone menu slides down from the top, links rise in with a 0.05 stagger |
 
 The schedule filter and the mobile menu dispatch cancelable `schedule:filter` and `menu:close` events; motion.ts cancels them, animates, then commits the change. With `prefers-reduced-motion: reduce` nothing is registered, so they switch instantly. All starting states are set from JavaScript, so the page is complete with JavaScript off. Screenshots (`npm run screenshots`) run with reduced motion.

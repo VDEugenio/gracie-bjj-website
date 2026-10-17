@@ -90,11 +90,13 @@ The cancelable-event pattern is how motion stays out of these scripts: `motion.t
 
 All GSAP code is in `src/lib/motion.ts`, started once by `initMotion()` from `Base.astro`. Components only carry `data-motion` attributes. Two `gsap.matchMedia()` contexts:
 
-- `(prefers-reduced-motion: no-preference)`: hero, titles, photo wipes, reveals, coach cards, marquee, menu and filter transitions.
-- the same plus `(hover: hover) and (pointer: fine) and (min-width: 768px)`: magnetic buttons and the card tilt (`[data-tilt]`: coach cards and homepage program cards).
+- `(prefers-reduced-motion: no-preference)`: hero, titles, photo wipes, reveals, coach cards, coach card flip, the hero CTA pulse, marquee, menu and filter transitions.
+- the same plus `(hover: hover) and (pointer: fine) and (min-width: 768px)`: magnetic buttons, the card tilt (`[data-tilt]`: coach cards and homepage program cards) and the photo tilt (`[data-photo-tilt]`).
 - `(prefers-reduced-motion: no-preference) and (hover: none) and (pointer: coarse)`: the homepage hero photo tilt, driven by `deviceorientation`.
 
-The pointer-driven hero tilt runs in the desktop block too.
+The pointer-driven photo tilt (hero included) runs in the desktop block.
+
+**Every entrance replays.** `replayOnScroll(el, { play, reset })` gives each animated element two ScrollTriggers: one plays it at `START` (top at 80%) scrolling down, the other resets it once it has fully left the viewport and plays it again when its bottom edge comes back in scrolling up. A `shown` flag keeps it from replaying while visible. `grouped()` batches the elements that come on screen in the same frame so they stagger top to bottom, and the `entrances` map lets a reset cancel an entrance that hasn't started yet (a fast scroll straight past). ScrollTrigger measures an element where it is drawn, so a hidden card (drawn 32–40px low) resets up to 40px after it leaves; it is still off screen, so nothing visible pops.
 
 Under reduced motion nothing registers, so nothing animates. Starting states are set from JavaScript (`gsap.set` / `from`), never in CSS, so the page is complete with JavaScript off.
 
@@ -104,11 +106,13 @@ Under reduced motion nothing registers, so nothing animates. Starting states are
 | `hero-title` | `index.astro` | SplitText masked lines rise from below (stagger 0.08, `expo.out`, 0.15s delay) |
 | `hero-cta` | `index.astro` (both button rows) | Fade and rise after the headline |
 | `title` | `programs/[slug].astro` | Same line reveal; plays on load when it sits beside a `hero-photo`, otherwise on scroll |
-| `photo-wipe` | `PhotoBlock`, `ProgramRow`, `FinalCta` | `clip-path` wipe left to right plus a slight settle, once, when the frame reaches 80% of the viewport |
-| `reveal` | `ProgramCard`, `ProgramRow`, `ScheduleDay`, `PricingCard`, `PricingDropIns`, `Steps`, `MapEmbed` | Fade and rise with a 0.08 stagger via `ScrollTrigger.batch`, once |
+| `photo-wipe` | `PhotoBlock`, `ProgramRow`, `FinalCta` | `clip-path` wipe left to right plus a slight settle when the frame reaches 80% of the viewport |
+| `reveal` | `ProgramCard`, `ProgramRow`, `ScheduleDay`, `PricingCard`, `Steps`, `MapEmbed`, the "Why people stick with it" cards on `new-here.astro` | Fade and rise with a 0.08 stagger |
 | `coach-card`, `belt` | `CoachCard`, `BeltStripe` | Cards rise in one by one; the belt stripe ties on (`scaleX` 0→1 from the left) 0.3s into each card. Desktop pointers also get the tilt via `data-tilt` (below) |
 | `data-tilt`, `data-tilt-photo` | `CoachCard`, `ProgramCard` | Desktop tilt: ±8° via `quickTo`, the `data-tilt-photo` image drifts up to 12px the other way, springs back over 0.6s. Put `tilt-stage` on the parent grid. Desktop only |
-| `data-hero-tilt` | `index.astro` | The layer around the hero photo leans ±4° (`transformPerspective` 1000) and drifts up to 10px the other way; the frame clips it and the scrims sit outside it. It zooms just enough to hide its edges on the first move, so the resting photo matches the mockup. Desktop: follows the pointer over the hero section. Touch: follows `deviceorientation` from a slowly re-centering resting angle, only while the hero is on screen. Orientation events only fire on HTTPS. iOS asks for permission on the first tap that isn't on a link or control, and `localStorage` key `rg-motion-permission` remembers a denial |
+| `data-pulse` | `Button` with `pulse` (the homepage hero) | A 2px `signal` ring scales out by 12px a side and fades over 1.2s, every ~3s, while the arrow nudges 4px; paused off screen, stopped for good on hover or focus |
+| coach flip | `CoachCard` (full) + `src/scripts/coach-flip.ts` | The script owns the state (`data-flip-ready`, `data-flipped`, `inert` on the hidden face, `aria-expanded`, focus handoff) and dispatches `coach:flip`; motion.ts turns `[data-flip-inner]` on `rotationY` (0.6s `power2.inOut`). Without motion the CSS swaps the faces; without JavaScript the back reads below the front |
+| `data-photo-tilt` | `index.astro` hero (`="phone"`), `programs/[slug].astro` and `new-here.astro` heroes, `PhotoBlock`, `ProgramRow`, `FinalCta` | The layer around a photo leans ±4° (`transformPerspective` 1000) and drifts up to 10px the other way; the frame clips it and the scrims sit outside it. It zooms just enough to hide its edges on the first move, so the resting photo matches the mockup. Desktop: follows the pointer over the photo, or over a `data-tilt-area` ancestor (the homepage hero section). Touch, `data-photo-tilt="phone"` only: follows `deviceorientation` from a slowly re-centering resting angle, only while the hero is on screen. Orientation events only fire on HTTPS. iOS asks for permission on the first tap that isn't on a link or control, and `localStorage` key `rg-motion-permission` remembers a denial |
 | `marquee` | `Marquee` | The track (rendered twice) slides by 50% on an infinite tween at 60px/s, paused while off screen |
 | `magnetic` | `Button` (primary variant) | The button leans up to 10px toward the pointer |
 | `menu`, `menu-link` | `MobileMenu` | Slides down from the top in 0.3s, links rise with a 0.05 stagger; slides back up on close |
@@ -193,6 +197,7 @@ Things that differ from CLAUDE.md or the mockups, or that a future session might
 | 2026-10-14 | `5be5a0f` | Phase 5: motion (`src/lib/motion.ts`, GSAP) |
 | 2026-10-14 | `dd529e7` | Phase 6: SEO and launch prep (JSON-LD, OG image, robots, sitemap, redirects, 404, UTM everywhere) |
 | 2026-10-14 | `8a0e09f`, `d56f6aa` | LAUNCH.md and README updates |
+| 2026-10-17 | batch 1 commits | First round of owner feedback: coach cards flip to the bio and lose their numbers, all six coaches and one membership price on the homepage, the `/new-here` page, CTA pulse, photo tilt on every photo, replaying scroll entrances, desktop header from 1024px |
 
 Phases 1 to 4 were built in a Claude Code session on this machine; phases 5 and 6 in a second session started through Claude Code Remote Control, which worked on a git worktree branch (`worktree-bridge-cse_…`) that was then fast-forwarded into `main`. That branch can be deleted once the remote session is closed.
 

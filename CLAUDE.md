@@ -29,7 +29,7 @@ src/
   lib/motion.ts         # ALL GSAP code lives here
   components/           # Header, MobileMenu, Footer, Button, Tag, ProgramCard, ProgramRow, ScheduleDay, CoachCard, PricingCard, PromoBanner, Marquee, ContactForm
   layouts/Base.astro    # <head>, SEO, JSON-LD, header/footer, motion init
-  pages/                # index, schedule, programs/index, programs/[slug], coaches, contact
+  pages/                # index, new-here, schedule, programs/index, programs/[slug], coaches, contact
 src/content/            # Keystatic-managed content (see Content model)
 public/images/          # optimized photos go through astro:assets from src/assets instead when possible
 ```
@@ -51,8 +51,8 @@ public/images/          # optimized photos go through astro:assets from src/asse
 - **Photos** are black and white. Keep them that way: purple is the only color on the page. Use `astro:assets` `<Image>` with explicit width/height, `loading="lazy"` below the fold, and AVIF/WebP output. Never upscale a photo past its native size.
 - **Hero photo:** use the **mirrored** (left-to-right flipped) arm-lock shot on both phone and desktop, so the coach's face sits on the right, clear of the left-aligned headline. Mirror the high-res original the same way when it arrives.
 - **Phone hero:** headline and subhead sit over the bottom of the photo; the two buttons sit in a graphite strip directly below the photo, not on it.
-- **Mobile menu:** full-screen graphite overlay with large condensed links (Home, Schedule, Programs, Coaches, Contact, Sign up), the current page marked, the free-week button and address at the bottom. The free-week button stays visible in the header when the menu is closed.
-- **Coach cards** are fighter-style cards: a full 4:5 portrait under a bottom scrim, a mono index number top-left (01, 02…), the rank set vertically down the top-right edge, the role label and the name (first and last on separate lines) set large over the bottom of the photo, then a 10px **belt stripe** across the card in the rank color with a rank bar near the right end (black belt = black with a red bar, purple belt = purple with a black bar, Relson's red belt plain red; 1px `line-strong` edges so black reads on dark), then tags, bio and a "Teaches" line. Coaches page: 3 columns on desktop, stacked on phones. The homepage shows the first four as compact versions (photo, name, belt stripe, rank) that link to the coaches page.
+- **Mobile menu:** full-screen graphite overlay with large condensed links (Home, New here?, Schedule, Programs, Coaches, Contact, Sign up), the current page marked, the free-week button and address at the bottom. The free-week button stays visible in the header when the menu is closed.
+- **Coach cards** are fighter-style cards: a full 4:5 portrait under a bottom scrim, the rank set vertically down the top-right edge, the role label and the name (first and last on separate lines) set large over the bottom of the photo, then a 10px **belt stripe** across the card in the rank color with a rank bar near the right end (black belt = black with a red bar, purple belt = purple with a black bar, Relson's red belt plain red; 1px `line-strong` edges so black reads on dark), then a "Read bio" cue. On the coaches page the card **flips** (click, tap, or Enter/Space on the cue) to a back face with the tags, bio and a "Teaches" line, and flips back with "Back"; without JavaScript the back simply reads below the front. Coaches page: 3 columns from 1280px, 2 on tablets and small laptops, stacked on phones. The homepage shows every coach with `showOnHome` as compact versions (photo, name, belt stripe, rank), 3 across on desktop and 2 on phones, linking to the coaches page.
 
 ### Mockups
 The HTML source of every artboard is in `design/mockups/html/` (same names, `.html`), with its images, already cropped and black and white, in `design/mockups/html/assets/`. Use those image files as the starting point for `src/assets/`. The PNG exports sit in `design/mockups/` with these names:
@@ -70,7 +70,7 @@ Dashed mono chips in the mockups are motion annotations, not UI. Don't build the
 - **The gym is No-Gi only.** Never show, mention, or price a gi or kimono. The one current exception is the coach portraits of Relson Gracie and Jerry Brewer, which show a gi until No-Gi portraits are available.
 - **The primary CTA is always the label "Start your free week".** It links to the Gymdesk signup; see the Gymdesk section below.
 - **Voice:** a friendly coach at the front desk. Plain statements of what the gym is, where it is, who it's for, and what it costs. Short sentences, "you" and "we", no exclamation marks in headings, no emoji, no fight-gym bravado. **No slogans or taglines** (the old "No gi. No ego. Just jiu jitsu." line is out).
-- **Program names are proper nouns:** Mixed Level Jiu Jitsu, Fundamentals, Youth Jiu Jitsu, MMA, Open Mat, Competition Training. Fundamentals and Mixed Level carry a "Start here" tag for beginners.
+- **Program names are proper nouns:** Mixed Level Jiu Jitsu, Fundamentals, Youth Jiu Jitsu, MMA, Open Mat, Competition Training. Fundamentals and Mixed Level carry a "Start here" tag for beginners, except on the homepage program cards, which show the audience ("Adults") instead.
 - **Business facts.** Don't invent hours, ages, belts, or bios. Use clear placeholders like `[Belt rank]` until Mike supplies them.
   - Name: Relson Gracie Jiu-Jitsu of Charleston
   - Address: 2467 Savannah Hwy, Suite 130, Charleston, SC 29414
@@ -91,7 +91,7 @@ Mike edits all of this, so nothing below may be hardcoded in a page.
 - **promo** (singleton): `enabled`, `tag`, `message`, `linkLabel`, `linkUrl`, `expiresOn`. Hide the banner automatically when `expiresOn` has passed, checked at build time **and** client-side.
 - **programs** (collection): `name`, `slug`, `order`, `tags[]`, `startHere` (boolean), `summary`, `description` (rich text), `learn[]` (what you'll learn), `audience` (adults | kids | all), `cost` (short line, e.g. "Included in the Adult membership"), `image`. Each program gets a page at `/programs/[slug]` built from the program detail mockup.
 - **schedule** (collection, one entry per class): `day` (monday–saturday), `start` (24h "HH:MM"), `durationMin` (default 60), `program` (relationship to programs). Seed it from the JSON in `content-brief.md`. Program rows, detail pages, and "Today at the gym" all derive their times from this.
-- **coaches** (collection): `name`, `role`, `order`, `belt` (white | blue | purple | brown | black | red), `beltNote` (e.g. "Grandmaster"), `lineage`, `specialties[]`, `bio`, `teaches` (short text, e.g. "Seminars · privates"), `photo`, `showOnHome` (boolean).
+- **coaches** (collection): `name`, `role`, `order`, `belt` (white | blue | purple | brown | black | red), `beltNote` (e.g. "Grandmaster"), `lineage`, `specialties[]`, `bio`, `teaches` (short text, e.g. "Seminars · privates"), `teachesLabel` (optional, replaces the word "Teaches", e.g. "Status" for a coach who no longer teaches), `photo`, `showOnHome` (boolean).
 - **pricing** (collection): `name`, `price`, `period` (month | day-pass | 10-pass | free), `features[]`, `highlighted`, `ctaUrl`, `order`.
 
 ## Gymdesk integration
@@ -113,13 +113,17 @@ Gymdesk is the gym's member system. It owns signups, billing, and leads, and **t
   - The hero headline (and program-page titles) split into lines with SplitText and each line slides up from a mask (stagger 0.08).
   - An infinite program-name marquee.
   - Photos reveal with a `clip-path` wipe.
-  - Cards and program rows fade in with a stagger at ScrollTrigger `start: "top 80%"`, once.
+  - Cards and program rows fade in with a stagger at ScrollTrigger `start: "top 80%"`.
+  - **Every entrance replays** (reveals, photo wipes, titles, coach cards and belts, and the hero): once an element has fully left the screen it resets unseen, and it plays again when it comes back from below or above (`replayOnScroll()` in motion.ts).
   - A magnetic primary CTA on desktop pointers only.
+  - The hero's "Start your free week" button sends a thin `signal` ring outward every ~3s while the arrow nudges right; it runs only while the button is on screen and stops for good once the visitor points at or focuses it (`<Button pulse>`).
   - Schedule filter rows fade and collapse over 0.3s.
   - Mobile menu opens from the top in 0.3s; its links rise in with a 0.05 stagger.
   - **Coach card tilt**, also used on the homepage program cards (desktop, `(hover: hover) and (pointer: fine)` only): the card tilts toward the cursor in 3D (max ±8° on X and Y, `perspective: 900px` on the parent, `gsap.quickTo` 0.4s `power3.out`), the photo drifts the opposite way up to 12px inside its frame, and the border goes `ink`; on mouse leave everything springs back over 0.6s. Animate `transform` only, and keep text crisp (no scaling).
   - Coach belt stripes "tie on" as each card scrolls in: `scaleX` 0→1 from the left, 0.6s. On phones, cards rise in one by one.
-  - **Hero photo tilt** (homepage only): the hero photo leans in 3D inside its frame (max ±4°, `perspective` 1000px) and drifts the other way up to 10px. The scrims and headline stay put. On desktop it follows the pointer anywhere over the hero and springs back over 0.6s on leave. On touch screens (`(hover: none) and (pointer: coarse)`) it follows the phone's own tilt (`deviceorientation`), measured from the angle the phone is held at, which slowly re-centers, and only while the hero is on screen. The photo zooms just enough to hide its edges on the first move. Phone tilt needs HTTPS. iOS needs motion permission, requested on the visitor's first tap that isn't on a link or control; a denial is remembered in `localStorage` and never asked again. Cards do not tilt on phones.
+  - **Coach card flip:** the card turns over on `rotateY` in 0.6s `power2.inOut`; with reduced motion the faces swap at once.
+  - **Photo tilt** (every photo outside a card, desktop pointers only): the photo leans in 3D inside its frame toward the pointer while it is over the photo (max ±4°, `perspective` 1000px), drifts the other way up to 10px, and springs back over 0.6s on leave. Mark the photo layer with `data-photo-tilt`.
+  - **Hero photo tilt** (homepage): the hero photo leans in 3D inside its frame (max ±4°, `perspective` 1000px) and drifts the other way up to 10px. The scrims and headline stay put. On desktop it follows the pointer anywhere over the hero and springs back over 0.6s on leave. On touch screens (`(hover: none) and (pointer: coarse)`) it follows the phone's own tilt (`deviceorientation`), measured from the angle the phone is held at, which slowly re-centers, and only while the hero is on screen. The photo zooms just enough to hide its edges on the first move. Phone tilt needs HTTPS. iOS needs motion permission, requested on the visitor's first tap that isn't on a link or control; a denial is remembered in `localStorage` and never asked again. Cards do not tilt on phones.
 - Animate only `transform`, `opacity`, and `clip-path`. Clean up ScrollTriggers on Astro view transitions if those get enabled.
 
 ## Quality bar
@@ -179,3 +183,6 @@ Decisions made during the build that differ from the text above:
 - **`design/mockups/*.png` were renamed** to the names listed above, because the exports arrived under other names. Nothing else in `design/` was touched.
 - **Phone page titles shrink to fit** the viewport instead of clipping as the mockups do (`src/lib/fit.ts`). Desktop overlaps from the mockups were kept.
 - **Pages build as `coaches.html`, not `coaches/index.html`** (`build.format: 'file'`), so Cloudflare serves `/coaches` without a trailing-slash redirect and the URLs match the canonicals and the sitemap.
+- **The desktop header starts at 1024px (`lg`), not 768px.** With seven nav links it can't fit at tablet widths, so below `lg` the header uses the phone layout and the mobile menu. From `lg` it shows the badge, nav and free-week button; the wordmark and "Member login" join at 1280px (`xl`).
+- **The homepage "New here?" section became its own page, `/new-here`** (October 2026), linked from the nav after Home. There is no mockup for it; it follows the program detail template.
+- **Homepage pricing shows two cards** (Free week and one "Monthly membership", the same $100 for adults and kids). The day passes are still in Keystatic but no page shows them.
