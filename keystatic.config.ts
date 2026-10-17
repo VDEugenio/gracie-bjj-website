@@ -282,6 +282,10 @@ export default config({
         specialties: textList('Specialties', 'Specialty', 'Short tags like "Competition", "Youth".'),
         bio: fields.text({ label: 'Bio', multiline: true, validation: { isRequired: true } }),
         teaches: fields.text({ label: 'Teaches', description: 'Short line, e.g. "Seminars · privates".', validation: { isRequired: true } }),
+        teachesLabel: fields.text({
+          label: 'Teaches label',
+          description: 'Optional. Replaces the word "Teaches" on the card, e.g. "Status" for a coach who no longer teaches.',
+        }),
         photo: fields.image({
           label: 'Portrait',
           description: '4:5 portrait, black and white. Leave empty until one is available.',

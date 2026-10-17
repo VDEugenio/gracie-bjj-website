@@ -104,6 +104,7 @@ const coaches = defineCollection({
       specialties: z.array(z.string()).default([]),
       bio: z.string(),
       teaches: z.string(),
+      teachesLabel: optionalText,
       photo: image().nullable().optional(),
       photoPosition: optionalText,
       showOnHome: z.boolean().default(false),

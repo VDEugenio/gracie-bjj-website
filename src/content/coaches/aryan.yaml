@@ -8,4 +8,4 @@ specialties: []
 bio: '[Bio for Aryan.]'
 teaches: '[Classes]'
 photoPosition: ''
-showOnHome: false
+showOnHome: true

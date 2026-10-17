@@ -1,0 +1,9 @@
+name: Monthly membership
+price: $100
+period: month
+tag: Adults and kids
+features:
+  - Unlimited No-Gi and MMA classes plus open mat.
+highlighted: false
+ctaUrl: ''
+order: 2

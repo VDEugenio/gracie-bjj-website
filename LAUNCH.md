@@ -125,10 +125,9 @@ The old address (2070 Sam Rittenberg Blvd, Unit 752, 29407) is retired. Google m
 
 These show placeholders on the live site until they're filled in through Keystatic (or sent to the developer):
 
-- Michael Key's belt, bio and classes; Aryan's role, belt, bio and portrait
-- Which classes Relson, Jerry and Michael teach
+- Michael Key's belt and bio (he teaches the Mon/Wed/Fri adult evening classes); Aryan's role, belt, bio and portrait
+- Which classes Relson teaches (Jerry no longer teaches; his card says "Founding instructor")
 - No-Gi portraits of Relson and Jerry; higher-resolution portraits of Jerry and James
-- Sebastian's current MMA record
 - Youth Jiu Jitsu age range
 - Class lengths (the site assumes 60 minutes, which also sets the closing times in the hours above)
 - Parking and entrance directions for Suite 130 (the contact page shows a dashed placeholder box until then)
