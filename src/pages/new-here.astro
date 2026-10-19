@@ -1,18 +1,16 @@
 ---
 /**
- * "New here?": what a first-timer needs to know before their first class.
- * No mockup; it follows the program detail template: a dark hero with the
- * welcome photo, the facts strip, a light long read (your first week, what
- * jiu jitsu is, what to wear, why people train, for parents), then the
- * closing call to action. Times and prices come from the content collections.
+ * "New to BJJ?": what a first-timer needs to know before their first class.
+ * No mockup. A dark hero with the title and buttons on the left and the topics
+ * as one-at-a-time dropdowns on the right (stacked on phones), then the facts
+ * strip and the closing call to action over the welcome photo. Times and
+ * prices come from the content collections.
  */
 import Base from '@/layouts/Base.astro';
 import Button from '@/components/Button.astro';
+import Disclosure from '@/components/Disclosure.astro';
 import FactList from '@/components/FactList.astro';
 import FinalCta from '@/components/FinalCta.astro';
-import Photo from '@/components/Photo.astro';
-import SectionHeading from '@/components/SectionHeading.astro';
-import Steps from '@/components/Steps.astro';
 import Tag from '@/components/Tag.astro';
 import { getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
 import { fitStyle } from '@/lib/fit';
@@ -68,164 +66,149 @@ const reasons = [
   { title: "There's always more to learn", note: 'It suits any age and fitness level, and you can see yourself improve from week to week.' },
   { title: 'You train with the same people', note: 'Partners help each other get better, so you get to know people quickly.' },
 ];
+
+const group = 'new-to-bjj';
 ---
 
 <Base
-  title="New here?"
+  title="New to BJJ?"
   description={`New to jiu jitsu? What to wear, what a class looks like and how your free first week works at ${settings.name}.`}
   campaign={campaign}
   currentPath="/new-here"
 >
-  <!-- Hero -->
-  <section class="relative h-130 overflow-hidden bg-surface-raised md:h-160 md:bg-surface" aria-labelledby="new-h">
-    <div class="absolute inset-0 overflow-hidden md:left-[58%]" data-motion="hero-photo">
-      <div class="absolute inset-0" data-photo-tilt>
-        <Photo
-          image={welcomePhoto}
-          alt="A coach welcoming a new student at the edge of the mat"
-          priority
-          sizes="(min-width: 768px) 42vw, 100vw"
-          class="object-[50%_28%]"
-        />
-      </div>
-      <div class="absolute inset-0 scrim-bottom md:hidden" aria-hidden="true"></div>
-      <div class="absolute inset-0 hidden scrim-left-soft md:block" aria-hidden="true"></div>
-    </div>
-    <div class="absolute inset-x-0 bottom-0 flex flex-col gap-3 px-4 pb-6 md:bottom-20 md:left-20 md:right-auto md:w-190 md:gap-6 md:px-0 md:pb-0">
+  <!-- Hero: title and buttons, then the topics as dropdowns -->
+  <section aria-labelledby="new-h" class="wrap flex flex-col gap-10 pb-12 pt-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:pb-24 md:pt-24">
+    <div class="flex flex-col gap-4 md:col-span-5 md:gap-6">
       <span class="text-label uppercase text-signal-text">First class</span>
-      <h1 id="new-h" class="display text-display-detail text-ink" style={fitStyle('New here?')} data-motion="title">New<br />here?</h1>
+      <h1 id="new-h" class="display text-display-detail text-ink" style={fitStyle('New to BJJ?')} data-motion="title">New to<br />BJJ?</h1>
       <p class="max-w-82 text-body text-ink md:max-w-120 md:text-body-l">Everything you need to know before your first class.</p>
+      <div class="flex flex-col gap-2 pt-2 md:flex-row md:flex-wrap md:gap-3">
+        <Button href={signup('hero')} variant="primary" arrow class="w-full justify-center md:w-auto">Start your free week</Button>
+        <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7 md:pt-4">
+      <div class="border-t border-line">
+        <Disclosure title="How your free week works" group={group}>
+          <ul class="flex flex-col gap-4">
+            {
+              firstWeek.map((item) => (
+                <li class="flex flex-col gap-1">
+                  <span class="font-medium text-ink">{item.title}</span>
+                  <span>{item.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+          {
+            starters.length > 0 && (
+              <p class="mt-5">
+                Not sure which class to try first? Start with{' '}
+                {starters.map((p, i) => (
+                  <>
+                    {i > 0 && ' or '}
+                    <a href={`/programs/${p.id}`} class="link">
+                      {p.data.shortName ?? p.data.name}
+                    </a>
+                  </>
+                ))}
+                .
+              </p>
+            )
+          }
+        </Disclosure>
+
+        <Disclosure title="What is BJJ?" group={group}>
+          <div class="[&_p+p]:mt-4">
+            <p>
+              Jiu jitsu is a grappling martial art. Instead of punching and kicking, you learn to control another person using position, leverage
+              and timing, mostly on the ground. A round ends when someone taps out of a joint lock or choke, or simply when time runs out.
+            </p>
+            <p>
+              No-Gi means we train in athletic clothes rather than the traditional heavy uniform. It's faster, closer to how a real situation looks,
+              and you don't need to buy anything special to start.
+            </p>
+          </div>
+        </Disclosure>
+
+        <Disclosure title="How a class runs" group={group}>
+          <ol class="flex flex-col gap-4">
+            {
+              classParts.map((part, i) => (
+                <li class="grid grid-cols-[auto_minmax(0,1fr)] gap-2">
+                  <span class="w-7 font-mono text-time text-ink-muted md:w-10">{padIndex(i + 1)}</span>
+                  <span class="flex flex-col gap-1">
+                    <span class="font-medium text-ink">{part.title}</span>
+                    <span>{part.note}</span>
+                  </span>
+                </li>
+              ))
+            }
+          </ol>
+        </Disclosure>
+
+        <Disclosure title="What to wear" group={group}>
+          <p class="mb-5 text-ink">Regular gym clothes work. Kids wear the same.</p>
+          <ul class="flex flex-col gap-4">
+            {
+              wear.map((item) => (
+                <li class="flex flex-col gap-1">
+                  <span class="font-medium text-ink">{item.title}</span>
+                  <span>{item.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </Disclosure>
+
+        <Disclosure title="Why people stick with it" group={group}>
+          <ul class="flex flex-col gap-4">
+            {
+              reasons.map((reason) => (
+                <li class="flex flex-col gap-1">
+                  <span class="font-medium text-ink">{reason.title}</span>
+                  <span>{reason.note}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </Disclosure>
+
+        {
+          youth && (
+            <Disclosure title="For parents" group={group}>
+              <div class="flex flex-col gap-4">
+                <p class="font-medium text-ink">{youth.data.name}</p>
+                <div class="flex flex-wrap gap-2">
+                  {youth.data.tags.map((tag) => (
+                    <Tag>{tag}</Tag>
+                  ))}
+                </div>
+                <p>{youth.data.summary}</p>
+                <p class="font-mono text-time text-ink">{summaryFor(youth, schedule)}</p>
+                <a href={`/programs/${youth.id}`} class="link self-start">
+                  About {youth.data.shortName ?? youth.data.name} →
+                </a>
+              </div>
+            </Disclosure>
+          )
+        }
+      </div>
+
+      <p class="text-body-sm text-ink-muted">
+        Questions? Call <a href={telHref(settings.phone)} class="font-mono text-ink no-underline hover:text-signal-text">{settings.phone}</a> or{' '}
+        <a href="/contact" class="link">send us a message</a>.
+      </p>
     </div>
   </section>
 
   <!-- Facts -->
-  <section aria-label="The basics" class="wrap flex flex-col gap-6 pb-8 pt-2 md:gap-10 md:pb-18 md:pt-12">
+  <section aria-label="The basics" class="wrap pb-12 md:pb-18">
     <FactList facts={facts} />
-    <div class="flex flex-col gap-2 md:flex-row md:gap-3">
-      <Button href={signup('facts')} variant="primary" arrow class="w-full justify-center md:w-auto">Start your free week</Button>
-      <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
-    </div>
   </section>
 
-  <!-- Long read: light theme -->
-  <div data-theme="light" class="bg-surface text-ink">
-    <section aria-labelledby="week-h" class="wrap flex flex-col gap-6 pb-12 pt-14 md:gap-12 md:py-24">
-      <SectionHeading eyebrow="Your free week" size="l" id="week-h">How it works</SectionHeading>
-      <Steps steps={firstWeek} />
-      {
-        starters.length > 0 && (
-          <p class="max-w-150 text-body text-ink-muted md:text-body-l">
-            Not sure which class to try first? Start with{' '}
-            {starters.map((p, i) => (
-              <>
-                {i > 0 && ' or '}
-                <a href={`/programs/${p.id}`} class="link">
-                  {p.data.shortName ?? p.data.name}
-                </a>
-              </>
-            ))}
-            .
-          </p>
-        )
-      }
-    </section>
-
-    <section aria-labelledby="bjj-h" class="bg-surface-muted">
-      <div class="wrap flex flex-col gap-6 py-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
-        <SectionHeading eyebrow="The basics" size="l" id="bjj-h" class="md:col-span-5">What jiu<br />jitsu is</SectionHeading>
-        <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7 md:pt-8">
-          <div class="text-body-l text-ink [&_p+p]:mt-4">
-            <p>
-              Jiu jitsu is a grappling martial art. Instead of punching and kicking, you learn to control another person using position,
-              leverage and timing, mostly on the ground. A round ends when someone taps out of a joint lock or choke, or simply when time runs
-              out.
-            </p>
-            <p>
-              No-Gi means we train in athletic clothes rather than the traditional heavy uniform. It's faster, closer to how a real situation
-              looks, and you don't need to buy anything special to start.
-            </p>
-          </div>
-          <div class="flex flex-col gap-3">
-            <span class="text-label uppercase text-ink-muted">How a class usually runs</span>
-            <ol class="border-t border-line">
-              {
-                classParts.map((part, i) => (
-                  <li class="grid grid-cols-[auto_minmax(0,1fr)] gap-2 border-b border-line py-3.5 md:py-4">
-                    <span class="w-7 font-mono text-time text-ink-muted md:w-10">{padIndex(i + 1)}</span>
-                    <span class="flex flex-col gap-1">
-                      <span class="text-body font-medium text-ink md:text-body-l">{part.title}</span>
-                      <span class="text-body-sm text-ink-muted">{part.note}</span>
-                    </span>
-                  </li>
-                ))
-              }
-            </ol>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section aria-labelledby="wear-h" class="wrap flex flex-col gap-6 py-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
-      <SectionHeading eyebrow="Before you come" size="l" id="wear-h" class="md:col-span-5">What to<br />wear</SectionHeading>
-      <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7 md:pt-8">
-        <p class="text-body-l text-ink">Regular gym clothes work. Kids wear the same.</p>
-        <ul class="border-t border-line">
-          {
-            wear.map((item) => (
-              <li class="flex flex-col gap-1 border-b border-line py-3.5 md:py-4">
-                <span class="text-body font-medium text-ink md:text-body-l">{item.title}</span>
-                <span class="text-body-sm text-ink-muted">{item.note}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </section>
-
-    <section aria-labelledby="why-h" class="bg-surface-muted">
-      <div class="wrap flex flex-col gap-6 py-12 md:gap-12 md:py-24">
-        <SectionHeading eyebrow="Why train" size="l" id="why-h">Why people<br />stick with it</SectionHeading>
-        <ul class="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-4">
-          {
-            reasons.map((reason) => (
-              <li class="flex flex-col gap-1 rounded-sm border border-line bg-surface-raised p-4 md:gap-2 md:p-6" data-motion="reveal">
-                <span class="text-lead text-ink">{reason.title}</span>
-                <span class="text-body-sm text-ink-muted">{reason.note}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </section>
-
-    <section aria-labelledby="parents-h" class="wrap flex flex-col gap-12 py-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:py-24">
-      {
-        youth && (
-          <div class="flex flex-col gap-5 md:col-span-6">
-            <SectionHeading eyebrow="For parents" size="m" id="parents-h" fit="container">
-              {youth.data.name}
-            </SectionHeading>
-            <div class="flex flex-wrap gap-2">
-              {youth.data.tags.map((tag) => (
-                <Tag>{tag}</Tag>
-              ))}
-            </div>
-            <p class="text-body text-ink md:text-body-l">{youth.data.summary}</p>
-            <p class="font-mono text-time text-ink">{summaryFor(youth, schedule)}</p>
-            <a href={`/programs/${youth.id}`} class="link self-start">
-              About {youth.data.shortName ?? youth.data.name} →
-            </a>
-          </div>
-        )
-      }
-      <div class="flex flex-col gap-5 border-t border-line pt-12 md:col-span-5 md:col-start-8 md:border-0 md:pt-0">
-        <span class="text-label uppercase text-ink-muted">Questions?</span>
-        <p class="text-body text-ink md:text-body-l">Call us or send a message, and we'll help you pick a class.</p>
-        <a href={telHref(settings.phone)} class="self-start font-mono text-time-l text-ink no-underline">{settings.phone}</a>
-        <a href="/contact" class="link self-start">Send us a message →</a>
-      </div>
-    </section>
-  </div>
-
-  <FinalCta variant="band" tone="surface" href={signup('final-cta')}>Your first<br />class is<br />on us.</FinalCta>
+  <FinalCta variant="photo" image={welcomePhoto} alt="A coach welcoming a new student at the edge of the mat" position="50% 28%" href={signup('final-cta')}>
+    Your first<br />class is<br />on us.
+  </FinalCta>
 </Base>

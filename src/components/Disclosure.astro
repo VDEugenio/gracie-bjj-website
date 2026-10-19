@@ -1,0 +1,31 @@
+---
+/**
+ * One dropdown in a hairline list (the "New to BJJ?" hero). A native
+ * <details>: items sharing a `group` name are exclusive, so opening one closes
+ * the others, and it all works with JavaScript off. Wrap a run of them in an
+ * element with `border-t border-line`. motion.ts fades the body in on open.
+ */
+import { Minus, Plus } from 'lucide-astro';
+
+interface Props {
+  title: string;
+  /** Shared by every item that should close when another opens. */
+  group: string;
+  id?: string;
+}
+
+const { title, group, id } = Astro.props;
+---
+
+<details name={group} id={id} class="group border-b border-line" data-motion="disclosure">
+  <summary
+    class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-lead text-ink hover:text-signal-text md:min-h-16 [&::-webkit-details-marker]:hidden"
+  >
+    {title}
+    <Plus size={20} stroke-width={1.5} class="shrink-0 group-open:hidden" aria-hidden="true" />
+    <Minus size={20} stroke-width={1.5} class="hidden shrink-0 group-open:block" aria-hidden="true" />
+  </summary>
+  <div class="pb-6 text-body text-ink-muted md:pb-8" data-disclosure-body>
+    <slot />
+  </div>
+</details>

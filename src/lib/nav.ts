@@ -1,7 +1,7 @@
 /** Primary navigation. "Sign up" is appended by the header and menu as an external Gymdesk link. */
 export const NAV = [
   { label: 'Home', href: '/' },
-  { label: 'New here?', href: '/new-here' },
+  { label: 'New to BJJ?', href: '/new-here' },
   { label: 'Schedule', href: '/schedule' },
   { label: 'Programs', href: '/programs' },
   { label: 'Coaches', href: '/coaches' },

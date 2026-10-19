@@ -116,13 +116,14 @@
   }
 }
 
-/* Header and footer navigation links. */
+/* Header and footer navigation links. Never wrap: "New to BJJ?" stays on one line. */
 @utility navlink {
   color: var(--color-ink);
   text-decoration: none;
   font-size: var(--text-caption);
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.01em;
+  white-space: nowrap;
   &:hover {
     color: var(--color-signal-text);
   }

@@ -26,6 +26,7 @@
  *   coach flip   coach cards turn over to the bio (via the coach:flip event)
  *   menu / menu-link   mobile menu from the top, links staggered
  *   schedule rows      fade and collapse on filter (via the schedule:filter event)
+ *   disclosure         a dropdown's body fades and rises in as it opens
  *
  * Every entrance replays: once an element has fully left the screen it resets
  * (unseen), and it plays again when it comes back, from below or above. See
@@ -131,7 +132,7 @@ export function initMotion(): void {
     reveals();
     coachCards();
     marquees();
-    const cleanups = [ctaPulse(), coachFlips(), mobileMenu(), scheduleFilter()];
+    const cleanups = [ctaPulse(), coachFlips(), mobileMenu(), scheduleFilter(), disclosures()];
     return () => cleanups.forEach((fn) => fn());
   });
 
@@ -788,5 +789,24 @@ function scheduleFilter(): () => void {
   return () => {
     running?.progress(1);
     document.removeEventListener('schedule:filter', onFilter);
+  };
+}
+
+/* ---------- Dropdowns: the body fades and rises in on open ---------- */
+
+/** The height opens at once (native <details>); only the body's opacity and position animate. */
+function disclosures(): () => void {
+  const items = all<HTMLDetailsElement>('[data-motion="disclosure"]');
+  const onToggle = (event: Event) => {
+    const item = event.currentTarget as HTMLDetailsElement;
+    const body = item.querySelector<HTMLElement>('[data-disclosure-body]');
+    if (!body) return;
+    if (item.open) gsap.fromTo(body, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: UI, ease: 'power3.out', overwrite: true });
+    else gsap.set(body, { clearProps: 'all' });
+  };
+  for (const item of items) item.addEventListener('toggle', onToggle);
+  return () => {
+    for (const item of items) item.removeEventListener('toggle', onToggle);
+    gsap.set(all('[data-disclosure-body]'), { clearProps: 'all' });
   };
 }

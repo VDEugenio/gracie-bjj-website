@@ -1,8 +1,8 @@
 ---
 /**
  * Site header. Sticky so the free-week button is always in reach.
- * Desktop (from lg): badge, primary nav, free-week button; from xl the wordmark
- * and the quiet "Member login" join them (seven nav links need the room).
+ * Desktop (from lg): badge, primary nav, free-week button; from xl the quiet
+ * "Member login" joins them, and from 1440px the wordmark (seven nav links need the room).
  * Phone and tablet: badge, free-week button, menu toggle. The full-screen menu is MobileMenu.
  */
 import { Menu } from 'lucide-astro';
@@ -28,7 +28,7 @@ const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
   <div class="mx-auto flex max-w-header items-center justify-between gap-3 px-4 py-2 md:px-20 lg:gap-6 lg:px-8 lg:py-3 xl:gap-8 xl:px-20">
     <a href="/" class="inline-flex items-center gap-3.5 text-ink no-underline" aria-label={`${settings.name} — home`}>
       <Logo class="size-14 lg:size-15" decorative />
-      <span class="hidden flex-col leading-tight xl:flex">
+      <span class="hidden flex-col whitespace-nowrap leading-tight min-[1440px]:flex">
         <span class="display-wide text-wordmark">{settings.wordmark}</span>
         {settings.wordmarkSub && <span class="text-label-sm uppercase text-ink-muted">{settings.wordmarkSub}</span>}
       </span>
@@ -52,7 +52,7 @@ const signupNav = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'nav');
     <div class="flex items-center gap-2 xl:gap-5">
       {
         settings.gymdesk.loginUrl && (
-          <a href={gymdeskUrl(settings.gymdesk.loginUrl, campaign, 'login')} class="hidden text-caption text-ink-muted no-underline hover:text-ink xl:inline">
+          <a href={gymdeskUrl(settings.gymdesk.loginUrl, campaign, 'login')} class="hidden whitespace-nowrap text-caption text-ink-muted no-underline hover:text-ink xl:inline">
             Member login
           </a>
         )
