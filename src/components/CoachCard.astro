@@ -3,8 +3,8 @@
  * Fighter-style coach card.
  * - full (coaches page): a card that flips. The front is the 4:5 portrait under
  *   a scrim with the rank set vertically top-right, role and stacked name over
- *   the bottom, the belt stripe and a "Read bio" cue. The back holds the
- *   specialties, bio and the "Teaches" line. Without JavaScript the back simply
+ *   the bottom, the belt stripe and a "Read bio" cue. The back opens with the
+ *   same belt stripe, then the specialties, bio and the "Teaches" line. Without JavaScript the back simply
  *   reads below the front (src/scripts/coach-flip.ts turns the flip on).
  * - compact (home): photo, name, belt stripe and rank, linking to /coaches.
  * The desktop tilt, the flip turn and the belt tie-on live in src/lib/motion.ts.
@@ -85,6 +85,7 @@ const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 
           </button>
         </div>
         <div id={backId} class={face} data-flip-face="back">
+          <BeltStripe belt={data.belt} still />
           <div class="flex flex-1 flex-col gap-3 p-5 pb-6">
             <p class="text-label uppercase text-ink" aria-hidden="true">
               {data.name} · {beltLabel(data.belt)}
