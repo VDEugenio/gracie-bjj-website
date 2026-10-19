@@ -79,7 +79,7 @@ Dashed mono chips in the mockups are motion annotations, not UI. Don't build the
   - Facebook: https://www.facebook.com/people/Gracie-Jiujitsu-Charleston/100054647910466/
 - **Coaches, in display order** (full bios are in `design/content-brief.md`; seed Keystatic from them):
   1. Relson Gracie — Head Instructor, red belt (Grandmaster). Visits for seminars and private lessons.
-  2. Michael Key — Owner / Instructor. Belt, bio, and classes still to come.
+  2. Michael Key — Owner / Instructor, black belt (jiu jitsu since 2007; also a taekwondo black belt). Teaches the Mon/Wed/Fri adult evening classes.
   3. Jerry Brewer — Instructor, black belt under Relson Gracie.
   4. James Foy — Instructor, black belt under Relson Gracie (2022). Adult BJJ and Striking Fundamentals.
   5. Sebastian Seagraves — Instructor and Youth coach, purple belt. Youth, Fundamentals, Adult BJJ.
@@ -156,8 +156,8 @@ Gymdesk is the gym's member system. It owns signups, billing, and leads, and **t
 - Never commit secrets. The Keystatic Cloud project ID and any keys go in `.env` (git-ignored), with names documented in `.env.example`.
 
 ## Open items (use placeholders until resolved)
-- Michael Key's belt, bio, and classes; Aryan's classes and portrait
-- Which classes Relson, Jerry, and Michael teach
+- Michael Key's full bio (who promoted him and when); Aryan's classes and portrait
+- Which classes Relson teaches
 - No-Gi portraits for Relson and Jerry (current ones show a gi); higher-res portraits for Jerry (300px source) and James
 - Sebastian's MMA record (bio says "as of February 2024")
 - Youth Jiu Jitsu age range
