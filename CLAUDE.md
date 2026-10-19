@@ -83,7 +83,7 @@ Dashed mono chips in the mockups are motion annotations, not UI. Don't build the
   3. Jerry Brewer — Instructor, black belt under Relson Gracie.
   4. James Foy — Instructor, black belt under Relson Gracie (2022). Adult BJJ and Striking Fundamentals.
   5. Sebastian Seagraves — Instructor and Youth coach, purple belt. Youth, Fundamentals, Adult BJJ.
-  6. Aryan (Ari) — Instructor, purple belt under David Close. MMA and self-defense. Teaches the Tue/Wed/Thu noon classes.
+  6. Aryan (Ari) — first name only, by his request; never publish a last name. Instructor, purple belt under David Close. MMA and self-defense. Teaches the Tue/Wed/Thu noon classes.
 
 ## Content model (Keystatic)
 Mike edits all of this, so nothing below may be hardcoded in a page.
