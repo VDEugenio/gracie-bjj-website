@@ -1,19 +1,19 @@
 ---
 /**
  * "New to BJJ?": what a first-timer needs to know before their first class.
- * No mockup. A dark hero with the title and buttons on the left and the topics
- * as one-at-a-time dropdowns on the right (stacked on phones), then the facts
- * strip and the closing call to action over the welcome photo. Times and
- * prices come from the content collections.
+ * No mockup. A dark hero with the title over the welcome photo and the buttons
+ * below it on the left, and the topics as one-at-a-time dropdowns on the right
+ * (stacked on phones), then the facts strip. Times and prices come from the
+ * content collections.
  */
 import Base from '@/layouts/Base.astro';
 import Button from '@/components/Button.astro';
 import Disclosure from '@/components/Disclosure.astro';
 import FactList from '@/components/FactList.astro';
-import FinalCta from '@/components/FinalCta.astro';
+import Photo from '@/components/Photo.astro';
 import Tag from '@/components/Tag.astro';
 import { getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
-import { fitStyle } from '@/lib/fit';
+import { wordEm } from '@/lib/fit';
 import { padIndex, telHref } from '@/lib/format';
 import { gymdeskUrl } from '@/lib/gymdesk';
 import { DAYS, summaryFor } from '@/lib/schedule';
@@ -27,7 +27,6 @@ const activeDays = DAYS.filter((d) => schedule.some((c) => c.data.day === d.key)
 const firstDay = activeDays[0]?.label ?? 'Monday';
 const lastDay = activeDays[activeDays.length - 1]?.label ?? 'Saturday';
 const monthly = pricing.find((p) => p.data.period === 'month');
-const starters = programs.filter((p) => p.data.startHere);
 const youth = programs.find((p) => p.data.audience === 'kids');
 
 const facts = [
@@ -37,37 +36,33 @@ const facts = [
   ...(monthly ? [{ label: 'After that', value: `${monthly.data.price}/month`, mono: true }] : []),
 ];
 
-const firstWeek = [
-  { title: 'No experience needed', note: 'Every class has first-timers. Coaches walk you through everything.' },
-  { title: 'Wear a rash guard and shorts', note: "Wear what you'd wear to any gym. We train No-Gi only." },
-  { title: 'Your first week is free', note: 'Try any class for seven days before you decide.' },
-];
-
 const classParts = [
   { title: 'Warm-up', note: 'Movement drills that get you used to moving on the mat.' },
   { title: 'Technique', note: 'The coach shows one position or move, step by step.' },
   { title: 'Drilling', note: 'You practise it with a partner, slowly, taking turns.' },
-  { title: 'Rolling', note: 'Live rounds with a partner. You can tap at any time, and the round stops.' },
+  { title: 'Rolling', optional: true, note: 'Live rounds with a partner. Rolling is optional, so you can sit out any round. You can tap at any time, and the round stops.' },
 ];
 
 const wear = [
-  { title: 'A rash guard or fitted T-shirt', note: "Something snug that won't ride up or catch fingers." },
-  { title: 'Athletic shorts', note: 'No pockets, zippers or belt loops. Spats or leggings underneath are fine.' },
+  { title: 'A rash guard or fitted T-shirt, and athletic shorts or leggings', note: "Something snug that won't ride up or catch fingers. Please avoid clothes with belt loops." },
   { title: 'Bare feet on the mat', note: 'Bring sandals or slides for walking off the mat.' },
   { title: 'A water bottle', note: "You'll want it." },
   { title: 'A mouthguard', note: 'Optional, but a good idea once you start rolling.' },
-  { title: 'Short nails, no jewelry', note: 'Trim your nails, take off rings and earrings, and tie back long hair. Wash your gear after every class.' },
+  { title: 'Short nails, no jewelry', note: 'Trim your nails, take off rings and earrings, and tie back long hair.' },
 ];
 
 const reasons = [
-  { title: "It's a good workout", note: "You're solving a problem with a partner, so the hour goes quickly. Expect to sweat." },
-  { title: 'It works for self-defense', note: 'You practise against a partner who is resisting, so you learn what works, including against someone bigger.' },
+  { title: "It's a great workout", note: 'Every class is a full-body workout. You build strength and muscle, the rounds are great cardio, and the hour goes quickly.' },
+  { title: 'Learn and improve your self-defense', note: 'You practise against a partner who is resisting, so you learn what works, including against someone bigger.' },
   { title: 'You learn to stay calm', note: 'Being stuck under someone and working your way out teaches you to breathe and think under pressure.' },
   { title: "There's always more to learn", note: 'It suits any age and fitness level, and you can see yourself improve from week to week.' },
-  { title: 'You train with the same people', note: 'Partners help each other get better, so you get to know people quickly.' },
+  { title: 'The environment', note: 'Partners help each other get better, so you get to know people quickly.' },
 ];
 
 const group = 'new-to-bjj';
+
+// The title breaks as "New to / BJJ?", so fit the whole first line (not its widest word) to the photo's width.
+const titleFit = `--fit-size: calc(100cqw / ${((wordEm('New') + wordEm(' ') + wordEm('to')) * 1.02).toFixed(3)})`;
 ---
 
 <Base
@@ -76,47 +71,39 @@ const group = 'new-to-bjj';
   campaign={campaign}
   currentPath="/new-here"
 >
-  <!-- Hero: title and buttons, then the topics as dropdowns -->
-  <section aria-labelledby="new-h" class="wrap flex flex-col gap-10 pb-12 pt-12 md:grid md:grid-cols-12 md:items-start md:gap-x-8 md:pb-24 md:pt-24">
-    <div class="flex flex-col gap-4 md:col-span-5 md:gap-6">
-      <span class="text-label uppercase text-signal-text">First class</span>
-      <h1 id="new-h" class="display text-display-detail text-ink" style={fitStyle('New to BJJ?')} data-motion="title">New to<br />BJJ?</h1>
-      <p class="max-w-82 text-body text-ink md:max-w-120 md:text-body-l">Everything you need to know before your first class.</p>
-      <div class="flex flex-col gap-2 pt-2 md:flex-row md:flex-wrap md:gap-3">
+  <!-- Hero: title over the photo and the buttons below it, then the topics as dropdowns -->
+  <section aria-labelledby="new-h" class="wrap flex flex-col gap-10 pb-12 md:pb-24 md:pt-16 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-8 lg:pt-24">
+    <div class="flex flex-col gap-5 md:gap-6 lg:col-span-6">
+      <div class="relative -mx-4 h-130 overflow-hidden bg-surface-raised md:mx-0 md:h-160 lg:h-170">
+        <div class="absolute inset-0 overflow-hidden" data-motion="hero-photo">
+          <div class="absolute inset-0" data-photo-tilt>
+            <Photo
+              image={welcomePhoto}
+              alt="Two students drilling on the mat, one standing in her partner's guard and smiling"
+              priority
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              class="object-[50%_42%] lg:object-[50%_100%]"
+            />
+          </div>
+          <div class="absolute inset-0 scrim-cta" aria-hidden="true"></div>
+        </div>
+        <div class="@container absolute inset-x-0 bottom-0 flex flex-col gap-3 px-4 pb-6 md:gap-5 md:px-8 md:pb-8">
+          <span class="text-label uppercase text-signal-text">First class</span>
+          <h1 id="new-h" class="display text-display-detail text-ink" style={titleFit} data-motion="title">New&nbsp;to<br />BJJ?</h1>
+          <p class="max-w-82 text-body text-ink md:max-w-none md:text-body-l">Everything you need to know before your first class.</p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-3">
         <Button href={signup('hero')} variant="primary" arrow class="w-full justify-center md:w-auto">Start your free week</Button>
         <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
       </div>
     </div>
 
-    <div class="flex flex-col gap-6 md:col-span-6 md:col-start-7 md:pt-4">
+    <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7 lg:pt-4">
       <div class="border-t border-line">
         <Disclosure title="How your free week works" group={group}>
-          <ul class="flex flex-col gap-4">
-            {
-              firstWeek.map((item) => (
-                <li class="flex flex-col gap-1">
-                  <span class="font-medium text-ink">{item.title}</span>
-                  <span>{item.note}</span>
-                </li>
-              ))
-            }
-          </ul>
-          {
-            starters.length > 0 && (
-              <p class="mt-5">
-                Not sure which class to try first? Start with{' '}
-                {starters.map((p, i) => (
-                  <>
-                    {i > 0 && ' or '}
-                    <a href={`/programs/${p.id}`} class="link">
-                      {p.data.shortName ?? p.data.name}
-                    </a>
-                  </>
-                ))}
-                .
-              </p>
-            )
-          }
+          <p class="text-ink">Your first week is free. Try any and all classes for 7 days.</p>
+          <Button href={signup('section-cta')} arrow class="mt-5">Start your free week</Button>
         </Disclosure>
 
         <Disclosure title="What is BJJ?" group={group}>
@@ -139,7 +126,10 @@ const group = 'new-to-bjj';
                 <li class="grid grid-cols-[auto_minmax(0,1fr)] gap-2">
                   <span class="w-7 font-mono text-time text-ink-muted md:w-10">{padIndex(i + 1)}</span>
                   <span class="flex flex-col gap-1">
-                    <span class="font-medium text-ink">{part.title}</span>
+                    <span class="flex flex-wrap items-center gap-2">
+                      <span class="font-medium text-ink">{part.title}</span>
+                      {part.optional && <Tag>Optional</Tag>}
+                    </span>
                     <span>{part.note}</span>
                   </span>
                 </li>
@@ -207,8 +197,4 @@ const group = 'new-to-bjj';
   <section aria-label="The basics" class="wrap pb-12 md:pb-18">
     <FactList facts={facts} />
   </section>
-
-  <FinalCta variant="photo" image={welcomePhoto} alt="A coach welcoming a new student at the edge of the mat" position="50% 28%" href={signup('final-cta')}>
-    Your first<br />class is<br />on us.
-  </FinalCta>
 </Base>
