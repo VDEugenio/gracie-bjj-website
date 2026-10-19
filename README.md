@@ -106,6 +106,7 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `PricingCard`, `PriceList` | `plan`, `href` · `rows[] {label, price}` |
 | `Steps` | `steps[] {title, note?}`, `variant` numbered/cards |
 | `FactList` | `facts[] {label, value, mono?}` |
+| `Disclosure` | `title`, `group` (items sharing it open one at a time), `id?`; body in the slot. Native `<details>`, works without JS |
 | `FinalCta` | `variant` photo/band, `tone?`, `size?`, `image?`, `alt?`, `position?`, `body?`, `href`, `secondary?`; headline in the slot |
 | `ContactInfo`, `MapEmbed`, `ContactForm` | `settings`, `schedule` · `settings`, `class` (size) · `interests?` |
 | `GymdeskForm`, `GymdeskBooking` | `embed?` (render nothing until Mike pastes the embed code into settings) |
@@ -126,7 +127,7 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `/contact` | `src/pages/contact.astro` | `contact` |
 | 404 | `src/pages/404.astro` | `not-found` |
 
-Page copy (hero lines, section intros, the "New here?" steps) lives in the page templates. Everything with a time, a price, a name or a link comes from the content collections, and the "First time? Come to Fundamentals at 6 PM" and "Your first class" sentences are derived from the schedule (`src/lib/copy.ts`).
+Page copy (hero lines, section intros, the "New to BJJ?" dropdowns) lives in the page templates. Everything with a time, a price, a name or a link comes from the content collections, and the "First time? Come to Fundamentals at 6 PM" and "Your first class" sentences are derived from the schedule (`src/lib/copy.ts`).
 
 **Today.** The site is static, so `src/scripts/today.ts` marks today in the browser using the gym's time zone: the signal edge and "Today" label on the schedule card (which also moves first on phones), the "Today · Tuesday, Oct 13" line, and the home page's day panel. Without JavaScript the home page shows Monday under "This week at the gym" and no card is marked.
 
@@ -154,6 +155,7 @@ All GSAP code is in `src/lib/motion.ts`, started once from `Base.astro`. Compone
 
 Every entrance replays: an element resets once it has fully left the screen and plays again when it comes back (`replayOnScroll()`).
 | `menu`, `menu-link` | The phone menu slides down from the top, links rise in with a 0.05 stagger |
+| `disclosure` | A dropdown's body fades and rises 8px over 0.3s as it opens (the height opens at once) |
 
 The schedule filter and the mobile menu dispatch cancelable `schedule:filter` and `menu:close` events; motion.ts cancels them, animates, then commits the change. With `prefers-reduced-motion: reduce` nothing is registered, so they switch instantly. All starting states are set from JavaScript, so the page is complete with JavaScript off. Screenshots (`npm run screenshots`) run with reduced motion.
 

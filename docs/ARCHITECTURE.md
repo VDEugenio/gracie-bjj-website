@@ -105,17 +105,18 @@ Under reduced motion nothing registers, so nothing animates. Starting states are
 | `hero-photo` | `index.astro`, `programs/[slug].astro` | The photo settles from a 1.12 zoom over 1.1s. It is never clipped or faded because it is the page's largest paint (LCP) |
 | `hero-title` | `index.astro` | SplitText masked lines rise from below (stagger 0.08, `expo.out`, 0.15s delay) |
 | `hero-cta` | `index.astro` (both button rows) | Fade and rise after the headline |
-| `title` | `programs/[slug].astro` | Same line reveal; plays on load when it sits beside a `hero-photo`, otherwise on scroll |
+| `title` | `programs/[slug].astro`, `new-here.astro` | Same line reveal; plays on load when it sits beside a `hero-photo`, otherwise on scroll |
 | `photo-wipe` | `PhotoBlock`, `ProgramRow`, `FinalCta` | `clip-path` wipe left to right plus a slight settle when the frame reaches 80% of the viewport |
-| `reveal` | `ProgramCard`, `ProgramRow`, `ScheduleDay`, `PricingCard`, `Steps`, `MapEmbed`, the "Why people stick with it" cards on `new-here.astro` | Fade and rise with a 0.08 stagger |
+| `reveal` | `ProgramCard`, `ProgramRow`, `ScheduleDay`, `PricingCard`, `Steps`, `MapEmbed` | Fade and rise with a 0.08 stagger |
 | `coach-card`, `belt` | `CoachCard`, `BeltStripe` | Cards rise in one by one; the belt stripe ties on (`scaleX` 0→1 from the left) 0.3s into each card. Desktop pointers also get the tilt via `data-tilt` (below) |
 | `data-tilt`, `data-tilt-photo` | `CoachCard`, `ProgramCard` | Desktop tilt: ±8° via `quickTo`, the `data-tilt-photo` image drifts up to 12px the other way, springs back over 0.6s. Put `tilt-stage` on the parent grid. Desktop only |
 | `data-pulse` | `Button` with `pulse` (the homepage hero) | A 2px `signal` ring scales out by 12px a side and fades over 1.2s, every ~3s, while the arrow nudges 4px; paused off screen, stopped for good on hover or focus |
 | coach flip | `CoachCard` (full) + `src/scripts/coach-flip.ts` | The script owns the state (`data-flip-ready`, `data-flipped`, `inert` on the hidden face, `aria-expanded`, focus handoff) and dispatches `coach:flip`; motion.ts turns `[data-flip-inner]` on `rotationY` (0.6s `power2.inOut`). Without motion the CSS swaps the faces; without JavaScript the back reads below the front |
-| `data-photo-tilt` | `index.astro` hero (`="phone"`), `programs/[slug].astro` and `new-here.astro` heroes, `PhotoBlock`, `ProgramRow`, `FinalCta` | The layer around a photo leans ±4° (`transformPerspective` 1000) and drifts up to 10px the other way; the frame clips it and the scrims sit outside it. It zooms just enough to hide its edges on the first move, so the resting photo matches the mockup. Desktop: follows the pointer over the photo, or over a `data-tilt-area` ancestor (the homepage hero section). Touch, `data-photo-tilt="phone"` only: follows `deviceorientation` from a slowly re-centering resting angle, only while the hero is on screen. Orientation events only fire on HTTPS. iOS asks for permission on the first tap that isn't on a link or control, and `localStorage` key `rg-motion-permission` remembers a denial |
+| `data-photo-tilt` | `index.astro` hero (`="phone"`), `programs/[slug].astro` hero, `PhotoBlock`, `ProgramRow`, `FinalCta` | The layer around a photo leans ±4° (`transformPerspective` 1000) and drifts up to 10px the other way; the frame clips it and the scrims sit outside it. It zooms just enough to hide its edges on the first move, so the resting photo matches the mockup. Desktop: follows the pointer over the photo, or over a `data-tilt-area` ancestor (the homepage hero section). Touch, `data-photo-tilt="phone"` only: follows `deviceorientation` from a slowly re-centering resting angle, only while the hero is on screen. Orientation events only fire on HTTPS. iOS asks for permission on the first tap that isn't on a link or control, and `localStorage` key `rg-motion-permission` remembers a denial |
 | `marquee` | `Marquee` | The track (rendered twice) slides by 50% on an infinite tween at 60px/s, paused while off screen |
 | `magnetic` | `Button` (primary variant) | The button leans up to 10px toward the pointer |
 | `menu`, `menu-link` | `MobileMenu` | Slides down from the top in 0.3s, links rise with a 0.05 stagger; slides back up on close |
+| `disclosure` | `Disclosure` (the `new-here.astro` hero) | On `toggle` open, the body fades and rises 8px over 0.3s. The height opens at once; native `<details name>` makes a group exclusive without JS |
 | (schedule rows) | via the `schedule:filter` event | Rows fade and collapse (height, padding, border) over 0.3s. This is the one place something other than transform, opacity or clip-path animates, because the list has to close up |
 
 Details worth knowing:
@@ -161,7 +162,7 @@ Things that differ from CLAUDE.md or the mockups, or that a future session might
 | "Member login" points at `…gymdesk.com/login` | Assumed from the signup URL; Mike has to confirm. The `/login` redirect in `_redirects` uses the same URL |
 | Competition Training cost "Included in the Adult membership" | Inferred from the pricing; Mike to confirm |
 | Keyless Google Maps embed (`google.com/maps?q=…&output=embed`) | No API key to manage. It shows the area without an exact pin until Mike pastes a real embed URL into settings |
-| Page copy lives in the templates, not the CMS | Hero lines, section intros and the "New here?" steps are design copy. Everything with a time, price, name or link is CMS content, and several sentences are derived from the schedule (`copy.ts`) |
+| Page copy lives in the templates, not the CMS | Hero lines, section intros and the "New to BJJ?" dropdowns are design copy. Everything with a time, price, name or link is CMS content, and several sentences are derived from the schedule (`copy.ts`) |
 | `compressHTML` left at Astro 7's `'jsx'` default | Whitespace between inline elements on separate lines is dropped, so templates use `{' '}` where a space matters |
 | zod from `astro/zod` (zod 4) | Astro 7 ships zod 4; use `z.url()` rather than `z.string().url()` |
 | Images never upscale | `Photo.astro` caps widths at the source. Jerry's 300px portrait stays small until a better original arrives |
@@ -198,6 +199,7 @@ Things that differ from CLAUDE.md or the mockups, or that a future session might
 | 2026-10-14 | `dd529e7` | Phase 6: SEO and launch prep (JSON-LD, OG image, robots, sitemap, redirects, 404, UTM everywhere) |
 | 2026-10-14 | `8a0e09f`, `d56f6aa` | LAUNCH.md and README updates |
 | 2026-10-17 | batch 1 commits | First round of owner feedback: coach cards flip to the bio and lose their numbers, all six coaches and one membership price on the homepage, the `/new-here` page, CTA pulse, photo tilt on every photo, replaying scroll entrances, desktop header from 1024px |
+| 2026-10-19 | batch 2 commits | Nav labels never wrap (wordmark from 1440px); "New here?" renamed "New to BJJ?"; that page's long read became dropdowns in the hero |
 
 Phases 1 to 4 were built in a Claude Code session on this machine; phases 5 and 6 in a second session started through Claude Code Remote Control, which worked on a git worktree branch (`worktree-bridge-cse_…`) that was then fast-forwarded into `main`. That branch can be deleted once the remote session is closed.
 
