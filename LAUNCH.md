@@ -125,7 +125,7 @@ The old address (2070 Sam Rittenberg Blvd, Unit 752, 29407) is retired. Google m
 
 These show placeholders on the live site until they're filled in through Keystatic (or sent to the developer):
 
-- Michael Key's belt and bio (he teaches the Mon/Wed/Fri adult evening classes); Aryan's role, belt, bio and portrait
+- Michael Key's belt and bio (he teaches the Mon/Wed/Fri adult evening classes); Aryan's classes and portrait
 - Which classes Relson teaches (Jerry no longer teaches; his card says "Founding instructor")
 - No-Gi portraits of Relson and Jerry; higher-resolution portraits of Jerry and James
 - Youth Jiu Jitsu age range
