@@ -4,8 +4,7 @@
  * - full (coaches page): a card that flips. The front is the 4:5 portrait under
  *   a scrim with the rank set vertically top-right, role and stacked name over
  *   the bottom, the belt stripe and a "Read bio" cue. The back holds the
- *   specialties, bio and the "Teaches" line over the same portrait, mirrored
- *   (as if seen through the card) and darkened so the text reads. Without JavaScript the back simply
+ *   specialties, bio and the "Teaches" line. Without JavaScript the back simply
  *   reads below the front (src/scripts/coach-flip.ts turns the flip on).
  * - compact (home): photo, name, belt stripe and rank, linking to /coaches.
  * The desktop tilt, the flip turn and the belt tie-on live in src/lib/motion.ts.
@@ -33,8 +32,7 @@ const headingId = `coach-${variant}-${coach.id}`;
 const backId = `coach-bio-${coach.id}`;
 const rank = rankLine(data);
 const alt = `Portrait of ${data.name}`;
-const photoProps = { position: data.photoPosition, widths: [360, 480, 720], sizes: '(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw' };
-const face = 'relative flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors group-hover:border-ink';
+const face = 'flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors group-hover:border-ink';
 const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-3.5 text-label uppercase text-ink-muted transition-colors group-hover:text-ink';
 ---
 
@@ -51,7 +49,13 @@ const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 
         <div class={face} data-flip-face="front">
           <div class="relative aspect-4/5 w-full flex-1 overflow-hidden bg-surface-muted" data-tilt-photo>
             {data.photo ? (
-              <Photo image={data.photo} alt={alt} {...photoProps} />
+              <Photo
+                image={data.photo}
+                alt={alt}
+                position={data.photoPosition}
+                widths={[360, 480, 720]}
+                sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+              />
             ) : (
               <div class="absolute inset-0 flex items-center justify-center p-4 text-center font-mono text-time-sm text-ink-muted">
                 4:5 portrait · {data.name}
@@ -81,13 +85,7 @@ const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 
           </button>
         </div>
         <div id={backId} class={face} data-flip-face="back">
-          {data.photo && (
-            <div class="absolute inset-0" aria-hidden="true">
-              <Photo image={data.photo} alt="" {...photoProps} class="-scale-x-100" />
-              <div class="absolute inset-0 bg-surface/80" />
-            </div>
-          )}
-          <div class="relative flex flex-1 flex-col gap-3 p-5 pb-6">
+          <div class="flex flex-1 flex-col gap-3 p-5 pb-6">
             <p class="text-label uppercase text-ink" aria-hidden="true">
               {data.name} · {beltLabel(data.belt)}
             </p>
@@ -98,13 +96,13 @@ const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 
                 ))}
               </div>
             )}
-            <p class="text-body-sm leading-relaxed text-ink">{data.bio}</p>
+            <p class="text-body-sm leading-relaxed text-ink-muted">{data.bio}</p>
             <div class="mt-auto flex justify-between gap-3 border-t border-line pt-3">
               <span class="pt-0.75 text-label uppercase text-ink-muted">{data.teachesLabel ?? 'Teaches'}</span>
               <span class="text-right font-mono text-time text-ink">{data.teaches}</span>
             </div>
           </div>
-          <button type="button" class:list={[cue, 'relative border-t border-line']} data-flip-cue data-flip-toggle>
+          <button type="button" class:list={[cue, 'border-t border-line']} data-flip-cue data-flip-toggle>
             <span>
               Back<span class="sr-only"> to {data.name}'s portrait</span>
             </span>
