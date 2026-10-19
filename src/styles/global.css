@@ -164,6 +164,15 @@
     transparent 62%
   );
 }
+/* scrim-left mirrored: the photo fades into the surface on its right edge (the "New to BJJ?" hero). */
+@utility scrim-right {
+  background: linear-gradient(
+    to left,
+    var(--scrim-color, var(--color-surface)) 0%,
+    color-mix(in srgb, var(--scrim-color, var(--color-surface)) 60%, transparent) 22%,
+    transparent 55%
+  );
+}
 @utility scrim-left-soft {
   background: linear-gradient(
     to right,

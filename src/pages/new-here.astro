@@ -3,7 +3,8 @@
  * "New to BJJ?": what a first-timer needs to know before their first class.
  * No mockup. A dark hero with the title over the welcome photo and the buttons
  * below it on the left, and the topics as one-at-a-time dropdowns on the right
- * (stacked on phones), then the facts strip. Times and prices come from the
+ * (stacked below lg; on desktop the photo fills the hero's left half and fades
+ * into the graphite behind the dropdowns), then the facts strip. Times and prices come from the
  * content collections.
  */
 import Base from '@/layouts/Base.astro';
@@ -31,9 +32,9 @@ const youth = programs.find((p) => p.data.audience === 'kids');
 
 const facts = [
   { label: 'Cost', value: 'First week free' },
+  ...(monthly ? [{ label: 'After that', value: `${monthly.data.price}/month`, mono: true }] : []),
   { label: 'Classes', value: `${firstDay} to ${lastDay}` },
   { label: 'Who', value: 'Adults and kids, all levels' },
-  ...(monthly ? [{ label: 'After that', value: `${monthly.data.price}/month`, mono: true }] : []),
 ];
 
 const classParts = [
@@ -71,35 +72,42 @@ const titleFit = `--fit-size: calc(100cqw / ${((wordEm('New') + wordEm(' ') + wo
   campaign={campaign}
   currentPath="/new-here"
 >
-  <!-- Hero: title over the photo and the buttons below it, then the topics as dropdowns -->
-  <section aria-labelledby="new-h" class="wrap flex flex-col gap-10 pb-12 md:pb-24 md:pt-16 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-8 lg:pt-24">
-    <div class="flex flex-col gap-5 md:gap-6 lg:col-span-6">
-      <div class="relative -mx-4 h-130 overflow-hidden bg-surface-raised md:mx-0 md:h-160 lg:h-170">
-        <div class="absolute inset-0 overflow-hidden" data-motion="hero-photo">
+  <!--
+    Hero. Phone and tablet: the title over the photo, the buttons below it, then the dropdowns.
+    Desktop (lg): the photo fills the left half of the hero and fades into the graphite on the
+    right, where the dropdowns sit, the homepage hero mirrored. The photo frame goes static there,
+    so the photo layer positions against the section.
+  -->
+  <section aria-labelledby="new-h" class="relative overflow-hidden">
+    <div class="wrap flex flex-col gap-10 pb-12 md:pb-24 md:pt-16 lg:grid lg:min-h-205 lg:grid-cols-12 lg:gap-x-8 lg:pt-0">
+    <div class="flex flex-col gap-5 md:gap-6 lg:col-span-6 lg:justify-end lg:pb-24">
+      <div class="relative -mx-4 h-130 overflow-hidden bg-surface-raised md:mx-0 md:h-160 lg:static lg:h-auto lg:overflow-visible lg:bg-transparent">
+        <div class="absolute inset-0 overflow-hidden lg:right-1/2" data-motion="hero-photo">
           <div class="absolute inset-0" data-photo-tilt>
             <Photo
               image={welcomePhoto}
               alt="Two students drilling on the mat, one standing in her partner's guard and smiling"
               priority
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              class="object-[50%_42%] lg:object-[50%_100%]"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              class="object-[50%_42%] lg:object-[50%_55%]"
             />
           </div>
           <div class="absolute inset-0 scrim-cta" aria-hidden="true"></div>
+          <div class="absolute inset-0 hidden scrim-right lg:block" aria-hidden="true"></div>
         </div>
-        <div class="@container absolute inset-x-0 bottom-0 flex flex-col gap-3 px-4 pb-6 md:gap-5 md:px-8 md:pb-8">
+        <div class="@container absolute inset-x-0 bottom-0 flex flex-col gap-3 px-4 pb-6 md:gap-5 md:px-8 md:pb-8 lg:relative lg:px-0 lg:pb-0">
           <span class="text-label uppercase text-signal-text">First class</span>
           <h1 id="new-h" class="display text-display-detail text-ink" style={titleFit} data-motion="title">New&nbsp;to<br />BJJ?</h1>
           <p class="max-w-82 text-body text-ink md:max-w-none md:text-body-l">Everything you need to know before your first class.</p>
         </div>
       </div>
-      <div class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-3">
-        <Button href={signup('hero')} variant="primary" arrow class="w-full justify-center md:w-auto">Start your free week</Button>
+      <div class="relative flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-3">
+        <Button href={signup('hero')} variant="primary" arrow pulse class="w-full justify-center md:w-auto">Start your free week</Button>
         <Button href="/schedule" class="w-full justify-center md:w-auto">View schedule</Button>
       </div>
     </div>
 
-    <div class="flex flex-col gap-6 lg:col-span-6 lg:col-start-7 lg:pt-4">
+    <div class="relative flex flex-col gap-6 lg:col-span-6 lg:col-start-7 lg:pt-24">
       <div class="border-t border-line">
         <Disclosure title="How your free week works" group={group}>
           <p class="text-ink">Your first week is free. Try any and all classes for 7 days.</p>
@@ -139,7 +147,6 @@ const titleFit = `--fit-size: calc(100cqw / ${((wordEm('New') + wordEm(' ') + wo
         </Disclosure>
 
         <Disclosure title="What to wear" group={group}>
-          <p class="mb-5 text-ink">Regular gym clothes work. Kids wear the same.</p>
           <ul class="flex flex-col gap-4">
             {
               wear.map((item) => (
@@ -190,6 +197,7 @@ const titleFit = `--fit-size: calc(100cqw / ${((wordEm('New') + wordEm(' ') + wo
         Questions? Call <a href={telHref(settings.phone)} class="font-mono text-ink no-underline hover:text-signal-text">{settings.phone}</a> or{' '}
         <a href="/contact" class="link">send us a message</a>.
       </p>
+    </div>
     </div>
   </section>
 
