@@ -175,7 +175,7 @@ export default config({
           description: 'For the marquee and link lists, e.g. "Mixed Level". Leave empty to use the full name.',
         }),
         order: fields.integer({ label: 'Order', description: '1 shows first.', validation: { isRequired: true } }),
-        tags: textList('Tags', 'Tag', 'Short labels like "All levels", "Kids". "Start here" is a separate switch below.'),
+        tags: textList('Tags', 'Tag', 'Not shown on the site. A "Beginners" tag puts the program first in lists and in the homepage "First time?" line. "Start here" is a separate switch below.'),
         startHere: fields.checkbox({
           label: 'Start here',
           description: 'Marks a beginner-friendly program with the purple "Start here" tag.',

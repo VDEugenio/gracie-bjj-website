@@ -1,13 +1,12 @@
 ---
 /**
  * One day of the schedule as a card: day name, then a hairline row per class
- * (mono time, program, level tag). Today's card gets the signal top edge and
+ * (mono time, program). Today's card gets the signal top edge and
  * a "Today" label through the data-today attribute, which the today script
  * (src/scripts/today.ts) sets client-side; the `today` prop forces it for previews.
  *
  * Rows carry data attributes the schedule filter reads.
  */
-import Tag from './Tag.astro';
 import type { DayClasses } from '@/lib/schedule';
 
 interface Props {
@@ -16,8 +15,6 @@ interface Props {
   /** `home` is the "Today at the gym" card: page surface, class count instead of the Today label. */
   variant?: 'card' | 'home';
   headingLevel?: 2 | 3;
-  /** Level tags per row: always, never, or only on phones (the narrow two-up cards on program pages). */
-  showTags?: boolean | 'phone';
   /** Footnote pinned to the bottom of the card (the Saturday card carries the schedule note). */
   note?: string;
   /** Classes for the footnote, e.g. "hidden md:block" when phones show the note elsewhere. */
@@ -27,7 +24,7 @@ interface Props {
   class?: string;
 }
 
-const { day, today = false, variant = 'card', headingLevel = 2, showTags = true, note, noteClass, id, class: className } = Astro.props;
+const { day, today = false, variant = 'card', headingLevel = 2, note, noteClass, id, class: className } = Astro.props;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
 const headingId = id ?? `day-${variant}-${day.key}`;
 const count = day.classes.length;
@@ -63,7 +60,7 @@ const count = day.classes.length;
     {
       day.classes.map((c) => (
         <div
-          class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 border-t border-line py-3"
+          class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 border-t border-line py-3"
           data-class-row
           data-audience={c.program.data.audience}
           data-start-here={c.program.data.startHere ? 'true' : 'false'}
@@ -71,7 +68,6 @@ const count = day.classes.length;
         >
           <span class="w-22 font-mono text-time text-ink-muted">{c.time}</span>
           <span class="font-medium text-ink">{c.program.data.name}</span>
-          {showTags && c.program.data.tags[0] && <Tag class={showTags === 'phone' ? 'md:hidden' : undefined}>{c.program.data.tags[0]}</Tag>}
         </div>
       ))
     }

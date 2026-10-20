@@ -71,10 +71,7 @@ const others = programs
         <a href="/programs" class="text-ink-muted no-underline hover:text-ink">Programs</a> / <span class="text-ink">{padIndex(index)}</span>
       </nav>
       <h1 id="prog-h" class="display text-display-detail text-ink" style={fitStyle(data.name)} data-motion="title">{data.name}</h1>
-      <div class="flex flex-wrap gap-2">
-        {data.startHere && <Tag variant="signal">Start here</Tag>}
-        {data.tags.map((tag) => <Tag>{tag}</Tag>)}
-      </div>
+      {data.startHere && <Tag variant="signal" class="self-start">Start here</Tag>}
     </div>
   </section>
 
@@ -125,7 +122,7 @@ const others = programs
           programDays.length > 0 ? (
             <div class="flex flex-col gap-4 md:mt-2 md:grid md:grid-cols-2">
               {programDays.map((day) => (
-                <ScheduleDay day={day} headingLevel={3} showTags="phone" />
+                <ScheduleDay day={day} headingLevel={3} />
               ))}
             </div>
           ) : (

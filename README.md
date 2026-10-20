@@ -100,7 +100,7 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `ProgramCard` | `program`, `index`, `summary` |
 | `ProgramRow`, `ProgramTimes` | `program`, `index`, `rows[]`, `last?` · `rows[]` |
 | `ProgramLinkList` | `items[] {name, href, summary}` |
-| `ScheduleDay` | `day`, `today?`, `variant` card/home, `headingLevel?`, `showTags?`, `note?` |
+| `ScheduleDay` | `day`, `today?`, `variant` card/home, `headingLevel?`, `note?` |
 | `ScheduleFilter` | `programIds[]` |
 | `CoachCard`, `BeltStripe` | `coach`, `variant` full (flips to the bio, `src/scripts/coach-flip.ts`)/compact, `headingLevel?` · `belt`, `size?` |
 | `PricingCard`, `PriceList` | `plan`, `href` · `rows[] {label, price}` |

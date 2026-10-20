@@ -177,11 +177,6 @@ const titleFit = `--fit-size: calc(100cqw / ${((wordEm('New') + wordEm(' ') + wo
             <Disclosure title="For parents" group={group}>
               <div class="flex flex-col gap-4">
                 <p class="font-medium text-ink">{youth.data.name}</p>
-                <div class="flex flex-wrap gap-2">
-                  {youth.data.tags.map((tag) => (
-                    <Tag>{tag}</Tag>
-                  ))}
-                </div>
                 <p>{youth.data.summary}</p>
                 <p class="font-mono text-time text-ink">{summaryFor(youth, schedule)}</p>
                 <a href={`/programs/${youth.id}`} class="link self-start">
