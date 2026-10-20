@@ -206,10 +206,6 @@ export default config({
           label: 'Who it is for',
           description: 'Short line for the "Who" fact on the program page, e.g. "Beginners, and any belt who wants sharper basics". Falls back to the audience.',
         }),
-        scheduleSummary: fields.text({
-          label: 'Schedule summary',
-          description: 'Short human line for cards, e.g. "Mon and Wed · 6 PM". Leave empty to build one from the schedule.',
-        }),
         image: fields.image({
           label: 'Photo',
           description: 'Black and white, portrait orientation. Shown on cards and the program page.',

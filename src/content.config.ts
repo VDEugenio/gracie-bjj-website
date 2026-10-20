@@ -72,7 +72,6 @@ const programs = defineCollection({
       learn: z.array(z.string()).default([]),
       audience: z.enum(AUDIENCES).default('adults'),
       who: optionalText,
-      scheduleSummary: optionalText,
       image: image(),
       imageAlt: z.string(),
       imagePosition: optionalText,

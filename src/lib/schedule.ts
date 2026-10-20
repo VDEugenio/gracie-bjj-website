@@ -168,11 +168,10 @@ function distinctStarts(schedule: ClassEntry[], programId: string): string[] {
 }
 
 /**
- * One-line summary for cards: the program's own scheduleSummary when Mike has
- * written one, otherwise a derived "Mon and Wed · 6 PM" style line.
+ * One-line summary for cards, always built from the schedule so it follows
+ * Keystatic edits: "Mon and Wed · 6 PM".
  */
 export function summaryFor(program: ProgramEntry, schedule: ClassEntry[]): string {
-  if (program.data.scheduleSummary) return program.data.scheduleSummary;
   const days = daysForProgram(schedule, program.id);
   if (days.length === 0) return 'Times to be announced';
   const starts = distinctStarts(schedule, program.id).map(shortTime);

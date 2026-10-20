@@ -1,6 +1,6 @@
 # Launch checklist
 
-How to get the site live, in order. **Mike** owns every account (GitHub, Cloudflare, Keystatic Cloud, the domain, Google). **You** (the developer) do the technical steps once Mike has added you.
+How to get the site live, in order. **Mike** owns the domain and Google accounts; the GitHub repo, Cloudflare and the Keystatic Cloud team are on the developer's accounts, and Mike edits content through a Keystatic Cloud invite. **You** (the developer) do the technical steps.
 
 The site is an Astro build deployed to **Cloudflare Workers with static assets** (the current `@astrojs/cloudflare` adapter targets Workers, not classic Pages). In the Cloudflare dashboard this lives under **Workers & Pages**, and it gives the same Git-connected, build-on-every-push setup as Pages.
 
@@ -19,31 +19,22 @@ The site is an Astro build deployed to **Cloudflare Workers with static assets**
 
 ## 1. GitHub repository
 
-Keystatic Cloud saves Mike's edits as commits to a GitHub repo, and Cloudflare rebuilds the site from that repo. Mike needs a GitHub account to **own** the repo. He won't need it to edit content.
+The repo is `VDEugenio/gracie-bjj-website`, on the developer's GitHub account. Mike doesn't need a GitHub account: he edits through Keystatic Cloud, which commits for him.
 
-1. **Mike:** create a free account at https://github.com/signup.
-2. **Mike:** create a **private** repository at https://github.com/new, named for example `gracie-bjj-website`. Leave "Add a README", ".gitignore" and "license" **unchecked**, because the repo must start empty.
-3. **Mike:** go to the repo's **Settings → Collaborators → Add people** and invite you with write access.
-4. **You:** accept the invite, then push:
-   ```sh
-   git remote add origin https://github.com/MIKE_USERNAME/gracie-bjj-website.git
-   git push -u origin main
-   ```
-5. **You:** check on GitHub that `.env` was **not** pushed (it's git-ignored; only `.env.example` should be there).
+- [x] **You:** check on GitHub that `.env` was **not** pushed (it's git-ignored; only `.env.example` should be there).
 
 ## 2. Keystatic Cloud (content editing at `/keystatic`)
 
-1. **Mike:** sign in at https://keystatic.cloud with his GitHub account.
-2. **Mike:** create a **team** (e.g. `relson-gracie-charleston`), then a **project** inside it (e.g. `website`).
-3. **Mike:** connect the project to the GitHub repo from step 1. Keystatic will ask him to install its GitHub app. Allow it on **only** that repository.
-4. Copy the project ID Keystatic shows. It looks like `team-name/project-name`, for example `relson-gracie-charleston/website`. That's the value of `PUBLIC_KEYSTATIC_CLOUD_PROJECT` below.
-5. **Mike:** under the project's team members, invite anyone else who should edit content (by email). Editors sign in with Keystatic Cloud, so they don't need GitHub accounts.
-6. **You:** test locally before deploying. In `.env`:
+Done October 20, 2026. The developer owns the Keystatic Cloud team (signed in with GitHub); the project is `gracie-charleston/gracie-bjj-website`, connected to the repo above, with the primary URL set to the live site.
+
+1. **You:** when the custom domain is live, update the project's **primary URL** on keystatic.cloud to the new address.
+2. **You:** invite Mike (and anyone else who edits content) by email from the team's members page. Editors sign in with a Keystatic Cloud account, so they don't need GitHub. The free plan allows 3 users per team.
+3. **Mike:** accept the invite, then bookmark `https://www.YOURDOMAIN.com/keystatic` (until then, `https://gracie-bjj-website.vaughndde.workers.dev/keystatic`). Every **Save** commits to `main` and the live site updates in about two minutes.
+4. **You**, to test locally: put these in `.env`, run `npm run dev`, open http://localhost:4321/keystatic and sign in. A save from localhost also commits to `main` and deploys.
    ```
    KEYSTATIC_STORAGE=cloud
-   PUBLIC_KEYSTATIC_CLOUD_PROJECT=relson-gracie-charleston/website
+   PUBLIC_KEYSTATIC_CLOUD_PROJECT=gracie-charleston/gracie-bjj-website
    ```
-   Run `npm run dev`, open http://localhost:4321/keystatic, sign in, and confirm the collections (Settings, Promo, Programs, Schedule, Coaches, Pricing) load.
 
 ## 3. Cloudflare (hosting)
 
@@ -65,7 +56,7 @@ Keystatic Cloud saves Mike's edits as commits to a GitHub repo, and Cloudflare r
    |---|---|---|
    | `SITE_URL` | `https://www.YOURDOMAIN.com` (no trailing slash) | Canonical URLs, Open Graph tags, sitemap, robots.txt, JSON-LD |
    | `KEYSTATIC_STORAGE` | `cloud` | Builds the `/keystatic` admin into production |
-   | `PUBLIC_KEYSTATIC_CLOUD_PROJECT` | `team-name/project-name` from step 2.4 | Tells the admin which Keystatic Cloud project to use |
+   | `PUBLIC_KEYSTATIC_CLOUD_PROJECT` | `gracie-charleston/gracie-bjj-website` | Tells the admin which Keystatic Cloud project to use |
    | `NODE_VERSION` | `22` | Matches `.nvmrc` and the `engines` field (Node 22.12+) |
 
    None of these are secrets. There are no API keys in this project.
