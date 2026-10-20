@@ -15,7 +15,7 @@ The site is an Astro build deployed to **Cloudflare Workers with static assets**
   npm run build
   ```
 - [ ] **Mike:** decide the domain, and whether the site lives on `www.` or the bare domain. Every step below uses that one address. This guide calls it `https://www.YOURDOMAIN.com`.
-- [ ] **Mike:** send any open items you can (see the end of this file). The site launches fine with placeholders, but visitors will see things like `[Belt rank]` and the dashed parking-note box until they're filled in.
+- [ ] **Mike:** send any open items you can (see the end of this file). The site launches fine without them; nothing on the live pages shows a placeholder.
 
 ## 1. GitHub repository
 
@@ -123,14 +123,14 @@ The old address (2070 Sam Rittenberg Blvd, Unit 752, 29407) is retired. Google m
 
 ## Still needed from Mike
 
-These show placeholders on the live site until they're filled in through Keystatic (or sent to the developer):
+None of these block launch. Fill them in through Keystatic (or send them to the developer) as they arrive:
 
 - Michael Key's fuller bio (who promoted him and when)
 - Which classes Relson teaches (Jerry no longer teaches; his card says "Founding instructor")
 - No-Gi portraits of Relson and Jerry; higher-resolution portraits of Jerry and James
 - Youth Jiu Jitsu age range
 - Class lengths (the site assumes 60 minutes, which also sets the closing times in the hours above)
-- Parking and entrance directions for Suite 130 (the contact page shows a dashed placeholder box until then)
+- Parking and entrance directions for Suite 130, if he wants them shown (optional: with the Keystatic field empty, the homepage and contact page show nothing)
 - The vector logo, and high-resolution originals of the site photos
 - Gymdesk lead-form and booking embed codes
 - An email address for the contact page and footer, if he wants one shown
