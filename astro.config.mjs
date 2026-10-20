@@ -44,6 +44,12 @@ export default defineConfig({
   devToolbar: { enabled: false },
   vite: {
     plugins: [tailwindcss()],
+    // keystatic.config.ts also runs in the admin's browser bundle, where Vite only
+    // exposes PUBLIC_ variables. Without this the admin UI stays in local mode
+    // while the server is in cloud mode.
+    define: {
+      'import.meta.env.KEYSTATIC_STORAGE': JSON.stringify(env.KEYSTATIC_STORAGE || 'local'),
+    },
   },
   image: {
     // Square photos, square crops. Components pass explicit widths/sizes.
