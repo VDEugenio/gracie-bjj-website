@@ -23,13 +23,14 @@ const expires = live && promo.expiresOn ? promo.expiresOn.toISOString().slice(0,
 {
   live && (
     <div
-      class="flex flex-wrap items-center justify-start gap-x-4 gap-y-2 border-b border-line bg-surface-muted px-4 py-3 text-caption text-ink md:justify-center"
+      class="flex flex-col items-center gap-y-2 border-b border-line bg-surface-muted px-4 py-3 text-center text-caption text-ink md:flex-row md:flex-wrap md:justify-center md:gap-x-4 md:text-left"
       role="region"
       aria-label="Current offer"
       data-promo
       data-promo-expires={expires}
     >
       {promo.tag && <Tag variant="signal">{promo.tag}</Tag>}
+      {/* The link sits in the message's line so it never wraps onto a row of its own on phones. */}
       <span>
         {lead ? (
           <>
@@ -40,12 +41,12 @@ const expires = live && promo.expiresOn ? promo.expiresOn.toISOString().slice(0,
         ) : (
           promo.message
         )}
+        {promo.linkLabel && (href ?? promo.linkUrl) && (
+          <a href={href ?? promo.linkUrl} class="link ml-2 whitespace-nowrap md:ml-4">
+            {promo.linkLabel}
+          </a>
+        )}
       </span>
-      {promo.linkLabel && (href ?? promo.linkUrl) && (
-        <a href={href ?? promo.linkUrl} class="link">
-          {promo.linkLabel}
-        </a>
-      )}
     </div>
   )
 }
