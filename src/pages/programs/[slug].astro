@@ -1,7 +1,7 @@
 ---
 /**
  * Program detail page, built from design/mockups/html/program-detail-{phone,desktop}.html.
- * One template serves every program: hero, facts, a light-theme long read
+ * One template serves every program: hero, facts (when, length, who), a light-theme long read
  * (what you'll learn, your first class, this week, other programs), final CTA.
  */
 import { render } from 'astro:content';
@@ -20,7 +20,7 @@ import { AUDIENCE_LABEL, firstClassSteps, lengthFact } from '@/lib/copy';
 import { fitStyle } from '@/lib/fit';
 import { padIndex } from '@/lib/format';
 import { gymdeskUrl } from '@/lib/gymdesk';
-import { groupByDay, summaryFor, whenFact } from '@/lib/schedule';
+import { groupByDay, summaryFor, timeRows } from '@/lib/schedule';
 
 export async function getStaticPaths() {
   const programs = await getPrograms();
@@ -41,10 +41,9 @@ const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(setti
 
 const index = programs.findIndex((p) => p.id === program.id) + 1;
 const facts = [
-  { label: 'When', value: whenFact(schedule, program.id), mono: true },
+  { label: 'When', value: 'Times to be announced', rows: timeRows(schedule, program.id), mono: true },
   { label: 'Length', value: lengthFact(program, schedule), mono: true },
   { label: 'Who', value: data.who ?? AUDIENCE_LABEL[data.audience] },
-  { label: 'Cost', value: data.cost },
 ];
 const steps = firstClassSteps(program, schedule, settings);
 const programDays = groupByDay(schedule, programs)
@@ -56,7 +55,7 @@ const others = programs
   .map((p) => ({ name: p.data.shortName ?? p.data.name, href: `/programs/${p.id}`, summary: summaryFor(p, schedule) }));
 ---
 
-<Base title={data.name} description={`${data.summary} ${data.cost}.`} campaign={campaign} currentPath={`/programs/${program.id}`}>
+<Base title={data.name} description={data.summary} campaign={campaign} currentPath={`/programs/${program.id}`}>
   <!-- Hero -->
   <section class="relative h-130 overflow-hidden bg-surface-raised md:h-160 md:bg-surface" aria-labelledby="prog-h">
     <div class="absolute inset-0 overflow-hidden md:left-[58%]" data-motion="hero-photo">

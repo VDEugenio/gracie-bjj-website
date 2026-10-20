@@ -180,18 +180,6 @@ export function summaryFor(program: ProgramEntry, schedule: ClassEntry[]): strin
   return `${dayListLabel(days)} · ${times}`;
 }
 
-/**
- * The "When" fact on a program page: "Mon and Wed · 6:00 PM" when every day
- * shares the same times, otherwise the day range with a pointer to the list.
- */
-export function whenFact(schedule: ClassEntry[], programId: string): string {
-  const rows = timeRows(schedule, programId);
-  if (rows.length === 0) return 'Times to be announced';
-  const first = rows[0]!;
-  if (rows.every((r) => r.times === first.times)) return `${dayListLabel(daysForProgram(schedule, programId))} · ${first.times}`;
-  return `${dayListLabel(daysForProgram(schedule, programId))} · see times below`;
-}
-
 /** Schedule entries sorted by day then start, for lists and JSON-LD. */
 export function sortSchedule(schedule: ClassEntry[]): ClassEntry[] {
   return [...schedule].sort((a, b) => dayIndex(a.data.day) - dayIndex(b.data.day) || byStart(a, b));

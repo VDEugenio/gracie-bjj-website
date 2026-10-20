@@ -160,7 +160,6 @@ Things that differ from CLAUDE.md or the mockups, or that a future session might
 | `display-band` 150px added | Band CTAs on the coaches and program mockups use it on desktop |
 | Sticky header | Keeps the free-week button in reach, as the brief asks |
 | "Member login" points at `…gymdesk.com/login` | Assumed from the signup URL; Mike has to confirm. The `/login` redirect in `_redirects` uses the same URL |
-| Competition Training cost "Included in the Adult membership" | Inferred from the pricing; Mike to confirm |
 | Keyless Google Maps embed (`google.com/maps?q=…&output=embed`) | No API key to manage. It shows the area without an exact pin until Mike pastes a real embed URL into settings |
 | Page copy lives in the templates, not the CMS | Hero lines, section intros and the "New to BJJ?" dropdowns are design copy. Everything with a time, price, name or link is CMS content, and several sentences are derived from the schedule (`copy.ts`) |
 | `compressHTML` left at Astro 7's `'jsx'` default | Whitespace between inline elements on separate lines is dropped, so templates use `{' '}` where a space matters |

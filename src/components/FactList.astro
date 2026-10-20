@@ -1,22 +1,39 @@
 ---
 /**
- * The facts strip on a program page: When / Length / Who / Cost.
- * A hairline list on phones, four columns on desktop. Mono for times.
+ * The facts strip on a program page (When / Length / Who) and on New to BJJ?.
+ * A hairline list on phones, one column per fact on desktop. Mono for times.
+ * A fact with `rows` lists day / time pairs instead of a single value.
  */
+import type { TimeRow } from '@/lib/schedule';
+
 interface Props {
-  facts: Array<{ label: string; value: string; mono?: boolean }>;
+  facts: Array<{ label: string; value: string; mono?: boolean; rows?: TimeRow[] }>;
   class?: string;
 }
 
 const { facts, class: className } = Astro.props;
+const cols = facts.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-4';
 ---
 
-<dl class:list={['m-0 border-t border-line md:grid md:grid-cols-4 md:gap-8 md:border-0', className]}>
+<dl class:list={['m-0 border-t border-line md:grid md:gap-8 md:border-0', cols, className]}>
   {
     facts.map((fact) => (
       <div class="grid grid-cols-[auto_minmax(0,1fr)] gap-3 border-b border-line py-3 md:flex md:flex-col md:gap-2 md:border-b-0 md:border-t md:pb-0 md:pt-4">
         <dt class="w-18 pt-1 text-label uppercase text-ink-muted md:w-auto md:pt-0">{fact.label}</dt>
-        <dd class:list={['m-0 text-ink', fact.mono ? 'font-mono text-time md:text-time-l' : 'text-body-sm md:text-body']}>{fact.value}</dd>
+        <dd class:list={['m-0 text-ink', fact.mono ? 'font-mono text-time md:text-time-l' : 'text-body-sm md:text-body']}>
+          {fact.rows && fact.rows.length > 0 ? (
+            <dl class="m-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1.5 md:gap-x-4 md:gap-y-2">
+              {fact.rows.map((row) => (
+                <>
+                  <dt class="min-w-14 whitespace-nowrap text-ink-muted md:min-w-18">{row.days}</dt>
+                  <dd class="m-0">{row.times}</dd>
+                </>
+              ))}
+            </dl>
+          ) : (
+            fact.value
+          )}
+        </dd>
       </div>
     ))
   }
