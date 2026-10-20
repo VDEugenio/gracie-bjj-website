@@ -44,15 +44,7 @@ const embed = settings.gymdesk.leadFormEmbed;
     <MapEmbed settings={settings} class="order-1 h-65 md:order-none md:col-span-6 md:col-start-7 md:row-span-2 md:row-start-1 md:h-190" />
     <div class="order-2 flex flex-col gap-4 md:order-none md:col-span-5 md:row-start-2 md:gap-6">
       <ContactInfo settings={settings} schedule={schedule} />
-      {
-        settings.parkingNote ? (
-          <p class="text-body-sm leading-normal text-ink-muted">{settings.parkingNote}</p>
-        ) : (
-          <p class="border border-dashed border-line-strong p-4 text-body-sm leading-normal text-ink-muted">
-            [Parking and entrance note for Suite 130 — where to park, which door to use.]
-          </p>
-        )
-      }
+      {settings.parkingNote && <p class="text-body-sm leading-normal text-ink-muted">{settings.parkingNote}</p>}
       <div class="grid grid-cols-2 gap-2 md:flex md:gap-3">
         <Button href={directionsUrl(settings)} class="justify-center px-3 md:px-6">Get directions</Button>
         <Button href={telHref(settings.phone)} class="justify-center px-3 md:px-6">Call</Button>

@@ -187,17 +187,9 @@ const plans = pricing.filter((p) => p.data.period === 'month' || p.data.period =
           {address.street}<br />
           {address.city}, {address.state} {address.zip}{address.neighborhood && ` · ${address.neighborhood}`}
         </span>
-        <a href={telHref(settings.phone)} class="mt-1 self-start font-mono text-time-l text-signal-text no-underline">{settings.phone}</a>
+        <a href={telHref(settings.phone)} class="mt-1 self-start font-body tabular-nums text-time-l text-signal-text no-underline">{settings.phone}</a>
       </address>
-      {
-        settings.parkingNote ? (
-          <p class="max-w-105 text-body-sm leading-normal text-ink-muted">{settings.parkingNote}</p>
-        ) : (
-          <p class="max-w-105 border border-dashed border-line-strong p-4 text-body-sm leading-normal text-ink-muted">
-            [Parking and entrance note for Suite 130 — where to park, which door to use.]
-          </p>
-        )
-      }
+      {settings.parkingNote && <p class="max-w-105 text-body-sm leading-normal text-ink-muted">{settings.parkingNote}</p>}
       <Button href={directionsUrl(settings)} class="self-start">Get directions</Button>
     </div>
   </section>

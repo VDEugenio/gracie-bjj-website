@@ -78,7 +78,7 @@ const { address } = settings;
       <span class="text-ink-muted">
         {address.street}<br />{address.city}, {address.state} {address.zip}
       </span>
-      <a href={telHref(settings.phone)} class="font-mono text-time text-ink no-underline">{settings.phone}</a>
+      <a href={telHref(settings.phone)} class="font-body tabular-nums text-time text-ink no-underline">{settings.phone}</a>
     </div>
     {
       settings.gymdesk.loginUrl && (
