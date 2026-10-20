@@ -1,13 +1,12 @@
 ---
 /**
- * Programs-page row: index, photo, tags, big name, summary, the day/time
+ * Programs-page row: index, photo, big name, summary, the day/time
  * list derived from the schedule, and a details link.
  * Stacks on phones; on desktop it sits on the 12-column grid
  * (number 1 / photo 2-5 / text 7-12).
  */
 import Photo from './Photo.astro';
 import ProgramTimes from './ProgramTimes.astro';
-import Tag from './Tag.astro';
 import type { Program } from '@/lib/content';
 import { fitStyle } from '@/lib/fit';
 import { padIndex } from '@/lib/format';
@@ -55,7 +54,6 @@ const headingId = `program-${program.id}`;
   </a>
 
   <div class="flex flex-col gap-3 px-4 pb-10 pt-6 md:col-span-6 md:col-start-7 md:gap-4 md:p-0">
-    {data.startHere && <Tag variant="signal" class="self-start">Start here</Tag>}
     <h2 id={headingId} class="display text-display-m" style={fitStyle(data.name)}>{data.name}</h2>
     <p class="text-body text-ink-muted md:max-w-130 md:text-body-l">{data.summary}</p>
     <ProgramTimes rows={rows} />

@@ -178,7 +178,7 @@ export default config({
         tags: textList('Tags', 'Tag', 'Not shown on the site. A "Beginners" tag puts the program first in lists and in the homepage "First time?" line. "Start here" is a separate switch below.'),
         startHere: fields.checkbox({
           label: 'Start here',
-          description: 'Marks a beginner-friendly program with the purple "Start here" tag.',
+          description: 'Marks a beginner-friendly program: suggested to newcomers ("New? Start with …") and shown by the Beginners filter on the schedule. No tag appears on the site.',
           defaultValue: false,
         }),
         summary: fields.text({
@@ -314,7 +314,7 @@ export default config({
           ],
           defaultValue: 'month',
         }),
-        tag: fields.text({ label: 'Tag', description: 'Small chip on the card, e.g. "Adults". The highlighted plan always says "Start here".' }),
+        tag: fields.text({ label: 'Tag', description: 'Small chip on the card, e.g. "Adults".' }),
         features: textList('What is included', 'Line'),
         highlighted: fields.checkbox({ label: 'Highlight this plan', defaultValue: false }),
         ctaUrl: fields.url({ label: 'Button URL', description: 'Leave empty to use the Gymdesk signup link.' }),

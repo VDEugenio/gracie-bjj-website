@@ -14,7 +14,6 @@ import ProgramLinkList from '@/components/ProgramLinkList.astro';
 import ScheduleDay from '@/components/ScheduleDay.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import Steps from '@/components/Steps.astro';
-import Tag from '@/components/Tag.astro';
 import { getPrograms, getSchedule, getSettings, type Program } from '@/lib/content';
 import { AUDIENCE_LABEL, firstClassSteps, lengthFact } from '@/lib/copy';
 import { fitStyle } from '@/lib/fit';
@@ -70,7 +69,6 @@ const others = programs
         <a href="/programs" class="text-ink-muted no-underline hover:text-ink">Programs</a> / <span class="text-ink">{padIndex(index)}</span>
       </nav>
       <h1 id="prog-h" class="display text-display-detail text-ink" style={fitStyle(data.name)} data-motion="title">{data.name}</h1>
-      {data.startHere && <Tag variant="signal" class="self-start">Start here</Tag>}
     </div>
   </section>
 

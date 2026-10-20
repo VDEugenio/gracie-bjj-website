@@ -1,7 +1,7 @@
 ---
 /**
  * Pricing card. The highlighted plan (the free week) sits on the page surface
- * with a signal border, a "Start here" tag and the primary button; the others
+ * with a signal border and the primary button; the others
  * are raised cards with an outlined "Sign up".
  */
 import Button from './Button.astro';
@@ -39,7 +39,7 @@ const cta = data.ctaUrl ? withUtmFrom(data.ctaUrl, href) : href;
   data-motion="reveal"
 >
   <div class:list={['items-center justify-between', data.highlighted ? 'flex' : 'hidden md:flex']}>
-    {data.highlighted ? <Tag variant="signal">Start here</Tag> : data.tag ? <Tag>{data.tag}</Tag> : <span></span>}
+    {data.tag ? <Tag>{data.tag}</Tag> : <span></span>}
     <span class="text-label uppercase text-ink-muted">{period.label}</span>
   </div>
 
