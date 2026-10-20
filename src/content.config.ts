@@ -86,6 +86,7 @@ const schedule = defineCollection({
     start: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Use 24-hour HH:MM'),
     durationMin: z.number().int().positive().default(60),
     program: reference('programs'),
+    instructor: reference('coaches').nullish(),
   }),
 });
 
@@ -101,7 +102,7 @@ const coaches = defineCollection({
       lineage: optionalText,
       specialties: z.array(z.string()).default([]),
       bio: z.string(),
-      teaches: z.string(),
+      teaches: optionalText,
       teachesLabel: optionalText,
       photo: image().nullable().optional(),
       photoPosition: optionalText,

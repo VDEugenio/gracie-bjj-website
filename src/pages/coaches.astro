@@ -8,11 +8,12 @@ import Base from '@/layouts/Base.astro';
 import CoachCard from '@/components/CoachCard.astro';
 import FinalCta from '@/components/FinalCta.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import { getCoaches, getSettings } from '@/lib/content';
+import { getCoaches, getPrograms, getSchedule, getSettings } from '@/lib/content';
 import { gymdeskUrl } from '@/lib/gymdesk';
+import { teachingFor } from '@/lib/schedule';
 
 const campaign = 'coaches';
-const [settings, coaches] = await Promise.all([getSettings(), getCoaches()]);
+const [settings, coaches, programs, schedule] = await Promise.all([getSettings(), getCoaches(), getPrograms(), getSchedule()]);
 const signup = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'final-cta');
 ---
 
@@ -35,7 +36,7 @@ const signup = gymdeskUrl(settings.gymdesk.signupUrl, campaign, 'final-cta');
   </section>
 
   <section aria-label="Instructors" class="tilt-stage wrap grid gap-4 pb-16 pt-4 md:grid-cols-2 md:items-stretch xl:grid-cols-3 md:pb-24 md:pt-6">
-    {coaches.map((coach) => <CoachCard coach={coach} />)}
+    {coaches.map((coach) => <CoachCard coach={coach} teaching={teachingFor(schedule, programs, coach.id)} />)}
   </section>
 
   <FinalCta variant="band" href={signup} secondary={{ href: '/schedule', label: 'View schedule' }} secondaryPhoneOnly>

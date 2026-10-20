@@ -4,7 +4,8 @@
  * - full (coaches page): a card that flips. The front is the 4:5 portrait under
  *   a scrim with the rank set vertically top-right, role and stacked name over
  *   the bottom, the belt stripe and a "Read bio" cue. The back opens with the
- *   same belt stripe, then the specialties, bio and the "Teaches" line. Without JavaScript the back simply
+ *   same belt stripe, then the specialties, bio and the "Teaches" line (the coach's classes from the
+ *   schedule, or the teaches text when no class names them). Without JavaScript the back simply
  *   reads below the front (src/scripts/coach-flip.ts turns the flip on).
  * - compact (home): photo, name, belt stripe and rank, linking to /coaches.
  * The desktop tilt, the flip turn and the belt tie-on live in src/lib/motion.ts.
@@ -16,21 +17,30 @@ import Tag from './Tag.astro';
 import { beltLabel, rankLine } from '@/lib/belts';
 import type { Coach } from '@/lib/content';
 import { firstRole, splitName } from '@/lib/format';
+import type { Teaching } from '@/lib/schedule';
 
 interface Props {
   coach: Coach;
+  /** From teachingFor(); the full card's "Teaches" line. */
+  teaching?: Teaching | null;
   variant?: 'full' | 'compact';
   headingLevel?: 2 | 3;
   class?: string;
 }
 
-const { coach, variant = 'full', headingLevel = 2, class: className } = Astro.props;
+const { coach, teaching, variant = 'full', headingLevel = 2, class: className } = Astro.props;
 const { data } = coach;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
 const { first, last } = splitName(data.name);
 const headingId = `coach-${variant}-${coach.id}`;
 const backId = `coach-bio-${coach.id}`;
 const rank = rankLine(data);
+const teachesLines = teaching
+  ? [teaching.programs.join(' · '), ...teaching.rows.map((r) => `${r.days} ${r.times}`)]
+  : data.teaches
+    ? [data.teaches]
+    : [];
+const teachesLabel = teaching ? 'Teaches' : (data.teachesLabel ?? 'Teaches');
 const alt = `Portrait of ${data.name}`;
 const face = 'flex flex-col overflow-hidden rounded-sm border border-line bg-surface-raised transition-colors group-hover:border-ink';
 const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-3.5 text-label uppercase text-ink-muted transition-colors group-hover:text-ink';
@@ -98,10 +108,16 @@ const cue = 'flex w-full cursor-pointer items-center justify-between gap-3 px-5 
               </div>
             )}
             <p class="text-body-sm leading-relaxed text-ink-muted">{data.bio}</p>
-            <div class="mt-auto flex justify-between gap-3 border-t border-line pt-3">
-              <span class="pt-0.75 text-label uppercase text-ink-muted">{data.teachesLabel ?? 'Teaches'}</span>
-              <span class="text-right font-mono text-time text-ink">{data.teaches}</span>
-            </div>
+            {teachesLines.length > 0 && (
+              <div class="mt-auto flex justify-between gap-3 border-t border-line pt-3">
+                <span class="pt-0.75 text-label uppercase text-ink-muted">{teachesLabel}</span>
+                <span class="flex flex-col items-end gap-1 text-right font-mono text-time text-ink">
+                  {teachesLines.map((line) => (
+                    <span>{line}</span>
+                  ))}
+                </span>
+              </div>
+            )}
           </div>
           <button type="button" class:list={[cue, 'border-t border-line']} data-flip-cue data-flip-toggle>
             <span>

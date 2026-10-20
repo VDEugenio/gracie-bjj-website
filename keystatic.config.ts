@@ -230,7 +230,7 @@ export default config({
       slugField: 'label',
       path: 'src/content/schedule/*',
       format: { data: 'yaml' },
-      columns: ['day', 'start', 'program'],
+      columns: ['day', 'start', 'program', 'instructor'],
       schema: {
         label: fields.slug({
           name: {
@@ -250,6 +250,11 @@ export default config({
         }),
         durationMin: fields.integer({ label: 'Length (minutes)', defaultValue: 60, validation: { isRequired: true, min: 15 } }),
         program: fields.relationship({ label: 'Program', collection: 'programs', validation: { isRequired: true } }),
+        instructor: fields.relationship({
+          label: 'Instructor',
+          description: "Optional. The coach who teaches this class. Their card's \"Teaches\" line lists these classes.",
+          collection: 'coaches',
+        }),
       },
     }),
 
@@ -272,7 +277,11 @@ export default config({
         lineage: fields.text({ label: 'Lineage', description: 'Who awarded the belt, e.g. "Relson Gracie".' }),
         specialties: textList('Specialties', 'Specialty', 'Short tags like "Competition", "Youth".'),
         bio: fields.text({ label: 'Bio', multiline: true, validation: { isRequired: true } }),
-        teaches: fields.text({ label: 'Teaches', description: 'Short line, e.g. "Seminars · privates".', validation: { isRequired: true } }),
+        teaches: fields.text({
+          label: 'Teaches (no classes)',
+          description:
+            'Only shown when no class in the schedule lists this coach as instructor, e.g. "Seminars · privates". Otherwise the card lists their classes and times from the schedule.',
+        }),
         teachesLabel: fields.text({
           label: 'Teaches label',
           description: 'Optional. Replaces the word "Teaches" on the card, e.g. "Status" for a coach who no longer teaches.',

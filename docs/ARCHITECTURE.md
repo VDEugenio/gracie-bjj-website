@@ -54,7 +54,7 @@ components → pages
 - **Relationships.** A schedule entry's `program` is the program's id (its file name without extension). `schedule.ts` joins them; a dangling id fails the build.
 - **Images.** Keystatic saves uploads to `src/assets/programs/<slug>/image.jpg` and `src/assets/coaches/<slug>/photo.jpg`, and the collection schema resolves them with Astro's `image()` helper, so pages get `ImageMetadata` with real dimensions. `Photo.astro` renders a `<Picture>` with AVIF, WebP and JPEG sources and caps the requested widths at the source width, so a 300px portrait is never upscaled. The `photo` utility applies `grayscale(1)`, so a colour upload still renders black and white.
 - **Placeholders.** Facts Mike has not supplied are bracketed text in the content, e.g. `[Belt rank]`, `[Bio from Mike: …]`, rendered as is so they are visible and easy to find. `format.ts` has an `isPlaceholder()` helper (not used yet) for any component that needs to treat them differently. The dashed parking-note box on the contact page is the one placeholder hard-coded in a template, shown while `settings.parkingNote` is empty.
-- **Everything with a time derives from the schedule.** Program rows ("Mon–Thu · 5:00 PM"), the program page "This week" card, the home page's "Today at the gym" panels, the footer hours, the contact page hours, the "First time? Come to Fundamentals at 6 PM" sentence, and the opening hours in the JSON-LD. Change a class in Keystatic and all of them follow on the next build.
+- **Everything with a time derives from the schedule.** Program rows ("Mon–Thu · 5:00 PM"), the program page "This week" card, the home page's "Today at the gym" panels, the footer hours, the contact page hours, the "First time? Come to Fundamentals at 6 PM" sentence, the coach cards' "Teaches" lines (from each class's optional `instructor`; a coach no class names falls back to the `teaches` text), and the opening hours in the JSON-LD. Change a class in Keystatic and all of them follow on the next build.
 
 **Gotcha: stale content cache.** After changing a schema in `src/content.config.ts`, stop the dev server, delete `.astro/data-store.json`, and start again. The content layer keeps old entries otherwise.
 
@@ -169,7 +169,7 @@ Things that differ from CLAUDE.md or the mockups, or that a future session might
 
 ## 10. Recipes
 
-**Change the schedule.** In Keystatic go to Classes → Schedule, or add `src/content/schedule/<day>-<HHMM>-<program>.yaml` with `label`, `day`, `start` (24h `HH:MM`), `durationMin` and `program` (a program id). Rows, program pages, the today panels, the footer and contact hours, and the JSON-LD all update on the next build.
+**Change the schedule.** In Keystatic go to Classes → Schedule, or add `src/content/schedule/<day>-<HHMM>-<program>.yaml` with `label`, `day`, `start` (24h `HH:MM`), `durationMin`, `program` (a program id) and optionally `instructor` (a coach id). Rows, program pages, the coach cards' "Teaches" lines, the today panels, the footer and contact hours, and the JSON-LD all update on the next build.
 
 **Add a program.** Keystatic → Classes → Programs, or create `src/content/programs/<slug>.mdoc` with the frontmatter fields from the README content table plus a photo at `src/assets/programs/<slug>/image.jpg`. It appears on `/programs`, gets `/programs/<slug>`, joins the marquee and the "Other programs" lists. The schedule filter's chips are fixed (All, Adults, Kids, Beginners, and MMA while a program with id `mma` exists); the "Beginners" chip follows `startHere`.
 

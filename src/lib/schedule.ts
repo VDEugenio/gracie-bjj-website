@@ -138,7 +138,10 @@ export interface TimeRow {
  * ("Mon–Thu · 5:00 PM"); everything else gets a row per day.
  */
 export function timeRows(schedule: ClassEntry[], programId: string): TimeRow[] {
-  const classes = classesForProgram(schedule, programId);
+  return rowsFor(classesForProgram(schedule, programId));
+}
+
+function rowsFor(classes: ClassEntry[]): TimeRow[] {
   const timesByDay = new Map<DayKey, string[]>();
   for (const c of classes) {
     const list = timesByDay.get(c.data.day) ?? [];
@@ -160,6 +163,24 @@ export function timeRows(schedule: ClassEntry[], programId: string): TimeRow[] {
     i = j + 1;
   }
   return rows;
+}
+
+export interface Teaching {
+  /** Short program names in program order: ["Mixed Level", "MMA"] */
+  programs: string[];
+  /** Day/time rows across those classes: [{ days: "Tue–Thu", times: "12:00 PM" }] */
+  rows: TimeRow[];
+}
+
+/** What a coach teaches, from the classes that name them as instructor. Null when none do. */
+export function teachingFor(schedule: ClassEntry[], programs: ProgramEntry[], coachId: string): Teaching | null {
+  const classes = schedule.filter((c) => c.data.instructor?.id === coachId).sort(byStart);
+  if (classes.length === 0) return null;
+  const ids = new Set(classes.map((c) => c.data.program.id));
+  return {
+    programs: programs.filter((p) => ids.has(p.id)).map((p) => p.data.shortName ?? p.data.name),
+    rows: rowsFor(classes),
+  };
 }
 
 /** Distinct start times across the week, in time order. */
