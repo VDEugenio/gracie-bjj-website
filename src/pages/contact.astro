@@ -3,7 +3,7 @@
  * Contact page, built from design/mockups/html/contact-{phone,desktop}.html.
  * Address, phone and hours, the map, and the message form. The form is the
  * Gymdesk lead form once its embed code is in settings; until then it is the
- * mockup form with no submit handler.
+ * mockup form, which opens the visitor's email app addressed to settings.formEmail.
  */
 import Base from '@/layouts/Base.astro';
 import Button from '@/components/Button.astro';
@@ -61,7 +61,7 @@ const embed = settings.gymdesk.leadFormEmbed;
           <Button href={signup('contact')} variant="primary" arrow>Start your free week</Button>
         </div>
       </div>
-      <div class="md:col-span-6 md:col-start-7">{embed ? <GymdeskForm embed={embed} /> : <ContactForm />}</div>
+      <div class="md:col-span-6 md:col-start-7">{embed ? <GymdeskForm embed={embed} /> : <ContactForm to={settings.formEmail} phone={settings.phone} />}</div>
     </div>
   </section>
 

@@ -1,32 +1,52 @@
 ---
 /**
- * "Send us a message" form, built to the mockup. It has no submit handler:
- * the real form is the Gymdesk lead form, which replaces this component once
- * Mike supplies the embed code (see GymdeskForm.astro). Until then the button
- * is inert.
+ * "Send us a message" form, built to the mockup. Until the Gymdesk lead form
+ * embed replaces it (see GymdeskForm.astro), sending opens the visitor's email
+ * app with the message addressed to `to` (settings.formEmail). With JS the
+ * email gets a subject and a readable body (src/scripts/contact-form.ts);
+ * without JS the browser's own mailto: form action sends the raw fields.
+ * The note under the button gives the address and phone in case no email app
+ * opens. Without `to` the button is inert.
  */
 import Button from './Button.astro';
+import { telHref } from '@/lib/format';
 
 interface Props {
+  /** Inbox the message is addressed to. */
+  to?: string;
+  /** Shown in the fallback note, e.g. "(843) 377-5361". */
+  phone?: string;
   interests?: string[];
   class?: string;
 }
 
-const { interests = ['Adult jiu jitsu', 'Kids jiu jitsu', 'MMA', 'Not sure yet'], class: className } = Astro.props;
+const {
+  to,
+  phone,
+  interests = ['Adult jiu jitsu', 'Kids jiu jitsu', 'MMA', 'Not sure yet'],
+  class: className,
+} = Astro.props;
 
 const field = 'flex flex-col gap-2';
 const label = 'text-label uppercase text-ink-muted';
 const input = 'h-12 w-full rounded-sm border border-line-strong bg-surface px-3.5 text-body text-ink';
+const link = 'text-ink underline hover:text-signal-text';
 ---
 
-<form class:list={['grid gap-4 md:grid-cols-2', className]} novalidate data-contact-form>
+<form
+  class:list={['grid gap-4 md:grid-cols-2', className]}
+  action={to ? `mailto:${to}` : undefined}
+  method={to ? 'post' : undefined}
+  enctype={to ? 'text/plain' : undefined}
+  data-contact-form={to}
+>
   <div class={field}>
     <label for="cf-name" class={label}>Name</label>
-    <input id="cf-name" name="name" type="text" autocomplete="name" class={input} />
+    <input id="cf-name" name="name" type="text" autocomplete="name" required class={input} />
   </div>
   <div class={field}>
     <label for="cf-email" class={label}>Email</label>
-    <input id="cf-email" name="email" type="email" autocomplete="email" class={input} />
+    <input id="cf-email" name="email" type="email" autocomplete="email" required class={input} />
   </div>
   <div class={field}>
     <label for="cf-phone" class={label}>Phone (optional)</label>
@@ -40,9 +60,33 @@ const input = 'h-12 w-full rounded-sm border border-line-strong bg-surface px-3.
   </div>
   <div class:list={[field, 'md:col-span-2']}>
     <label for="cf-message" class={label}>Message</label>
-    <textarea id="cf-message" name="message" rows="5" class:list={[input, 'h-30 resize-y py-3 md:h-35']}></textarea>
+    <textarea id="cf-message" name="message" rows="5" required class:list={[input, 'h-30 resize-y py-3 md:h-35']}></textarea>
   </div>
-  <div class="md:col-span-2">
-    <Button type="button" class="w-full justify-center md:w-auto">Send message</Button>
+  <div class="flex flex-col gap-4 md:col-span-2">
+    <Button type={to ? 'submit' : 'button'} class="w-full justify-center md:w-auto md:self-start">Send message</Button>
+    {
+      to && (
+        <p class="text-body-sm leading-normal text-ink-muted" role="status" hidden data-contact-sent>
+          Your email app should open with your message ready to send. If it didn't, email us at{' '}
+          <a href={`mailto:${to}`} class={link}>
+            {to}
+          </a>
+          {phone && (
+            <>
+              {' '}
+              or call{' '}
+              <a href={telHref(phone)} class:list={[link, 'whitespace-nowrap']}>
+                {phone}
+              </a>
+            </>
+          )}
+          .
+        </p>
+      )
+    }
   </div>
 </form>
+
+<script>
+  import '@/scripts/contact-form';
+</script>

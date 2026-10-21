@@ -163,7 +163,7 @@ Gymdesk is the gym's member system. It owns signups, billing, and leads, and **t
 - Youth Jiu Jitsu age range
 - Class lengths (assume 60 min)
 - Parking and entrance directions for Suite 130
-- Vector logo (`design/` has a 60px placeholder)
+- Vector logo (the site uses a 350px PNG badge, `src/assets/logo.png`)
 - High-resolution originals of the selected photos
 - Gymdesk lead-form and booking embed codes
 

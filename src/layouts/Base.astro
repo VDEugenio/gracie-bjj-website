@@ -17,7 +17,7 @@ import { getImage } from 'astro:assets';
 import { gymdeskUrl } from '@/lib/gymdesk';
 import { localBusiness } from '@/lib/seo';
 import ogPhoto from '@/assets/sections/team-group-photo.jpg';
-import logo from '@/assets/logo-placeholder.webp';
+import logo from '@/assets/logo.png';
 // The two fonts every page paints first (headlines and body text). Preloading
 // them saves a round trip and keeps the font swap from shifting the layout.
 import archivoFont from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
@@ -63,6 +63,7 @@ const jsonLd = localBusiness({ settings, schedule, site, image: ogImage, logo: n
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" href={archivoFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={geistFont} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#121212" />

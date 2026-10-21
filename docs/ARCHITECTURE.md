@@ -135,7 +135,7 @@ Details worth knowing:
 - **URL shape:** `trailingSlash: 'never'` and `build.format: 'file'` together produce `coaches.html`, which Cloudflare serves at `/coaches` without a redirect. With directory output Cloudflare would 307 `/coaches` to `/coaches/`, disagreeing with the canonicals and the sitemap.
 - **Redirects:** `public/_redirects` maps the old site's `/classes`, `/classes/*`, `/instructors`, `/relson-gracie` (and their trailing-slash forms) to the new pages with 301s, and `/login` to the Gymdesk member login. Cloudflare applies this file at the edge.
 - **UTM:** `gymdeskUrl(base, campaign, placement)` adds `utm_source=website`, `utm_medium=cta`, `utm_campaign=<page>` and `utm_content=<placement>` to Gymdesk hosts only; other URLs pass through untouched, so CMS fields that may hold either are safe. `withUtmFrom()` copies the tags onto a pricing plan's own `ctaUrl`. `utm_content` is an addition to the brief so Mike can tell the header button from the final CTA.
-- **Lighthouse (mobile, phase 6, median of 3):** Performance 94–98, Accessibility 100, Best Practices 96, SEO 100 on all pages. Best Practices loses points only on the 60px placeholder logo. `/contact` can dip when the Google Maps embed is slow.
+- **Lighthouse (mobile, phase 6, median of 3):** Performance 94–98, Accessibility 100, Best Practices 96, SEO 100 on all pages. Best Practices lost points only on the 60px placeholder logo, since replaced by the 350px badge. `/contact` can dip when the Google Maps embed is slow.
 
 ## 8. Hosting and deployment
 
@@ -209,6 +209,6 @@ Facts Mike still owes are listed at the end of LAUNCH.md and in CLAUDE.md under 
 - Set `SITE_URL` once the domain is known (`TODO(launch)` in `astro.config.mjs`).
 - Switch Keystatic to Cloud (`TODO(mike)` in `.env.example`).
 - Confirm the Gymdesk member login URL (`settings.gymdesk.loginUrl` and the `/login` line in `public/_redirects`).
-- Replace `src/assets/logo-placeholder.webp` with the vector logo (the one Lighthouse Best Practices deduction).
-- Paste the Gymdesk lead-form and booking embeds into Settings → Gymdesk in Keystatic; the contact page switches from `ContactForm` to `GymdeskForm` on the next build.
+- If a vector logo arrives, swap `src/assets/logo.png` (the 350px badge) for it in `Logo.astro` and `Base.astro`.
+- Paste the Gymdesk lead-form and booking embeds into Settings → Gymdesk in Keystatic; the contact page switches from `ContactForm` (which until then opens the visitor's email app addressed to `formEmail`) to `GymdeskForm` on the next build.
 - Mirror the high-resolution hero original left to right when it arrives, as the current `hero-arm-lock-mirrored.jpg` is.

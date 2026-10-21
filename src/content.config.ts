@@ -30,6 +30,7 @@ const settings = defineCollection({
     }),
     phone: z.string(),
     email: optionalText,
+    formEmail: optionalText,
     instagram: optionalUrl,
     facebook: optionalUrl,
     gymdesk: z.object({

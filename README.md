@@ -108,7 +108,7 @@ Every component takes content as props and uses tokens only. `data-motion="…"`
 | `FactList` | `facts[] {label, value, mono?}` |
 | `Disclosure` | `title`, `group` (items sharing it open one at a time), `id?`; body in the slot. Native `<details>`, works without JS |
 | `FinalCta` | `variant` photo/band, `tone?`, `size?`, `image?`, `alt?`, `position?`, `body?`, `href`, `secondary?`; headline in the slot |
-| `ContactInfo`, `MapEmbed`, `ContactForm` | `settings`, `schedule` · `settings`, `class` (size) · `interests?` |
+| `ContactInfo`, `MapEmbed`, `ContactForm` | `settings`, `schedule` · `settings`, `class` (size) · `to?`, `phone?`, `interests?` (opens the visitor's email app addressed to `settings.formEmail`) |
 | `GymdeskForm`, `GymdeskBooking` | `embed?` (render nothing until Mike pastes the embed code into settings) |
 
 

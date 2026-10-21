@@ -91,6 +91,11 @@ export default config({
           validation: { isRequired: true },
         }),
         email: fields.text({ label: 'Email', description: 'Optional. Shown on the contact page when set.' }),
+        formEmail: fields.text({
+          label: 'Contact form email',
+          description:
+            'Where the contact page\'s "Send message" goes. It opens the visitor\'s email app addressed to this inbox. Not used once the Gymdesk lead form embed is set.',
+        }),
         instagram: fields.url({ label: 'Instagram URL' }),
         facebook: fields.url({ label: 'Facebook URL' }),
         gymdesk: fields.object(

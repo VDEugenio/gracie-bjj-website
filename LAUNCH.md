@@ -108,7 +108,7 @@ The old address (2070 Sam Rittenberg Blvd, Unit 752, 29407) is retired. Google m
 
 ## 6. After launch
 
-- [ ] Run Lighthouse (mobile) on the live home page and on `/contact`. Locally, every page scored Performance 94–98, Accessibility 100, Best Practices 96 and SEO 100 (median of 3 runs). Best Practices loses points only on the 60px placeholder logo, which the vector logo fixes. `/contact` occasionally dips when the Google Maps embed loads slowly. That's normal run-to-run variance.
+- [ ] Run Lighthouse (mobile) on the live home page and on `/contact`. Locally, every page scored Performance 94–98, Accessibility 100, Best Practices 96 and SEO 100 (median of 3 runs). Best Practices lost points only on the 60px placeholder logo, which the 350px badge (October 20, 2026) should fix. `/contact` occasionally dips when the Google Maps embed loads slowly. That's normal run-to-run variance.
 - [ ] Have Mike make one small edit in Keystatic (e.g. the promo message), click **Save**, and confirm it's live within a couple of minutes.
 - [ ] Once the Gymdesk lead-form and booking embed codes arrive, Mike pastes them into **Settings → Gymdesk** in Keystatic. The contact page switches to the real form on the next build.
 
@@ -122,6 +122,6 @@ None of these block launch. Fill them in through Keystatic (or send them to the 
 - Youth Jiu Jitsu age range
 - Class lengths (the site assumes 60 minutes, which also sets the closing times in the hours above)
 - Parking and entrance directions for Suite 130, if he wants them shown (optional: with the Keystatic field empty, the homepage and contact page show nothing)
-- The vector logo, and high-resolution originals of the site photos
+- A vector version of the logo (optional: the 350px badge is in place), and high-resolution originals of the site photos
 - Gymdesk lead-form and booking embed codes
 - An email address for the contact page and footer, if he wants one shown
