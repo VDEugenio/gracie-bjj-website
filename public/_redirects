@@ -25,13 +25,18 @@
 /login                  https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/login?utm_source=website&utm_medium=redirect&utm_campaign=old-site-login   301
 /login/                 https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/login?utm_source=website&utm_medium=redirect&utm_campaign=old-site-login   301
 
-# Splat rules last, most specific first.
-/classes/adult-bjj      /programs/mixed-level   301
-/classes/adult-bjj/*    /programs/mixed-level   301
-/classes/fundamentals   /programs/fundamentals  301
-/classes/fundamentals/* /programs/fundamentals  301
-/classes/kids-bjj       /programs/youth         301
-/classes/kids-bjj/*     /programs/youth         301
+/classes/adult-bjj                /programs/mixed-level   301
+/classes/adult-bjj/               /programs/mixed-level   301
+/classes/adult-bjj/charleston     /programs/mixed-level   301
+/classes/fundamentals             /programs/fundamentals  301
+/classes/fundamentals/            /programs/fundamentals  301
+/classes/fundamentals/charleston  /programs/fundamentals  301
+/classes/kids-bjj                 /programs/youth         301
+/classes/kids-bjj/                /programs/youth         301
+/classes/kids-bjj/charleston      /programs/youth         301
+
+# Splat rules last. Cloudflare needs every exact path above the first splat,
+# or the splats win.
 /classes/*              /programs   301
 /locations/*            /contact    301
 /location/*             /contact    301
