@@ -1,4 +1,5 @@
 # Old site URLs -> new pages, so old Google results and bookmarks never 404.
+# The list comes from the old site's sitemap (graciecharleston.com, October 2026).
 # Cloudflare reads this file at the edge. Format: <from> <to> <status>
 # The /login target is the Gymdesk member portal (settings.gymdesk.loginUrl);
 # update it here too if that URL ever changes.
@@ -9,8 +10,29 @@
 /instructors/           /coaches    301
 /relson-gracie          /coaches    301
 /relson-gracie/         /coaches    301
+/locations              /contact    301
+/locations/             /contact    301
+/connect                /contact    301
+/connect/               /contact    301
+/events                 /           301
+/event-details          /           301
+/blog                   /           301
+/reviews                /           301
+/gift-card              /           301
+/checkout               /           301
+/privacy-policy         /           301
+/oauth2callback         /           301
 /login                  https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/login?utm_source=website&utm_medium=redirect&utm_campaign=old-site-login   301
 /login/                 https://relson-gracie-jiujitsu-of-charleston.gymdesk.com/login?utm_source=website&utm_medium=redirect&utm_campaign=old-site-login   301
 
-# Splat rules last.
+# Splat rules last, most specific first.
+/classes/adult-bjj      /programs/mixed-level   301
+/classes/adult-bjj/*    /programs/mixed-level   301
+/classes/fundamentals   /programs/fundamentals  301
+/classes/fundamentals/* /programs/fundamentals  301
+/classes/kids-bjj       /programs/youth         301
+/classes/kids-bjj/*     /programs/youth         301
 /classes/*              /programs   301
+/locations/*            /contact    301
+/location/*             /contact    301
+/connect/*              /contact    301
