@@ -199,6 +199,7 @@ Things that differ from CLAUDE.md or the mockups, or that a future session might
 | 2026-10-14 | `8a0e09f`, `d56f6aa` | LAUNCH.md and README updates |
 | 2026-10-17 | batch 1 commits | First round of owner feedback: coach cards flip to the bio and lose their numbers, all six coaches and one membership price on the homepage, the `/new-here` page, CTA pulse, photo tilt on every photo, replaying scroll entrances, desktop header from 1024px |
 | 2026-10-19 | batch 2 commits | Nav labels never wrap (wordmark from 1440px); "New here?" renamed "New to BJJ?"; that page's long read became dropdowns in the hero |
+| 2026-10-20 | pricing commit | The 10-day pass is back on the homepage and programs page; a "Show on the website" checkbox per plan in Keystatic decides which plans appear |
 
 Phases 1 to 4 were built in a Claude Code session on this machine; phases 5 and 6 in a second session started through Claude Code Remote Control, which worked on a git worktree branch (`worktree-bridge-cse_…`) that was then fast-forwarded into `main`. That branch can be deleted once the remote session is closed.
 

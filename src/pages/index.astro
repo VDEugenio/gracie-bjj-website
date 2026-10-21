@@ -16,7 +16,7 @@ import PricingCard from '@/components/PricingCard.astro';
 import ProgramCard from '@/components/ProgramCard.astro';
 import ScheduleDay from '@/components/ScheduleDay.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import { getHomeCoaches, getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
+import { getHomeCoaches, getPrograms, getShownPricing, getSchedule, getSettings } from '@/lib/content';
 import { todaySentence } from '@/lib/copy';
 import { fitStyle } from '@/lib/fit';
 import { telHref } from '@/lib/format';
@@ -32,7 +32,7 @@ const [settings, programs, schedule, coaches, pricing] = await Promise.all([
   getPrograms(),
   getSchedule(),
   getHomeCoaches(),
-  getPricing(),
+  getShownPricing(),
 ]);
 const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(settings.gymdesk.signupUrl, campaign, placement);
 const { address } = settings;
@@ -45,7 +45,10 @@ const panels = [
   { key: 'sunday', label: 'Sunday', sentence: "No classes today. Here's Monday.", card: monday },
 ];
 
-const plans = pricing.filter((p) => p.data.period === 'month' || p.data.period === 'free');
+// Every plan ticked "Show on the website" gets a card: two per row on tablets (an odd last card
+// spans the row), all in one row on wide screens when there are three or four.
+const planCols = pricing.length === 3 ? 'xl:grid-cols-3' : pricing.length === 4 ? 'xl:grid-cols-4' : '';
+const spanLast = (i: number) => (pricing.length % 2 === 1 && i === pricing.length - 1 ? 'md:col-span-2 xl:col-span-1' : undefined);
 ---
 
 <Base
@@ -166,8 +169,8 @@ const plans = pricing.filter((p) => p.data.period === 'month' || p.data.period =
           One monthly rate for adults and kids. Open mat included.
         </p>
       </div>
-      <div class="grid gap-4 md:grid-cols-2">
-        {plans.map((plan) => <PricingCard plan={plan} href={signup('pricing')} />)}
+      <div class:list={['grid gap-4 md:grid-cols-2', planCols]}>
+        {pricing.map((plan, i) => <PricingCard plan={plan} href={signup('pricing')} class={spanLast(i)} />)}
       </div>
     </div>
   </section>

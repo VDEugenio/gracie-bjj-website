@@ -120,6 +120,7 @@ const pricing = defineCollection({
     tag: optionalText,
     features: z.array(z.string()).default([]),
     highlighted: z.boolean().default(false),
+    showOnSite: z.boolean().default(true),
     ctaUrl: optionalUrl,
     order: z.number().int(),
   }),

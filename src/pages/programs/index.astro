@@ -10,20 +10,22 @@ import PriceList from '@/components/PriceList.astro';
 import ProgramRow from '@/components/ProgramRow.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import Tag from '@/components/Tag.astro';
-import { getPricing, getPrograms, getSchedule, getSettings } from '@/lib/content';
+import { getPrograms, getSchedule, getSettings, getShownPricing } from '@/lib/content';
 import { gymdeskUrl } from '@/lib/gymdesk';
 import { timeRows } from '@/lib/schedule';
 
 const campaign = 'programs';
-const [settings, programs, schedule, pricing] = await Promise.all([getSettings(), getPrograms(), getSchedule(), getPricing()]);
+const [settings, programs, schedule, pricing] = await Promise.all([getSettings(), getPrograms(), getSchedule(), getShownPricing()]);
 const signup = (placement: Parameters<typeof gymdeskUrl>[2]) => gymdeskUrl(settings.gymdesk.signupUrl, campaign, placement);
 
 const starters = programs
   .filter((p) => p.data.startHere)
   .sort((a, b) => Number(b.data.tags.some((t) => /beginner/i.test(t))) - Number(a.data.tags.some((t) => /beginner/i.test(t))));
 
+// Paid plans first (membership, then passes), the free week last.
 const priceRows = [
   ...pricing.filter((p) => p.data.period === 'month').map((p) => ({ label: p.data.name, price: `${p.data.price}/mo` })),
+  ...pricing.filter((p) => p.data.period === 'day-pass' || p.data.period === '10-pass').map((p) => ({ label: p.data.name, price: p.data.price })),
   ...pricing.filter((p) => p.data.period === 'free').map(() => ({ label: 'First week', price: 'Free' })),
 ];
 ---

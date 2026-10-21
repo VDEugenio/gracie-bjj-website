@@ -60,3 +60,8 @@ export async function getPricing(): Promise<Plan[]> {
   const all = await getCollection('pricing');
   return all.sort((a, b) => a.data.order - b.data.order);
 }
+
+/** The plans ticked "Show on the website" in Keystatic, in order. */
+export async function getShownPricing(): Promise<Plan[]> {
+  return (await getPricing()).filter((p) => p.data.showOnSite);
+}

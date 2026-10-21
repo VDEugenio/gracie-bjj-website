@@ -78,7 +78,7 @@ Mike edits content at `/keystatic` (dev server, or production once Keystatic Clo
 | Programs | `src/content/programs/<slug>.mdoc` | Frontmatter plus the rich-text description. Photo at `src/assets/programs/<slug>/image.jpg` |
 | Weekly schedule | `src/content/schedule/<day>-<HHMM>-<program>.yaml` | One file per class. Everything with a time derives from this |
 | Coaches | `src/content/coaches/<slug>.yaml` | Portrait at `src/assets/coaches/<slug>/photo.jpg`. Bracketed values like `[Belt rank]` are placeholders Mike still has to fill in |
-| Pricing | `src/content/pricing/<slug>.yaml` | The highlighted plan is the free week |
+| Pricing | `src/content/pricing/<slug>.yaml` | The highlighted plan is the free week. Only plans with "Show on the website" ticked appear (homepage cards, programs price list) |
 
 Keystatic storage is `local` until Mike's Keystatic Cloud project exists. Then set `KEYSTATIC_STORAGE=cloud` and `PUBLIC_KEYSTATIC_CLOUD_PROJECT` in `.env` (and in the Cloudflare build environment). In local mode the admin is only built into `astro dev`; production builds leave it out.
 

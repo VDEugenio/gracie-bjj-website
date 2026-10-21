@@ -327,6 +327,11 @@ export default config({
         tag: fields.text({ label: 'Tag', description: 'Small chip on the card, e.g. "Adults".' }),
         features: textList('What is included', 'Line'),
         highlighted: fields.checkbox({ label: 'Highlight this plan', defaultValue: false }),
+        showOnSite: fields.checkbox({
+          label: 'Show on the website',
+          description: 'Untick to keep the plan here without showing it on the home and programs pages.',
+          defaultValue: true,
+        }),
         ctaUrl: fields.url({ label: 'Button URL', description: 'Leave empty to use the Gymdesk signup link.' }),
         order: fields.integer({ label: 'Order', validation: { isRequired: true } }),
       },
