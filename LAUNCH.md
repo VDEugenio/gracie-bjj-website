@@ -1,5 +1,7 @@
 # Launch checklist
 
+**Launched October 20, 2026 at https://graciecharleston.com.** Steps 1 to 4 are done: the domain stays registered at GoDaddy, its nameservers moved from the old site's Netlify DNS to Cloudflare (`rocky`/`vera.ns.cloudflare.com`, in the developer's account), the bare domain and `www` are attached to the Worker (www as a proxied `AAAA 100::` record plus a Redirect Rule to the bare domain), Always Use HTTPS is on, and `SITE_URL` is `https://graciecharleston.com`. The GoDaddy email MX records and the Google verification TXT came across unchanged. What's left is step 5 and the after-launch list.
+
 How to get the site live, in order. **Mike** owns the domain and Google accounts; the GitHub repo, Cloudflare and the Keystatic Cloud team are on the developer's accounts, and Mike edits content through a Keystatic Cloud invite. **You** (the developer) do the technical steps.
 
 The site is an Astro build deployed to **Cloudflare Workers with static assets** (the current `@astrojs/cloudflare` adapter targets Workers, not classic Pages). In the Cloudflare dashboard this lives under **Workers & Pages**, and it gives the same Git-connected, build-on-every-push setup as Pages.
